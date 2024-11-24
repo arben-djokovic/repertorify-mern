@@ -3,10 +3,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "./songForm.scss";
 import api from "../../api/api";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function AddSong() {
   const [genres, setGenres] = useState([])
   const formRef = useRef(null)
+  const navigate = useNavigate()
 
   const fetchGenres = async() => {
     try{
@@ -25,14 +28,30 @@ export default function AddSong() {
         title: String(formData.get("title")),
         text: String(formData.get("text")),
         artist: String(formData.get("artist")),
-        genre: String(formData.get("genres")),
-        // user: 
+        genre: String(formData.get("genre")),
+        user: String("674391ada1728413718c8830")
       };
+      formRef.current.querySelectorAll(".inputerror").forEach((error) => {
+        error.innerText = "";
+      })
       try{
         const response = await api.post('/songs/', songData)
         console.log(response)
+        if(response.data.success){
+          toast.success(response.data.message)
+          navigate(`/songs/${response.data.song._id}`)
+        }
       }catch(err){
         console.log(err)
+        if(err.response?.data?.errors){
+          toast.error(err.response.data.message)
+          err.response.data.errors.forEach((error) => {
+             const errorSpan = formRef.current.querySelector(`#${error.field}error`)
+             if(errorSpan){
+              errorSpan.innerText = `*${error.message}`
+             }
+          })
+        }
       }
     }
   }
@@ -55,21 +74,22 @@ export default function AddSong() {
             <h1>Add Song</h1>
           </div>
           <div className="input">
-            <label htmlFor="title">Title</label>
+            <label htmlFor="title">Title <span className="inputerror" id="titleerror"></span></label>
             <input type="text" id="title" name="title" />
           </div>
           <div className="input">
-            <label htmlFor="text">Text (with acords)</label>
+            <label htmlFor="text">Text (with acords) <span className="inputerror" id="texterror"></span></label>
             <textarea  id="text" rows={5} name="text" />
           </div>
           <div className="input">
-            <label htmlFor="artist">Artist</label>
+            <label htmlFor="artist">Artist <span className="inputerror" id="artisterror"></span></label>
             <input type="text" id="artist" name="artist" />
           </div>
           <div className="input">
+              <span className="inputerror" id="genreerror"></span>
             <div className="genres">
-              <label htmlFor="genres">Genre:</label>
-              <select name="genres" id="genres">
+              <label htmlFor="genre">Genre:  </label>
+              <select name="genre" id="genres">
                 <option value=""></option>
                 {genres.map((genre, i) => (
                   <option value={genre._id} key={genre._id}>{genre.name}</option>

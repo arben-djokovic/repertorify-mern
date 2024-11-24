@@ -68,6 +68,11 @@ label{
 .chord{
   color: red;
 }
+.inputerror{
+  color: red;
+  font-size: 12px;
+}
+
 /* svg, path{
   color: gray;
 } */

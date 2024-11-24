@@ -9,7 +9,7 @@ export const logout = (navigate) => {
         navigate('/login')
     }
 }
-export const isAuthenticated = () => !!getToken();
+export const isAuthenticated = () => !!getDecodedToken();
 export const isAdmin = () => getDecodedToken()?.role === "admin";
 
 

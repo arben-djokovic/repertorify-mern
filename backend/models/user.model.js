@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         minLength: 3,
-        maxLength: 20
+        maxLength: 20,
+        trim: true
     },
     hashedPassword: {
         type: String,
@@ -17,7 +18,12 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Playlist"
         }
-    ]
+    ],
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
+    }
 })
 
 const User = mongoose.model("User", userSchema);

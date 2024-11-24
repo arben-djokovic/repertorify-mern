@@ -4,7 +4,7 @@ const songSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        minlength: 1,
+        minlength: 2,
         maxLength: 40,
     },
     text: {
@@ -26,8 +26,7 @@ const songSchema = new mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        ref: "User"
     }
 })
 
