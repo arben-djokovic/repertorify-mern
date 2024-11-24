@@ -1,0 +1,38 @@
+.songitem, .songitem2{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 15px;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #D9D9D9;
+    position: relative;
+    color: black;
+    z-index: 2;
+    transition: scale 0.1s ease;
+    height: 38px;
+    &:hover{
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+      scale: 1.01;
+    }
+    &.active { 
+      position: relative;
+      z-index: 3;
+    }
+    .right{
+      display: flex;
+      align-items: center;
+      color: #3a3a3a;
+      .username{
+        margin-right: 15px;
+        font-size: 13px;
+      }
+      #icon{
+        padding: 3px;
+        font-size: 22px;
+      }
+    }
+}
+.songitem2{
+    background-color: white;
+}
+  

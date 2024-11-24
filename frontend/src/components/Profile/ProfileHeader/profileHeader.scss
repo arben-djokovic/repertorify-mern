@@ -1,0 +1,65 @@
+.profileHeader {
+    width: 100%;
+    background-color: white;
+    padding: 2vw;
+    display: flex;
+    align-items: center;
+    grid-gap: 2vw;
+    border-radius: 15px;
+    .userIcon {
+        font-size: 90px;
+        color: gray;
+    }
+    .userInfo {
+        display: flex;
+        flex-direction: column;
+        grid-gap: 1vw;
+        .username {
+            display: flex;
+            align-items: center;
+            grid-gap: 5vw;
+            font-size: 22px;
+            svg,
+            path {
+                font-size: 25px;
+                color: black;
+            }
+        }
+        .info {
+            display: flex;
+            align-items: center;
+            grid-gap: 1vw;
+            font-size: 13px;
+        }
+    }
+    .modalChangeProfile{
+        margin: 1vw 0;
+    }
+    .registration .formDiv .header {
+        margin-bottom: 20px;
+    }
+    .registration .formDiv .input {
+        margin: 20px 0;
+    }
+    .registration .formDiv {
+        width: 100%;
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 1170px) {
+    .profileHeader {
+        .userIcon {
+            font-size: 60px;
+        }
+    }
+}
+@media (max-width: 350px) {
+    .profileHeader {
+        .userInfo {
+            .info {
+                display: none;
+            }
+        }
+    }
+}

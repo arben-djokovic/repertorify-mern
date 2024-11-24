@@ -1,0 +1,50 @@
+.sidebar{
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 5;
+    overflow: visible;
+    .userIcon{
+        padding-right: 3px;
+    }
+    .navlink{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        grid-gap: 10px;
+        background-color: #F1F1F1;
+        z-index: 6;
+        overflow: visible;
+        &:hover{
+            opacity: 0.7;
+        }
+        .usernameCarpet{
+            display: flex;
+            grid-gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
+@media (max-width: 700px) {
+    .sidebar{
+        max-width: 100%;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px;
+        .navlink{
+            grid-gap: 10px;
+            align-items: center;
+            text-align: center;
+            .usernameCarpet{
+                .userIcon{
+                    display: none;
+                }
+            }
+        }  
+    }
+}

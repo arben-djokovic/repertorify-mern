@@ -1,0 +1,140 @@
+.registrationPlaylist{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 5vw 0;
+    .formDiv{
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        grid-gap: 10px;
+        align-items: center;
+        width: 80%;
+        padding: 30px;
+        border-radius: 15px;
+        h1{
+            font-size: 30px;
+            align-self: flex-start;
+        }
+        .icon{
+            font-size: 140px;
+            color: #9b9b9b;
+            width: 35%;
+        }
+        .slider{
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            .mySwiper{
+                width: 100%;
+                img{
+                    width: 100%;
+                }
+            }
+            p{
+                font-size: 12px;
+                color: #363636;
+            }
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            grid-gap: 20px;
+            width: 65%;
+            .input{
+                display: flex;
+                flex-direction: column;
+                grid-gap: 10px;
+                width: 100%;
+                font-size: 16px;
+                input{
+                    width: 100%;
+                    background-color: #d9d9d9;
+                    border-radius: 15px;
+                    padding: 8px;
+                    font-size: 18px;
+                }
+            }
+            .radioDiv{
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                grid-gap: 15px;
+                .radio{
+                    display: flex;
+                    grid-gap: 5px;
+                    label, input{
+                        font-size: 11px;
+                    }
+                }
+            }
+            .terms{
+                display: flex;
+                justify-content:left;
+                align-items: center;
+                grid-gap: 10px;
+                font-size: 11px;
+                margin: -10px 0 0 0;
+                .blue{
+                    color: blue;
+                }
+            }
+            
+        }
+        .formBtn, .formBtnMobile{
+            background-color: #FF9800;
+            color: white;
+            border-radius: 15px;
+            font-weight: bold;
+            padding: 10px 20px;
+            align-self: flex-end;
+            font-size: 15px;
+        }
+        .formBtnMobile{
+            align-self: center;
+            display: none;
+        }
+    }
+    .swiper-button-prev:after {
+        font-size: 17px;
+        color: black;
+    }
+    .swiper-button-next:after {
+        font-size: 17px;
+        color: black;
+    }
+    .swiper-button-next {
+        right: 0;
+    }
+    .swiper-button-prev {
+        left: 0;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .registrationPlaylist{
+        .formDiv{
+            width: 90%;
+            grid-gap: 50px;
+            flex-direction: column-reverse;
+            .icon{
+                display: none;
+            }
+            .slider{
+                width: 100%;
+            }
+            form{
+                width: 100%;
+            }
+            .formBtn{
+                display: none;
+            }
+            .formBtnMobile{
+                display: block;
+            }
+        }
+    }
+}

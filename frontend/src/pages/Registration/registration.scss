@@ -1,0 +1,100 @@
+.registration{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 5vw 0;
+    .formDiv{
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 80%;
+        padding: 30px;
+        border-radius: 15px;
+        grid-gap: 2vw;
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            h1{
+                font-size: 30px;
+                align-self: flex-start;
+            }
+            .link{
+                font-size: 12px;
+            }
+        }
+        .icon{
+            font-size: 140px;
+            color: #9b9b9b;
+            width: 35%;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            grid-gap: 20px;
+            width: 100%;
+            .input{
+                display: flex;
+                flex-direction: column;
+                grid-gap: 10px;
+                width: 100%;
+                input[type="text"], input[type="password"]{
+                    width: 100%;
+                    background-color: #d9d9d9;
+                    border-radius: 15px;
+                    padding: 8px;
+                    font-size: 18px;
+                }
+            }
+            .radioDiv{
+                display: flex;
+                justify-content: flex-start;
+                align-content: center;
+                grid-gap: 20px;
+                .radio{
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    grid-gap: 5px;
+                }
+            }
+            .terms{
+                display: flex;
+                justify-content:left;
+                align-items: center;
+                grid-gap: 10px;
+                font-size: 11px;
+                margin: -10px 0 0 0;
+                .blue{
+                    color: blue;
+                }
+            }
+            .formBtn{
+                background-color: #FF9800;
+                color: white;
+                border-radius: 15px;
+                font-weight: bold;
+                padding: 8px 15px;
+                align-self: flex-end;
+                font-size: 13px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .registration{
+        .formDiv{
+            width: 90%;
+            grid-gap: 50px;
+            .icon{
+                display: none;
+            }
+            form{
+                width: 100%;
+            }
+        }
+    }
+}

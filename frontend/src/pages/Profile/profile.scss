@@ -1,0 +1,80 @@
+.profile, .page2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 50px;
+    .profileMain{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 100px;
+        .profileNav{
+            ul{
+                display: flex;
+                list-style: none;
+                width: 100%;
+                text-align: center;
+                .active{
+                    background-color: white;
+                    color: #5B8EA8;
+                    font-weight: bold;
+                    border: 3px solid #5B8EA8;
+                    border-bottom: none;
+                }
+                li{
+                    width: 33.3%;
+                    cursor: pointer;
+                    padding: 15px;
+                    border: 2px solid rgb(193, 193, 193);
+                    border-bottom: none;
+                    border-radius: 10px 10px 0 0;
+                }
+            }
+        }
+    }
+    .myPlaylists {
+        text-align: center;
+        background-color: white;
+        border-radius: 0px 0 15px 15px;
+        padding: 50px 2vw;
+        .list {
+            display: flex;
+            grid-gap: 1.5vw;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+    }
+    .songsHome{
+        text-align: center;
+        background-color: white;
+        border-radius: 0px 0 15px 15px;
+        padding: 50px 1vw;
+        h1{
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        .listSongs{
+          margin-bottom: 20px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+    }
+}
+
+@media (max-width: 800px) {
+    .profile .profileMain .profileNav ul .active, .page2 .profileMain .profileNav ul li {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 400px) {
+    .profile {
+        .myPlaylists {
+            .myPlaylistsHeader {
+                font-size: 14px;
+            }
+        }
+    }
+}
