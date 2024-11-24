@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./songs.scss";
 import SongItem from "../../components/SongItem/SongItem";
+import api from "../../api/api";
 
 export default function Songs() {
+  const [genres, setGenres] = useState([])
+
+  const fetchGenres = async() => {
+    try{
+      const respone = await api.get('/genres')
+      setGenres(respone.data.genres)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  
+  useEffect(() => {
+    fetchGenres()
+  })
+
   return (
     <section className="songs page pageContent">
       <div className="songsHeader">
@@ -11,9 +28,9 @@ export default function Songs() {
           <label htmlFor="genres">Genre:</label>
           <select name="genres" id="genres">
             <option value=""></option>
-            <option value="Pop">Pop</option>
-            <option value="Rok">Rok</option>
-            <option value="ExYu">ExYu</option>
+            {genres.map((genre, i) => (
+              <option value={genre} key={genre._id}>{genre.name}</option>
+            ))}
           </select>
         </div>
       </div>
