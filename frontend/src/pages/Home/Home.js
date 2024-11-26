@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./home.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
@@ -6,10 +6,25 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import SongItem from "../../components/SongItem/SongItem";
+import api from "../../api/api";
 
 export default function Home() {
   const navigate = useNavigate()
   const swiperRef = useRef(null);
+  const [songs, setSongs] = useState([]);
+
+  const fetchSongs = async () => {
+    try{
+      const respone = await api.get('/songs/home')
+      setSongs(respone.data.songs)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    fetchSongs();
+  }, []);
 
   return (
     <div className="home page">
@@ -60,7 +75,7 @@ export default function Home() {
       <section className="songsHome">
         <h1>Songs</h1>
         <div className="listSongs">
-          {/* {[1,2,3,4,5].map((song, i) => <SongItem key={i} i={i} />)} */}
+          {songs.map((song, i) => <SongItem song={song} key={i} i={i} />)}
         </div>
           <Link to="/songs" className="moreBtn">Show more...</Link>
       </section>

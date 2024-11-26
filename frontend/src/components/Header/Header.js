@@ -20,9 +20,9 @@ export default function Header() {
         <section className="top">
             <Link to="/about-us">What is Repertorify? </Link>
             {isAuthenticated() ? <div className="sign">
-                <Link to="/login">lazo123</Link>
+                <Link to="/profile">lazo123</Link>
                 <span> | </span>
-                <Link onClick={()=>{logout(navigate)}} className='delete'>Logout</Link>
+                <Link onClick={()=>{logout(navigate)}} className='delete'>Log out</Link>
             </div> :<div className="sign">
                 <Link to="/login">Log In</Link>
                 <span> | </span>

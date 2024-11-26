@@ -58,6 +58,15 @@ const getSong = async (req, res) => {
     }
 }
 
+const getHomeSongs = async (req, res) => {
+    try{
+        const songs = await Song.find().populate("user").populate("genre").limit(7);
+        res.json({ success: true, songs });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
 const deleteSong = async (req, res) => {
     try {
         const { id } = req.params;
@@ -93,4 +102,4 @@ const getMySongs = async (req, res) => {
         mongooseErrors(err, res)
     }
 }
-export { getAllSongs, addSong, getSong, deleteSong, getMySongs };
+export { getAllSongs, addSong, getSong, deleteSong, getMySongs, getHomeSongs };

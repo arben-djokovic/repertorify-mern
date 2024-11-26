@@ -1,7 +1,7 @@
 .playlistItem{
     display: flex;
     flex-direction: column;
-    grid-gap: 10px;
+    grid-gap: 20px;
     background-color: white;
     border-radius: 15px;
     padding: 15px 13px;
@@ -69,6 +69,10 @@
         max-width: unset;
         min-height: unset;
         padding: 10px 20px 10px 10px;
+        &:hover{
+            scale: unset;
+            opacity: unset;
+        }
         .user{
             justify-content: space-between;
             width: 100%;

@@ -2,6 +2,7 @@ import { mongoose } from "mongoose";
 import app from "./app.js";
 import { PORT, MONGODB_URI } from "./config/index.js";
 
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => console.log("MongoDB conencted successfully"))

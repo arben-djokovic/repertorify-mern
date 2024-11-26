@@ -48,7 +48,7 @@ export default function SongItem({ song, i }) {
     >
       <p className="title">{song.title} - {song.artist}</p>
       <div className="right">
-        <p className="username">{song.user.username}</p>
+        <p className="username">({song.user.username})</p>
         {isAuthenticated() && (
           <>
             <FontAwesomeIcon

@@ -4,7 +4,6 @@ const playlistSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique: true,
         minLength: 2,
         maxLength: 20
     },

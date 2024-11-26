@@ -5,8 +5,9 @@ import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { getDecodedToken } from '../../controllers/TokenController'
 
-export default function PlaylistItem({i, isMine}) {
+export default function PlaylistItem({playlist, i, isMine}) {
     let [isLiked, setIsLiked] = React.useState(false);
     const navigate = useNavigate()
 
@@ -14,17 +15,17 @@ export default function PlaylistItem({i, isMine}) {
         if(e.target.tagName === "svg" || e.target.tagName === "path"){
             return;
         }
-        navigate("/playlists/3")
+        navigate("/playlists/" + playlist._id)
     }
 
   return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1, duration: 0.3 }} className="playlistItem link" onClick={playlistClick}>
     <div className="img">
-        <img src={i%2 === 0 ? "/assets/image.png" : "/assets/image2.png"} alt="" />
+        <img src={`/assets/${playlist.imageLocation}`} alt="" />
     </div>
     <div className="user">
         <div className="userInfo">
-            <h3 className='playlistName'>Playlist name</h3>
-            <p className='username'>beni23 - songs</p>
+            <h3 className='playlistName'>{playlist.name}</h3>
+            <p className='username'>{playlist.user.username} - {playlist.songs.length} songs</p>
         </div>
         <div className="heartDiv">
             {!isMine && <>

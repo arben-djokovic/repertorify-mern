@@ -18,6 +18,14 @@
         font-size: 25px;
         cursor: pointer;
         .icon{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            .likes{
+                font-size: 12px;
+                margin-bottom: -12px;
+            }
             &:hover{
                 cursor: pointer;
                 opacity: .8;
