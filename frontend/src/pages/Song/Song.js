@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./song.scss";
 import {
     faArrowLeft,
@@ -12,37 +12,47 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import { isAuthenticated } from "../../controllers/TokenController";
+import { useParams } from "react-router-dom";
+import api from "../../api/api";
+import { toast } from "react-toastify";
 
 export default function Song() {
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
-  const songLyrics = `Am         
-Dosla si iz plave praznine
-C                          G
-sa gomile velikih oblaka
-Am          
-iz dva mlaza žute magle
-C                               G
-pravo u moj sinocnji san.
+  const {id} = useParams()
+  let [song, setSong] = useState({
+    title: "Loading...",
+    text: "Loading...",
+    artist: "Loading...",
+  });
 
-Am
-Ni kiše ni sunca
-C                        G
-nema ni svadbi Cigana
-Am
-prve zvijezde trljaju oči   
-C                              G
-o kome li ces nocas doći u san.
+  const fetchSong = async() => {
+    try{
+      const respone = await api.get('/songs/'+id)
+      console.log(respone)
+      setSong(respone.data.song)
+    }catch(err){
+      toast.error('Something went wrong')
+      console.log(err)
+    }
+  }
 
-Ref:
-Am       F                  G 
-Ja sam nalik čistom zidu,
-    E        Am
-ti si slika i ram.
-Am       F            G
-Ja sam prazna tišina
-E                                Am
-ti najljepsa muzika sto znam
-`;
+  const deleteSong = async() => {
+    try{
+      const respone = await api.delete('/songs/'+id)
+      console.log(respone)
+      if(respone.data.success){
+        return toast.success(respone.data.message)
+      }
+      toast.error('Something went wrong')
+    }catch(err){
+      toast.error('Something went wrong')
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    fetchSong()
+  }, [])
 
   return (
     <div className="song page pageContent">
@@ -68,9 +78,7 @@ ti najljepsa muzika sto znam
             </p>
             <p
               id="ellipsisItem"
-              onClick={() => {
-                setIsEllipsisOpen(false);
-              }}
+              onClick={deleteSong}
               className="ellipsisItem link delete"
             >
               Delete
@@ -80,8 +88,8 @@ ti najljepsa muzika sto znam
         </>}
       </div>
       <div className="songInfo">
-        <h1 className="title">Kome dolazis u san</h1>
-        <p>Perper</p>
+        <h1 className="title">{song.title}</h1>
+        <p>{song.artist}</p>
         <div className="songsBtns">
           <button>
             <FontAwesomeIcon icon={faMinus} />
@@ -91,7 +99,7 @@ ti najljepsa muzika sto znam
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
-        <pre className="text">{songLyrics}</pre>
+        <pre className="text">{song.text}</pre>
         <div className="arrows">
           <FontAwesomeIcon className="arrow moreBtn link" icon={faArrowLeft} />
           <FontAwesomeIcon className="shuffle link" icon={faShuffle} />

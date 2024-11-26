@@ -1,12 +1,19 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import "./header.scss"
 import { isAuthenticated, logout } from '../../controllers/TokenController';
 
 export default function Header() {
+    const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const navigate = useNavigate()
+    const formRef = useRef();
     const letters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
+    const searchSongs = async () => {
+        const formData = new FormData(formRef.current);
+        const data = Object.fromEntries(formData);
+        navigate(`/songs?search=${data["input"]}`)
+    }
 
   return (
     <header className='header '>
@@ -15,7 +22,7 @@ export default function Header() {
             {isAuthenticated() ? <div className="sign">
                 <Link to="/login">lazo123</Link>
                 <span> | </span>
-                <Link onClick={()=>{logout(navigate)}} className='delete'>logout</Link>
+                <Link onClick={()=>{logout(navigate)}} className='delete'>Logout</Link>
             </div> :<div className="sign">
                 <Link to="/login">Log In</Link>
                 <span> | </span>
@@ -24,9 +31,9 @@ export default function Header() {
         </section>
         <section className="mainHeader">
             <img className='logo' onClick={()=>{navigate("/")}} src="/assets/logo.png" alt="" />
-            <form className="search">
-                <input type="text" placeholder='Search for songs...' />
-                <button className='searchBtn'>Search</button>
+            <form ref={formRef} onSubmit={(e) => {e.preventDefault();}} className="search">
+                <input defaultValue={(searchFromUrl) ? searchFromUrl : ''} onChange={(e) => (e.target.value)} type="text" name='input' placeholder='Search for songs...' />
+                <button onClick={searchSongs} className='searchBtn'>Search</button>
             </form>
         </section>
         <section className="abc">

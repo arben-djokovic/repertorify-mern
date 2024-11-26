@@ -72,6 +72,9 @@ label{
   color: red;
   font-size: 12px;
 }
+.linkcolor{
+  color: purple;
+}
 
 /* svg, path{
   color: gray;

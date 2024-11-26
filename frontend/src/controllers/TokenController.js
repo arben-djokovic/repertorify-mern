@@ -13,6 +13,7 @@ export const isAuthenticated = () => !!getDecodedToken();
 export const isAdmin = () => getDecodedToken()?.role === "admin";
 
 
+
 export const getDecodedToken = () => {
     const token = getToken();
     if (!token) return null;

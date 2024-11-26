@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
 import { motion } from "framer-motion";
 import { isAuthenticated } from "../../controllers/TokenController";
+import { toast } from "react-toastify";
+import api from "../../api/api";
 
 export default function SongItem({ song, i }) {
   const navigate = useNavigate();
@@ -19,8 +21,20 @@ export default function SongItem({ song, i }) {
       e.target.tagName === "path"
     )
       return;
-    navigate("/songs/" + i);
+    navigate("/songs/" + song._id);
   };
+
+  const deleteSong = async() => {
+    try{
+      const respone = await api.delete('/songs/'+song._id)
+      console.log(respone)
+      if(respone.data.success){
+        return toast.success(respone.data.message)
+      }
+    }catch(err){
+      console.error(err)
+    }
+  }
 
   return (
     <motion.div
@@ -32,18 +46,20 @@ export default function SongItem({ song, i }) {
         isEllipsisOpen ? "active " : "link"
       }`}
     >
-      <p className="title">Golub - Perper</p>
+      <p className="title">{song.title} - {song.artist}</p>
       <div className="right">
-        <p className="username">(lazo123)</p>
+        <p className="username">{song.user.username}</p>
         {isAuthenticated() && (
           <>
             <FontAwesomeIcon
               id="icon"
+              className={`${i}`}
               onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
               icon={faEllipsis}
             />
             {isEllipsisOpen && (
               <Dropdown
+                i={i}
                 isEllipsisOpen={isEllipsisOpen}
                 setIsEllipsisOpen={setIsEllipsisOpen}
               >
@@ -55,9 +71,7 @@ export default function SongItem({ song, i }) {
                 </p>
                 <p
                   id="ellipsisItem"
-                  onClick={() => {
-                    setIsEllipsisOpen(false);
-                  }}
+                  onClick={deleteSong}
                   className="ellipsisItem link delete"
                 >
                   Delete

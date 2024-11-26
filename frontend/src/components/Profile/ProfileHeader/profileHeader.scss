@@ -5,7 +5,7 @@
     display: flex;
     align-items: center;
     grid-gap: 2vw;
-    border-radius: 15px;
+    border-radius: 15px 15px 0 0;
     .userIcon {
         font-size: 90px;
         color: gray;
@@ -19,11 +19,7 @@
             align-items: center;
             grid-gap: 5vw;
             font-size: 22px;
-            svg,
-            path {
-                font-size: 25px;
-                color: black;
-            }
+            width: 100%;
         }
         .info {
             display: flex;
@@ -31,6 +27,13 @@
             grid-gap: 1vw;
             font-size: 13px;
         }
+    }
+    .userPenIcon{
+        align-self: center;
+        justify-self: flex-end;
+        font-size: 25px;
+        color: black;
+        margin-left: auto;
     }
     .modalChangeProfile{
         margin: 1vw 0;

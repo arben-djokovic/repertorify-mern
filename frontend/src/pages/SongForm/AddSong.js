@@ -5,6 +5,7 @@ import "./songForm.scss";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { getDecodedToken } from "../../controllers/TokenController";
 
 export default function AddSong() {
   const [genres, setGenres] = useState([])
@@ -29,8 +30,9 @@ export default function AddSong() {
         text: String(formData.get("text")),
         artist: String(formData.get("artist")),
         genre: String(formData.get("genre")),
-        user: String("674391ada1728413718c8830")
+        user: getDecodedToken()._id
       };
+      console.log(getDecodedToken()._id)
       formRef.current.querySelectorAll(".inputerror").forEach((error) => {
         error.innerText = "";
       })

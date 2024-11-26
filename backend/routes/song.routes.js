@@ -1,9 +1,13 @@
 import express from "express";
-import { getAllSongs, addSong } from "../controllers/song.controller.js";
+import { getAllSongs, addSong, getSong, deleteSong, getMySongs } from "../controllers/song.controller.js";
+import { userRoute } from "../middlewares/middlewares.js";
 
 const router = express.Router();
 
 router.get('/songs/', getAllSongs);
-router.post('/songs/', addSong);
+router.get('/songs/my', userRoute , getMySongs);
+router.get('/songs/:id', getSong);
+router.post('/songs/', userRoute , addSong);
+router.delete('/songs/:id', userRoute , deleteSong);
 
 export default router;

@@ -2,46 +2,100 @@ import React, { useEffect, useState } from "react";
 import "./songs.scss";
 import SongItem from "../../components/SongItem/SongItem";
 import api from "../../api/api";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Songs() {
+
+
+  const pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
+  const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
+  const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
+  
+  
+  const [songs, setSongs] = useState([]);
   const [genres, setGenres] = useState([])
+  const [haveMore, setHaveMore] = useState(false);
+  const [page, setPage] = useState((pageFromUrl) ? parseInt(pageFromUrl) : 1);
+  const [search, setSearch] = useState((searchFromUrl) ? searchFromUrl : '')
+  const [genre, setGenre] = useState((genreFromUrl) ? genreFromUrl : '')
+
+  const navigate = useNavigate()
 
   const fetchGenres = async() => {
     try{
       const respone = await api.get('/genres')
+      console.log(respone.data)
       setGenres(respone.data.genres)
     }catch(err){
       console.log(err)
     }
   }
 
-  
+  const fetchSongs = async () => {
+    const pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
+    const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
+    const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
+    try {
+      console.log("/songs?page=" + (pageFromUrl ? pageFromUrl : '1') + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : ''));
+      const respone = await api.get("/songs?page=" + (pageFromUrl ? pageFromUrl : '1') + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : ''));
+      console.log(respone.data);
+      setSongs(respone.data.songs);
+      setHaveMore(respone.data.hasMore);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const changeGenre = (e) => {
+    setGenre(e.target.value)
+    setPage(1)
+    navigate('/songs?page=1&search=' + search + '&genre=' + e.target.value)
+  }
+
+  const showMore = () => {
+    navigate('/songs?page=' + (page+1) + '&search=' + search + '&genre=' + genre)
+    setPage( (prevPage) => prevPage + 1)
+  }
+
+  useEffect(() => {
+    const pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
+    const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
+    const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
+
+    setPage((pageFromUrl) ? parseInt(pageFromUrl) : 1)
+    setSearch((searchFromUrl) ? searchFromUrl : '')
+    setGenre((genreFromUrl) ? genreFromUrl : '')
+
+    fetchSongs()
+
+  }, [window.location.href])
+
+
   useEffect(() => {
     fetchGenres()
-  })
-
+  }, [])
   return (
     <section className="songs page pageContent">
       <div className="songsHeader">
         <h1>Songs:</h1>
         <div className="genres">
           <label htmlFor="genres">Genre:</label>
-          <select name="genres" id="genres">
+          <select onChange={changeGenre} name="genres" id="genres">
             <option value=""></option>
-            {genres.map((genre, i) => (
-              <option value={genre} key={genre._id}>{genre.name}</option>
-            ))}
+            {genres.map((genre, i) => {
+              if (genre._id === genreFromUrl) return <option value={genre._id} key={genre._id} selected>{genre.name}</option>
+              return <option value={genre._id} key={genre._id}>{genre.name}</option>
+              }
+            )}
           </select>
         </div>
       </div>
       <div className="songsList">
-        {[
-          1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-        ].map((song, i) => (
+        {songs.length > 0 ? songs.map((song, i) => (
           <SongItem song={song} key={i} i={i} />
-        ))}
+        )) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
       </div>
-      <button to="/songs" className="moreBtn">Show more...</button>
+      {haveMore && <button onClick={showMore} to="/songs" className="moreBtn">Show more...</button>}
     </section>
   );
 }

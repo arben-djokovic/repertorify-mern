@@ -19,7 +19,6 @@ export default function ProfileHeader() {
     <div className="userInfo">
       <div className="username">
         <h1 onClick={()=>{navigate("/profile")}} className='link'>lazov123</h1>
-        <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} />
       </div>
       <div className="info">
         <p>8 playlists</p>
@@ -29,6 +28,7 @@ export default function ProfileHeader() {
         <p>12 favourites</p>
       </div>
     </div>
+       <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} />
 
     {modalOpen && <Modal setModalOpen={setModalOpen}>
       <div className="modalChangeProfile registration">
