@@ -17,7 +17,7 @@ const signUp = async (req, res) => {
     try{
         const hashPassword = await bcrypt.hash(req.body.password, 10);
         let { username } = req.body;
-        username = username.toLowerCase();
+        username = username.toLowerCase().replace(/\s+/g, '');
         await User.create({ username, hashedPassword: hashPassword, favouritePlaylists: [], role: "user" });
         res.json({ success: true })
     }catch(err){
@@ -38,7 +38,7 @@ const logIn = async (req, res) => {
         const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "15m" })
 
         res.cookie("refreshToken", generateRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
-        res.json({ success: true, accessToken: generateAccessToken })
+        res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists });
     }catch(err){
         mongooseErrors(err, res)
     }

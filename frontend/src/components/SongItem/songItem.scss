@@ -18,6 +18,15 @@
       position: relative;
       z-index: 3;
     }
+    .title{
+      display: flex;
+      white-space: nowrap;
+      overflow: hidden; 
+      grid-gap: 5px;
+      span{
+        flex-shrink: 0;
+      }
+    }
     .right{
       display: flex;
       align-items: center;
@@ -36,3 +45,35 @@
     background-color: white;
 }
   
+
+@media screen and (max-width: 500px) {
+  .songitem, .songitem2{
+    .title{
+      overflow: auto;
+      font-size: 15px;
+    }
+    .right{
+      .username{
+        display: none;
+      }
+    }
+  }
+}
+@media screen and (max-width: 400px) {
+  .songitem, .songitem2{
+    height: auto;
+    .title{
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      grid-gap: 2px;
+      .line{
+        display: none;
+      }
+      span:last-of-type{
+        color: #3a3a3a;
+        font-size: 10px;
+      }
+    }
+  }
+}

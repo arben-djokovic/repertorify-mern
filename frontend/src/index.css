@@ -11,6 +11,11 @@ body, html{
   margin: 0;
   box-sizing: border-box;
   max-width: 100vw;
+  max-width: 100%;
+}
+.noPlaylists{
+  width: 100%;
+  text-align: center;
 }
 .moreBtn{
   padding: 7px 10px;
@@ -84,6 +89,9 @@ label{
 /* Mobile */
 @media (max-width: 700px) {
   /* Styles for mobile devices */
+  *{
+    font-size: 12px
+  }
   .addItemBtn{
       width: 100%;
       min-width: unset;

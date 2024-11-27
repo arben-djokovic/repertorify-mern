@@ -4,6 +4,7 @@ const songSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        trim: true,
         minlength: 2,
         maxLength: 40,
     },
@@ -18,6 +19,7 @@ const songSchema = new mongoose.Schema({
         required: true,
         minlength: 1,
         maxLength: 40,
+        trim: true,
     },
     genre: {
         type: mongoose.Schema.Types.ObjectId,

@@ -6,15 +6,12 @@ import api from "../../api/api";
 
 export default function MySongs() {
   const [songs, setSongs] = useState([]);
-  const [haveMore, setHaveMore] = useState(false);
-  const [page, setPage] = useState(1);
 
   const fetchSongs = async () => {
     try {
-      const respone = await api.get("/songs/my?page=" + page);
+      const respone = await api.get("/songs/my");
       console.log(respone.data);
       setSongs(respone.data.songs);
-      setHaveMore(respone.data.hasMore);
     } catch (err) {
       console.log(err);
     }
@@ -22,7 +19,7 @@ export default function MySongs() {
 
   useEffect(() => {
     fetchSongs();
-  }, [page]);
+  }, []);
 
   return (
     <section className="songsHome">
@@ -31,11 +28,6 @@ export default function MySongs() {
           <SongItem song={song} key={i} i={i} />
         )) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
       </div>
-      {haveMore &&
-      <button onClick={() => setPage(page + 1)} className="moreBtn">
-       Show more...
-      </button>
-      }
     </section>
   );
 }

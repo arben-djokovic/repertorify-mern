@@ -92,12 +92,9 @@ const deleteSong = async (req, res) => {
 
 const getMySongs = async (req, res) => {
     try{
-        const page = parseInt(req.query.page) || 1;
-        const limit = page * songsPerLoad;
         const userId = req.user._id;
-        const songs = await Song.find({ user: userId }).populate("user").populate("genre").limit(limit);
-        const totalSongs = await Song.find({ user: userId }).countDocuments();
-        res.json({ success: true, songs, hasMore: totalSongs > limit });
+        const songs = await Song.find({ user: userId }).populate("user").populate("genre");
+        res.json({ success: true, songs});
     }catch(err){
         mongooseErrors(err, res)
     }

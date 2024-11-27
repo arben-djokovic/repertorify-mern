@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { getToken } from '../controllers/TokenController';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://repertorify.onrender.com/api',
+    baseURL: 'http://localhost:5000/api/',
     headers: { "Content-Type": "application/json" },
 });
 

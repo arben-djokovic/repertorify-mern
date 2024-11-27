@@ -5,9 +5,6 @@ import api from "../../api/api";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Songs() {
-
-
-  const pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
   const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
   const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
   
@@ -15,7 +12,7 @@ export default function Songs() {
   const [songs, setSongs] = useState([]);
   const [genres, setGenres] = useState([])
   const [haveMore, setHaveMore] = useState(false);
-  const [page, setPage] = useState((pageFromUrl) ? parseInt(pageFromUrl) : 1);
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState((searchFromUrl) ? searchFromUrl : '')
   const [genre, setGenre] = useState((genreFromUrl) ? genreFromUrl : '')
 
@@ -32,12 +29,10 @@ export default function Songs() {
   }
 
   const fetchSongs = async () => {
-    const pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     try {
-      console.log("/songs?page=" + (pageFromUrl ? pageFromUrl : '1') + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : ''));
-      const respone = await api.get("/songs?page=" + (pageFromUrl ? pageFromUrl : '1') + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : ''));
+      const respone = await api.get("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : ''));
       console.log(respone.data);
       setSongs(respone.data.songs);
       setHaveMore(respone.data.hasMore);
@@ -49,26 +44,23 @@ export default function Songs() {
   const changeGenre = (e) => {
     setGenre(e.target.value)
     setPage(1)
-    navigate('/songs?page=1&search=' + search + '&genre=' + e.target.value)
+    navigate('/songs?search=' + search + '&genre=' + e.target.value)
   }
 
   const showMore = () => {
-    navigate('/songs?page=' + (page+1) + '&search=' + search + '&genre=' + genre)
     setPage( (prevPage) => prevPage + 1)
   }
 
   useEffect(() => {
-    const pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
 
-    setPage((pageFromUrl) ? parseInt(pageFromUrl) : 1)
     setSearch((searchFromUrl) ? searchFromUrl : '')
     setGenre((genreFromUrl) ? genreFromUrl : '')
 
     fetchSongs()
 
-  }, [window.location.href])
+  }, [window.location.href, page])
 
 
   useEffect(() => {

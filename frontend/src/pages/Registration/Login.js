@@ -21,7 +21,7 @@ export default function Login() {
       const response = await api.post('/login', {username, password})
       console.log(response)
       if(response.data.success) {
-        login(response.data.accessToken)
+        login(response.data.accessToken, response.data.favouritePlaylists)
         navigate("/")
       }else{
         toast.error("Wrong username or password")

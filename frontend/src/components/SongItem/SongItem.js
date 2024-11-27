@@ -46,7 +46,7 @@ export default function SongItem({ song, i }) {
         isEllipsisOpen ? "active " : "link"
       }`}
     >
-      <p className="title">{song.title} - {song.artist}</p>
+      <p className="title"><span>{song.title}</span> <span className="line">-</span> <span>{song.artist}</span> </p>
       <div className="right">
         <p className="username">({song.user.username})</p>
         {isAuthenticated() && (
