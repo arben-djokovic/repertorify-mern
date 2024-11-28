@@ -2,13 +2,11 @@ import { jwtDecode } from "jwt-decode";
 
 
 export const getToken = () => localStorage.getItem("token");
-export const login = (token, favouritePlaylists) => {
+export const login = (token) => {
     localStorage.setItem("token", token);
-    localStorage.setItem('favourites', favouritePlaylists);
 }
 export const logout = (navigate) => {
     localStorage.removeItem("token"); 
-    localStorage.removeItem('favourites');
     if(navigate){
         navigate('/login')
     }

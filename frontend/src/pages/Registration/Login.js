@@ -6,10 +6,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../api/api";
 import { login } from "../../controllers/TokenController";
+import { useDispatch } from "react-redux";
+import { setFavourites } from "../../redux/favourites";
 
 export default function Login() {
   const navigate = useNavigate()
   const formRef = useRef();
+  const dispatch = useDispatch();
 
   const logIn = async() => {
     const data = new FormData(formRef.current);
@@ -21,6 +24,7 @@ export default function Login() {
       const response = await api.post('/login', {username, password})
       console.log(response)
       if(response.data.success) {
+        dispatch(setFavourites(response.data.favouritePlaylists || []))
         login(response.data.accessToken, response.data.favouritePlaylists)
         navigate("/")
       }else{
