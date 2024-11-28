@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import "../../pages/Profile/profile.scss";
 import PlaylistItem from "../PlaylistItem/PlaylistItem";
 import api from "../../api/api";
+import { useDispatch } from "react-redux";
+import { setFavourites } from "../../redux/favourites";
 
 export default function FavPlaylists() {
+  const dispatch = useDispatch()
   const [playlists, setPlaylists] = useState([]);
 
   const fetchPlaylists = async () => {
@@ -11,7 +14,11 @@ export default function FavPlaylists() {
       const response = await api.get("/playlists/my-favourite");
       if(response.data.success){
         setPlaylists(response.data.playlists)
-        console.log(response.data.playlists)
+        const FavPlaylistsIds = response.data.playlists.map(playlist => playlist._id)
+        setTimeout(() => {
+          console.log(FavPlaylistsIds)
+          dispatch(setFavourites(FavPlaylistsIds))
+        }, 200);
       }
     }catch(err){
       console.log(err)

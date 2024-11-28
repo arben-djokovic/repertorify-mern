@@ -7,6 +7,7 @@ export const login = (token) => {
 }
 export const logout = (navigate) => {
     localStorage.removeItem("token"); 
+    localStorage.clear('persist:root');
     if(navigate){
         navigate('/login')
     }
