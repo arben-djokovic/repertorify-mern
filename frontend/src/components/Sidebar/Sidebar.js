@@ -44,7 +44,7 @@ export default function Sidebar() {
         >
           <FontAwesomeIcon className="userIcon link" icon={faUser} />
           <p className="usernameCarpet link">
-            <span className="username link">{getDecodedToken()?.username}</span>
+            <span className="username link">{localStorage.getItem("username")}</span>
             {isEllipsisOpen ? (
               <FontAwesomeIcon className="userIcon link" icon={faCaretDown} />
             ) : (

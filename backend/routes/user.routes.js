@@ -1,11 +1,13 @@
 import express from "express";
-import { getAllUsers, logIn, signUp } from "../controllers/user.controller.js";
-import { adminRoute } from "../middlewares/middlewares.js";
+import { getAllUsers, logIn, signUp, changeUsername, changePassword } from "../controllers/user.controller.js";
+import { adminRoute, userRoute } from "../middlewares/middlewares.js";
 
 const router = express.Router();
 
 router.get("/users/", adminRoute , getAllUsers);
 router.post("/signup", signUp);
 router.post("/login", logIn);
+router.put("/users/change-username", userRoute , changeUsername);
+router.put("/users/change-password", userRoute , changePassword);
 
 export default router;

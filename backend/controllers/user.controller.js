@@ -16,6 +16,7 @@ const getAllUsers = async (req, res) => {
 }
 
 const signUp = async (req, res) => {
+    if(req.body.password.length < 5) return res.json({ success: false, message: "Password must be at least 5 characters long" });
     try{
         const hashPassword = await bcrypt.hash(req.body.password, 10);
         let { username } = req.body;
@@ -50,5 +51,35 @@ const logIn = async (req, res) => {
     }
 }
 
+const changeUsername = async (req, res) => {
+    try{
+        const reponse = await User.findByIdAndUpdate(req.user._id, { username: req.body.username }, { new: true });
+        res.json({ success: true, username: reponse.username })
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 
-export { getAllUsers, signUp, logIn };
+const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    if(newPassword.length < 5) 
+        return res.json({ success: false, message: "Password must be at least 5 characters long" });
+    if(!oldPassword || !newPassword) 
+        return res.json({ success: false, message: "Missing fields" });
+    
+    try {
+        const user = await User.findById(req.user._id);
+        const isValid = await bcrypt.compare(oldPassword, user.hashedPassword)
+        if(!isValid) return res.json({ success: false, message: "Wrong password" });
+
+        const hashPassword = await bcrypt.hash(newPassword, 10)
+        user.hashedPassword = hashPassword;
+        await user.save();
+        res.json({ success: true })
+    } catch(err) {
+        mongooseErrors(err, res);
+    }
+};
+
+
+export { getAllUsers, signUp, logIn, changeUsername, changePassword };

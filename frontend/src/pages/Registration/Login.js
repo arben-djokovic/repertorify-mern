@@ -27,8 +27,6 @@ export default function Login() {
       console.log(response)
       if(response.data.success) {
         dispatch(setFavourites(response.data.favouritePlaylists || []))
-        console.log(response.data.numberOfPlaylists)
-        console.log(response.data.numberOfSongs)
         login(response.data.accessToken, response.data.numberOfSongs, response.data.numberOfPlaylists)
         navigate("/")
       }else{

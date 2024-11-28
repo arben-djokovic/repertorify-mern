@@ -14,6 +14,7 @@ export default function useToken() {
     if(numberOfPlaylists !== undefined && numberOfPlaylists !== null){
         localStorage.setItem("numberOfPlaylists", numberOfPlaylists);
     }
+    localStorage.setItem("username", getDecodedToken().username);
   };
   const logout = (navigate) => {
     localStorage.removeItem("token");
