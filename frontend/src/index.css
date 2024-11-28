@@ -89,9 +89,6 @@ label{
 /* Mobile */
 @media (max-width: 700px) {
   /* Styles for mobile devices */
-  *{
-    font-size: 12px
-  }
   .addItemBtn{
       width: 100%;
       min-width: unset;

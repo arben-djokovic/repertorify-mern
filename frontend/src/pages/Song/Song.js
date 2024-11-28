@@ -11,12 +11,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { isAuthenticated } from "../../controllers/TokenController";
 import { useParams } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-toastify";
+import useToken from "../../controllers/TokenController";
 
 export default function Song() {
+  const { isAuthenticated } = useToken()
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const {id} = useParams()
   let [song, setSong] = useState({
@@ -41,6 +42,7 @@ export default function Song() {
       const respone = await api.delete('/songs/'+id)
       console.log(respone)
       if(respone.data.success){
+        localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) - 1);
         return toast.success(respone.data.message)
       }
       toast.error('Something went wrong')

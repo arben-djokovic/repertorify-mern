@@ -5,13 +5,14 @@ import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { getDecodedToken } from '../../controllers/TokenController'
 import api from '../../api/api'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { addFavourite, removeFavourite } from '../../redux/favourites'
+import useToken from '../../controllers/TokenController';
 
 export default function PlaylistItem({playlist, i}) {
+    const { getDecodedToken } = useToken();
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isMine = getDecodedToken()?.username === playlist.user.username
@@ -43,6 +44,7 @@ export default function PlaylistItem({playlist, i}) {
         if(isMine) return toast.error("You can't like your own playlist")
         try {
           const response = await api.put(`/playlists/${playlist._id}/unlike`);
+          console.log(response)
           if (response.data.success) {
             dispatch(removeFavourite(playlist._id))
             playlist.likes--;

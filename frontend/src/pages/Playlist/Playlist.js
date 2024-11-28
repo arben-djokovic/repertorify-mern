@@ -5,11 +5,13 @@ import { faEllipsisV, faFilePdf, faHeart } from "@fortawesome/free-solid-svg-ico
 import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
 import "./playlist.scss";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { isAuthenticated } from "../../controllers/TokenController";
 import { useParams } from "react-router-dom";
 import api from "../../api/api";
+import useToken from "../../controllers/TokenController";
+
 
 export default function Playlist() {
+  const { isAuthenticated } = useToken()
     const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
     const [playlist, setPlaylist] = useState({

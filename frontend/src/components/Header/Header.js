@@ -1,9 +1,12 @@
 import React, { useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import "./header.scss"
-import { isAuthenticated, logout } from '../../controllers/TokenController';
+import useToken from '../../controllers/TokenController';
+
+
 
 export default function Header() {
+    const { isAuthenticated, logout, getDecodedToken } = useToken()
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const navigate = useNavigate()
     const formRef = useRef();
@@ -12,6 +15,7 @@ export default function Header() {
     const searchSongs = async () => {
         const formData = new FormData(formRef.current);
         const data = Object.fromEntries(formData);
+        console.log(data["input"])
         navigate(`/songs?search=${data["input"]}`)
     }
 
@@ -20,7 +24,7 @@ export default function Header() {
         <section className="top">
             <Link to="/about-us">What is Repertorify? </Link>
             {isAuthenticated() ? <div className="sign">
-                <Link to="/profile">lazo123</Link>
+                <Link to="/profile">{getDecodedToken()?.username}</Link>
                 <span> | </span>
                 <Link onClick={()=>{logout(navigate)}} className='delete'>Log out</Link>
             </div> :<div className="sign">

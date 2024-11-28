@@ -5,11 +5,15 @@ import { faUser, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import {  useNavigate } from 'react-router-dom'
 import Modal from '../../Modal/Modal'
 import '../../../pages/Registration/registration.scss'
+import useToken from '../../../controllers/TokenController'
+import { useSelector } from 'react-redux'
 
 export default function ProfileHeader() {
   const navigate = useNavigate() 
   const [modalOpen, setModalOpen] = useState(false)
   const [isChangePassword, setIsChangePassword] = useState(false)
+  const { getDecodedToken } = useToken()
+  const favourites = useSelector(state => state.favourites.favourites)
   const openModal = () => {
     setModalOpen(true)
   }
@@ -18,14 +22,14 @@ export default function ProfileHeader() {
     <FontAwesomeIcon className='userIcon link' icon={faUser} onClick={()=>{navigate("/profile")}} />
     <div className="userInfo">
       <div className="username">
-        <h1 onClick={()=>{navigate("/profile")}} className='link'>lazov123</h1>
+        <h1 onClick={()=>{navigate("/profile")}} className='link'>{getDecodedToken()?.username}</h1>
       </div>
       <div className="info">
-        <p>8 playlists</p>
+        <p>{localStorage.getItem("numberOfSongs") || "?"} songs</p>
         <span>-</span>
-        <p>3 songs</p>
+        <p>{localStorage.getItem("numberOfPlaylists") || "?"} playlists</p>
         <span>-</span>
-        <p>12 favourites</p>
+        <p>{favourites.length} favourites</p>
       </div>
     </div>
        <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} />

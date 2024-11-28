@@ -5,11 +5,12 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
 import { motion } from "framer-motion";
-import { isAuthenticated } from "../../controllers/TokenController";
 import { toast } from "react-toastify";
 import api from "../../api/api";
+import useToken from "../../controllers/TokenController";
 
 export default function SongItem({ song, i }) {
+  const { isAuthenticated } = useToken()
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
 

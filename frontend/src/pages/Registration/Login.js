@@ -5,11 +5,13 @@ import "./registration.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../api/api";
-import { login } from "../../controllers/TokenController";
 import { useDispatch } from "react-redux";
 import { setFavourites } from "../../redux/favourites";
+import useToken from "../../controllers/TokenController";
+
 
 export default function Login() {
+  const { login } = useToken()
   const navigate = useNavigate()
   const formRef = useRef();
   const dispatch = useDispatch();
@@ -25,7 +27,9 @@ export default function Login() {
       console.log(response)
       if(response.data.success) {
         dispatch(setFavourites(response.data.favouritePlaylists || []))
-        login(response.data.accessToken, response.data.favouritePlaylists)
+        console.log(response.data.numberOfPlaylists)
+        console.log(response.data.numberOfSongs)
+        login(response.data.accessToken, response.data.numberOfSongs, response.data.numberOfPlaylists)
         navigate("/")
       }else{
         toast.error("Wrong username or password")

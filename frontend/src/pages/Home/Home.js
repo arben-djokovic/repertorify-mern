@@ -31,7 +31,6 @@ export default function Home() {
       <section className="swiperSection">
         <Swiper
           slidesPerView={3}
-          spaceBetween={40}
           initialSlide={1}
           centeredSlides={true}
           modules={[Pagination]}

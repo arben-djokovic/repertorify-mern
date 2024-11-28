@@ -10,9 +10,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
-import { isAuthenticated, logout } from "../../controllers/TokenController";
+import useToken from "../../controllers/TokenController";
+
+
 
 export default function Sidebar() {
+  const { isAuthenticated, logout, getDecodedToken } = useToken();
   let [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const navigate = useNavigate()
 
@@ -41,7 +44,7 @@ export default function Sidebar() {
         >
           <FontAwesomeIcon className="userIcon link" icon={faUser} />
           <p className="usernameCarpet link">
-            <span className="username link">Lazo123</span>
+            <span className="username link">{getDecodedToken()?.username}</span>
             {isEllipsisOpen ? (
               <FontAwesomeIcon className="userIcon link" icon={faCaretDown} />
             ) : (

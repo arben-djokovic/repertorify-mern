@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import "./App.scss";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -7,7 +7,7 @@ import Home from "./pages/Home/Home";
 import Footer from "./components/Footer/Footer";
 import Songs from "./pages/Songs/Songs";
 import Playlists from "./pages/Playlists/Playlists";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Profile from "./pages/Profile/Profile";
 import Login from "./pages/Registration/Login";
 import Signup from "./pages/Registration/Signup";
@@ -20,6 +20,16 @@ import { GuestRoute, UserRoute } from "./controllers/RoutesController";
 
 function App() {
   const location = useLocation();
+  const formRef = useRef();
+  const navigate = useNavigate();
+
+  const searchSongs = async () => {
+    const formData = new FormData(formRef.current);
+    const data = Object.fromEntries(formData);
+    console.log(data["input"])
+    navigate(`/songs?search=${data["input"]}`)
+}
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,9 +40,9 @@ function App() {
       <Header />
       <main className="main">
         <Sidebar />
-        <form className="mobile-search">
-            <input type="text" placeholder='Search for songs...' />
-            <button className='searchBtn'>Search</button>
+        <form ref={formRef} onSubmit={(e) => e.preventDefault()} className="mobile-search">
+            <input type="text" name="input" placeholder='Search for songs...' />
+            <button onClick={searchSongs} className='searchBtn'>Search</button>
         </form>
         <div className="mainContent">
           <Routes>

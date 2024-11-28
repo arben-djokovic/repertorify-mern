@@ -1,9 +1,11 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { getDecodedToken, isAuthenticated } from "./TokenController";
 import { toast } from "react-toastify";
+import useToken from "./TokenController";
+
 
 export const AdminRoute = ({ children }) => {
+    const { getDecodedToken } = useToken()
     const decodedToken = getDecodedToken();
 
     if (!decodedToken) {
@@ -20,6 +22,7 @@ export const AdminRoute = ({ children }) => {
 };
 
 export const UserRoute = ({ children }) => {
+    const { isAuthenticated } = useToken()
     if (!isAuthenticated()) {
         toast.error("You are not logged in.");
         return <Navigate to="/login" replace />;
@@ -29,6 +32,7 @@ export const UserRoute = ({ children }) => {
 };
 
 export const GuestRoute = ({ children }) => {
+    const { isAuthenticated } = useToken()
     if (isAuthenticated()) {
         toast.error("You are already logged in.");
         return <Navigate to="/" replace />;

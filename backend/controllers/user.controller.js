@@ -3,6 +3,8 @@ import { JWT_SECRET } from "../config/index.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Song from '../models/song.model.js'
+import Playlist from '../models/playlist.model.js'
 
 const getAllUsers = async (req, res) => {
     try{
@@ -38,7 +40,11 @@ const logIn = async (req, res) => {
         const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "15m" })
 
         res.cookie("refreshToken", generateRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
-        res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists });
+
+        const numberOfSongs = await Song.countDocuments({ user: user._id });
+        const numberOfPlaylists = await Playlist.countDocuments({ user: user._id });
+
+        res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists, numberOfSongs, numberOfPlaylists });
     }catch(err){
         mongooseErrors(err, res)
     }

@@ -5,9 +5,10 @@ import "./songForm.scss";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { getDecodedToken } from "../../controllers/TokenController";
+import useToken from "../../controllers/TokenController";
 
 export default function AddSong() {
+  const { getDecodedToken } = useToken();
   const [genres, setGenres] = useState([])
   const formRef = useRef(null)
   const navigate = useNavigate()
@@ -40,6 +41,7 @@ export default function AddSong() {
         const response = await api.post('/songs/', songData)
         console.log(response)
         if(response.data.success){
+          localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) + 1);
           toast.success(response.data.message)
           navigate(`/songs/${response.data.song._id}`)
         }

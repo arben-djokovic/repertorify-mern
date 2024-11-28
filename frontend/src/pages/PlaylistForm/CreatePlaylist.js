@@ -16,6 +16,7 @@ export default function CreatePlaylist() {
 
 
   const createPlaylist = async () => {
+    console.log("create playlist")
     const formData = new FormData(formRef.current);
     const data = Object.fromEntries(formData);
     const playlistName = data["name"];
@@ -24,6 +25,7 @@ export default function CreatePlaylist() {
       const response = await api.post("/playlists", { name: playlistName, isPublic: isPublic, imageLocation: selectedImage });
       console.log(response);
       if (response.data.success) {
+         localStorage.setItem("numberOfPlaylists", Number(localStorage.getItem("numberOfPlaylists")) + 1);
          toast.success(response.data.message);
          navigate("/playlists/" + response.data.playlist._id);
       }
@@ -52,7 +54,7 @@ export default function CreatePlaylist() {
   return (
     <div className="registrationPlaylist page pageContent">
       <div className="formDiv">
-        <button className="formBtnMobile">Create</button>
+        <button onClick={createPlaylist} className="formBtnMobile">Create</button>
         <div className="slider">
           <Swiper navigation={true} modules={[Navigation]} loop={true} centeredSlides={true} onSlideChange={handleSlideChange} className="mySwiper">
             <SwiperSlide>
