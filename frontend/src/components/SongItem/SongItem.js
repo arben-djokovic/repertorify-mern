@@ -10,7 +10,7 @@ import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
 
 export default function SongItem({ song, i }) {
-  const { isAuthenticated } = useToken()
+  const { isAuthenticated, isAdmin} = useToken()
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
 
@@ -30,10 +30,15 @@ export default function SongItem({ song, i }) {
       const respone = await api.delete('/songs/'+song._id)
       console.log(respone)
       if(respone.data.success){
+        if(song.user.username === localStorage.getItem("username")){
+          localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) - 1);
+        }
         return toast.success(respone.data.message)
       }
+      toast.error('Something went wrong')
     }catch(err){
-      console.error(err)
+      toast.error('Something went wrong')
+      console.log(err)
     }
   }
 
@@ -67,6 +72,7 @@ export default function SongItem({ song, i }) {
                 <p id="ellipsisItem" className="ellipsisItem link">
                   Add to playlist
                 </p>
+                {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
                 <p id="ellipsisItem" className="ellipsisItem link">
                   Edit
                 </p>
@@ -77,6 +83,7 @@ export default function SongItem({ song, i }) {
                 >
                   Delete
                 </p>
+                </>)}
               </Dropdown>
             )}
           </>

@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
 
 export default function Song() {
-  const { isAuthenticated } = useToken()
+  const { isAuthenticated, isAdmin } = useToken()
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const {id} = useParams()
   let [song, setSong] = useState({
@@ -42,7 +42,9 @@ export default function Song() {
       const respone = await api.delete('/songs/'+id)
       console.log(respone)
       if(respone.data.success){
-        localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) - 1);
+        if(song.user.username === localStorage.getItem("username")){
+          localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) - 1);
+        }
         return toast.success(respone.data.message)
       }
       toast.error('Something went wrong')
@@ -60,34 +62,37 @@ export default function Song() {
     <div className="song page pageContent">
       <div className="icons">
         <FontAwesomeIcon className="icon" icon={faFilePdf} />
-        {isAuthenticated() && <>
-        <FontAwesomeIcon
-          id="icon"
-          className="modalIcon"
-          onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
-          icon={faEllipsisV}
-        />
-        {isEllipsisOpen && (
-          <Dropdown
-            isEllipsisOpen={isEllipsisOpen}
-            setIsEllipsisOpen={setIsEllipsisOpen}
-          >
-            <p id="ellipsisItem" className="ellipsisItem link">
-              Add to playlist
-            </p>
-            <p id="ellipsisItem" className="ellipsisItem link">
-              Edit
-            </p>
-            <p
-              id="ellipsisItem"
-              onClick={deleteSong}
-              className="ellipsisItem link delete"
-            >
-              Delete
-            </p>
-          </Dropdown>
+        {isAuthenticated() && (
+          <>
+            <FontAwesomeIcon
+              id="icon"
+              onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
+              icon={faEllipsisV}
+            />
+            {isEllipsisOpen && (
+              <Dropdown
+                isEllipsisOpen={isEllipsisOpen}
+                setIsEllipsisOpen={setIsEllipsisOpen}
+              >
+                <p id="ellipsisItem" className="ellipsisItem link">
+                  Add to playlist
+                </p>
+                {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
+                <p id="ellipsisItem" className="ellipsisItem link">
+                  Edit
+                </p>
+                <p
+                  id="ellipsisItem"
+                  onClick={deleteSong}
+                  className="ellipsisItem link delete"
+                >
+                  Delete
+                </p>
+                </>)}
+              </Dropdown>
+            )}
+          </>
         )}
-        </>}
       </div>
       <div className="songInfo">
         <h1 className="title">{song.title}</h1>

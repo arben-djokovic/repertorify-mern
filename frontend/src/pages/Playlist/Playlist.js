@@ -5,42 +5,84 @@ import { faEllipsisV, faFilePdf, faHeart } from "@fortawesome/free-solid-svg-ico
 import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
 import "./playlist.scss";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addFavourite, removeFavourite } from "../../redux/favourites";
 
 
 export default function Playlist() {
-  const { isAuthenticated } = useToken()
-    const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
-    const [playlist, setPlaylist] = useState({
-        name: "",
-        songs: [], 
-        likes: 0
-    })
     const { id } = useParams();
+    const { favourites } = useSelector(state => state.favourites)
+    const { isAuthenticated, getDecodedToken } = useToken();
+    const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
+    const [playlist, setPlaylist] = useState({
+      name: "",
+      songs: [], 
+      likes: 0
+    })
+    const [isMine, setIsMine] = useState(false)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const isLiked = favourites.includes(id)
 
     const fetchPlaylist = async() => {
         try{
             const respone = await api.get('/playlists/'+id)
             console.log(respone)
             setPlaylist(respone.data.playlist)  
+            if(getDecodedToken()?.username === respone.data.playlist.user.username){
+              setIsMine(true)
+            }
         }catch(err){
             console.log(err)
         }
     }
 
+
+    const likePlaylist = async () => {
+      if(isMine) return toast.error("You can't like your own playlist")
+      if(!isAuthenticated()) return navigate("/login")
+      try{
+          const response = await api.put(`/playlists/${playlist._id}/like`);
+          if(response.data.success){
+              dispatch(addFavourite(playlist._id))
+              playlist.likes++;
+          }
+      }catch(err){
+          toast.error("Something went wrong")
+          console.log(err)
+      }
+  }
+  const unLikePlaylists = async () => {
+      if(isMine) return toast.error("You can't like your own playlist")
+      if(!isAuthenticated()) return navigate("/login")
+      try {
+        const response = await api.put(`/playlists/${playlist._id}/unlike`);
+        console.log(response)
+        if (response.data.success) {
+          dispatch(removeFavourite(playlist._id))
+          playlist.likes--;
+        }
+      } catch (err) {
+        toast.error("Something went wrong");
+        console.log(err);
+      }
+  }
+
     useEffect(() => {
         fetchPlaylist()
     }, [])
+
 
   return (
     <section className="playlist page pageContent">
       <div className="icons">
         <div className="icon">
-        {isLiked ? <FontAwesomeIcon onClick={() => setIsLiked(!isLiked)} id='heart' className='heart' icon={faHeart} /> :
-        <FontAwesomeIcon onClick={() => setIsLiked(!isLiked)} id='heart' className='heart' icon={faRegularHeart} />}
+        {isLiked ? <FontAwesomeIcon onClick={unLikePlaylists} id='heart' className='heart' icon={faHeart} /> :
+        <FontAwesomeIcon onClick={likePlaylist} id='heart' className='heart' icon={faRegularHeart} />}
         <p className="likes">{playlist.likes}</p>
         </div>
         <FontAwesomeIcon className="icon" icon={faFilePdf} />

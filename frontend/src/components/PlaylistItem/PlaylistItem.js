@@ -12,7 +12,7 @@ import { addFavourite, removeFavourite } from '../../redux/favourites'
 import useToken from '../../controllers/TokenController';
 
 export default function PlaylistItem({playlist, i}) {
-    const { getDecodedToken } = useToken();
+    const { getDecodedToken, isAuthenticated } = useToken();
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isMine = getDecodedToken()?.username === playlist.user.username
@@ -29,6 +29,7 @@ export default function PlaylistItem({playlist, i}) {
 
     const likePlaylist = async () => {
         if(isMine) return toast.error("You can't like your own playlist")
+        if(!isAuthenticated()) return navigate("/login")
         try{
             const response = await api.put(`/playlists/${playlist._id}/like`);
             if(response.data.success){
@@ -42,6 +43,7 @@ export default function PlaylistItem({playlist, i}) {
     }
     const unLikePlaylists = async () => {
         if(isMine) return toast.error("You can't like your own playlist")
+        if(!isAuthenticated()) return navigate("/login")
         try {
           const response = await api.put(`/playlists/${playlist._id}/unlike`);
           console.log(response)
