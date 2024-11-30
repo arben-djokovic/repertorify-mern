@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./songItem.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
@@ -73,9 +73,9 @@ export default function SongItem({ song, i }) {
                   Add to playlist
                 </p>
                 {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
-                <p id="ellipsisItem" className="ellipsisItem link">
+                <Link to={"/songs/"+song._id+"/edit"} id="ellipsisItem" className="ellipsisItem link">
                   Edit
-                </p>
+                </Link>
                 <p
                   id="ellipsisItem"
                   onClick={deleteSong}

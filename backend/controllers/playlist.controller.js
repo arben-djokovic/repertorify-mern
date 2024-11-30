@@ -55,8 +55,9 @@ const createPlaylist = async (req, res) => {
 
 const getFavouritePlaylists = async (req, res) => {
     try{
-        const response = await User.findById(req.user._id).populate("favouritePlaylists");
-        res.json({ success: true, playlists: response.favouritePlaylists });
+        const response = await User.findById(req.user._id).populate("favouritePlaylists")
+        const playlists = await Playlist.find({ _id: { $in: response.favouritePlaylists } }).populate("user");
+        res.json({ success: true, playlists: playlists });
     }catch(err){
         mongooseErrors(err, res)
     }
@@ -108,5 +109,23 @@ const deletePlaylist = async (req, res) => {
     }
 }
 
+const editPlaylist = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const playlist = await Playlist.findById(id).populate("user");
+        if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
+        if(playlist.user._id.toString() !== req.user._id && req.user.role !== "admin") return res.status(403).json({ success: false, message: "Unauthorized to edit this playlist" }); 
+        const { name, isPublic, imageLocation } = req.body;
+        playlist.name = name;
+        playlist.isPublic = isPublic;
+        playlist.imageLocation = imageLocation;
+        await playlist.save();
+        res.json({ success: true, playlist });
 
-export { getAllPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist };
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+
+export { getAllPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };

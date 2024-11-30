@@ -14,9 +14,9 @@ export default function FavPlaylists() {
       const response = await api.get("/playlists/my-favourite");
       if(response.data.success){
         setPlaylists(response.data.playlists)
+        console.log(response.data)
         const FavPlaylistsIds = response.data.playlists.map(playlist => playlist._id)
         setTimeout(() => {
-          console.log(FavPlaylistsIds)
           dispatch(setFavourites(FavPlaylistsIds))
         }, 200);
       }

@@ -47,6 +47,7 @@
         }
     }
     .text{
+        font-size: 12px;
         margin: 40px 0 ;
     }
     .arrows{
@@ -58,5 +59,20 @@
         border-radius: 5px;
         background-color: #F1F1F1;
         font-size: 25px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .song{
+        .text{
+            font-size: 10px;
+        }
+    }
+}
+@media screen and (max-width: 700px) {
+    .song{
+        .text{
+            font-size: 8px;
+        }
     }
 }

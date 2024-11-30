@@ -99,4 +99,22 @@ const getMySongs = async (req, res) => {
         mongooseErrors(err, res)
     }
 }
-export { getAllSongs, addSong, getSong, deleteSong, getMySongs, getHomeSongs };
+
+const editSong = async (req, res) => {
+    const { id } = req.params;
+    const { title, text, artist, genre } = req.body;
+    try{
+        const song = await Song.findById(id).populate("user");
+        if(!song) return res.status(404).json({ success: false, message: "Song not found" });
+        if(song.user.id !== req.user._id && req.user.role !== "admin") return res.status(403).json({ success: false, message: "Unauthorized to edit this song" }); 
+        song.title = title;
+        song.text = text;
+        song.artist = artist;
+        song.genre = genre;
+        await song.save();
+        res.json({ success: true, song });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+export { getAllSongs, addSong, getSong, deleteSong, getMySongs, getHomeSongs, editSong };

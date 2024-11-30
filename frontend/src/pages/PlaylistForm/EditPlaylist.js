@@ -26,7 +26,11 @@ export default function EditPlaylist() {
     if(playlistName.length < 3 || playlistName.length > 20) return toast.error("Playlist name must be between 3 and 20 characters")
 
     try{
-      const response = await api.put("/playlists/" + id, { name: playlistName, isPublic: isPublic, imageLocation: selectedImage })
+      const response = await api.put("/playlists/" + id + "/edit", { name: playlistName, isPublic: isPublic, imageLocation: selectedImage })
+      if(response.data.success){
+        toast.success("Playlist edited")
+        navigate("/playlists/" + id)
+      }
     }catch(err){
       console.log(err)
     }

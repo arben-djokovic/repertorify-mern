@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
@@ -78,9 +78,9 @@ export default function Song() {
                   Add to playlist
                 </p>
                 {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
-                <p id="ellipsisItem" className="ellipsisItem link">
+                <Link to={`/songs/${id}/edit`} id="ellipsisItem" className="ellipsisItem link">
                   Edit
-                </p>
+                </Link>
                 <p
                   id="ellipsisItem"
                   onClick={deleteSong}

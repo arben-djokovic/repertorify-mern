@@ -12,7 +12,7 @@ const songSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 10,
-        maxLength: 1000,
+        maxLength: 10000,
     },
     artist: {
         type: String,
