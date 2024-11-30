@@ -37,8 +37,11 @@ export default function PlaylistItem({playlist, i}) {
                 playlist.likes++;
             }
         }catch(err){
-            toast.error("Something went wrong")
             console.log(err)
+            if(err.response.status === 400 && err.response.data.message === "Playlist already liked") {
+                console.log(err.response.data)
+                dispatch(addFavourite(playlist._id))
+              }
         }
     }
     const unLikePlaylists = async () => {
@@ -52,8 +55,11 @@ export default function PlaylistItem({playlist, i}) {
             playlist.likes--;
           }
         } catch (err) {
-          toast.error("Something went wrong");
           console.log(err);
+          if(err.response.status === 400 && err.response.data.message === "Playlist not liked") {
+            console.log(err.response.data)
+            dispatch(removeFavourite(playlist._id))
+          }
         }
     }
 

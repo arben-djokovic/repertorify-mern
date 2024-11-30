@@ -64,6 +64,8 @@ const getFavouritePlaylists = async (req, res) => {
 
 const likePlaylist = async (req, res) => {
     try{
+        const user = await User.findById(req.user._id);
+        if(user.favouritePlaylists.includes(req.params.id)) return res.status(400).json({ success: false, message: "Playlist already liked" });
         const response = await User.findOneAndUpdate({ _id: req.user._id }, { $push: { favouritePlaylists: req.params.id } }, { new: true }).populate("favouritePlaylists");
         await Playlist.findOneAndUpdate({ _id: req.params.id }, { $inc: { likes: 1 } });
         res.json({ success: true, favouritePlaylists: response.favouritePlaylists });
@@ -74,6 +76,8 @@ const likePlaylist = async (req, res) => {
 
 const unlikePlaylist = async (req, res) => {
     try{
+        const user = await User.findById(req.user._id);
+        if(!user.favouritePlaylists.includes(req.params.id)) return res.status(400).json({ success: false, message: "Playlist not liked" });
         const response = await User.findOneAndUpdate({ _id: req.user._id }, { $pull: { favouritePlaylists: req.params.id } }, { new: true }).populate("favouritePlaylists");
         await Playlist.findOneAndUpdate({ _id: req.params.id }, { $inc: { likes: -1 } });
         res.json({ success: true, favouritePlaylists: response.favouritePlaylists });
