@@ -1,9 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 import { setFavourites } from "../redux/favourites";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function useToken() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const getToken = () => localStorage.getItem("token");
   const login = (token, numberOfSongs, numberOfPlaylists) => {
@@ -16,18 +18,13 @@ export default function useToken() {
     }
     localStorage.setItem("username", getDecodedToken().username);
   };
-  const logout = (navigate) => {
+  const logout = () => {
     localStorage.removeItem("token");
     localStorage.clear("persist:root");
     dispatch(setFavourites([]));
-    if (navigate) {
-      navigate("/login");
-    }
+    navigate("/login");
   };
   const isAuthenticated = () => {
-    if(!getToken()){
-        logout();
-    }
     return !!getDecodedToken();
   };
   const isAdmin = () => getDecodedToken()?.role === "admin";

@@ -5,7 +5,7 @@ import { faEllipsisV, faFilePdf, faHeart } from "@fortawesome/free-solid-svg-ico
 import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
 import "./playlist.scss";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
 import { toast } from "react-toastify";
@@ -16,12 +16,15 @@ import { addFavourite, removeFavourite } from "../../redux/favourites";
 export default function Playlist() {
     const { id } = useParams();
     const { favourites } = useSelector(state => state.favourites)
-    const { isAuthenticated, getDecodedToken } = useToken();
+    const { isAuthenticated, getDecodedToken, isAdmin } = useToken();
     const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
     const [playlist, setPlaylist] = useState({
       name: "",
       songs: [], 
-      likes: 0
+      likes: 0,
+      user: { 
+        username: ""
+      },
     })
     const [isMine, setIsMine] = useState(false)
     const navigate = useNavigate()
@@ -72,6 +75,19 @@ export default function Playlist() {
       }
   }
 
+  const deletePlaylist = async() => {
+    try{
+      const response = await api.delete(`/playlists/${playlist._id}`)
+      if(response.data.success){
+        toast.success("Playlist deleted")
+        navigate("/playlists")
+      }
+      console.log(response)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
     useEffect(() => {
         fetchPlaylist()
     }, [])
@@ -86,7 +102,7 @@ export default function Playlist() {
         <p className="likes">{playlist.likes}</p>
         </div>
         <FontAwesomeIcon className="icon" icon={faFilePdf} />
-        {isAuthenticated() && <>
+        {isAuthenticated() && (isAdmin() || playlist.user.username === localStorage.getItem("username")) && <>
         <FontAwesomeIcon
           id="icon"
           className="modalIcon"
@@ -98,17 +114,12 @@ export default function Playlist() {
             isEllipsisOpen={isEllipsisOpen}
             setIsEllipsisOpen={setIsEllipsisOpen}
           >
-            <p id="ellipsisItem" className="ellipsisItem link">
-              Add to playlist
-            </p>
-            <p id="ellipsisItem" className="ellipsisItem link">
+            <Link to={`/playlists/${playlist._id}/edit`} id="ellipsisItem" className="ellipsisItem link">
               Edit
-            </p>
+            </Link>
             <p
               id="ellipsisItem"
-              onClick={() => {
-                setIsEllipsisOpen(false);
-              }}
+              onClick={deletePlaylist}
               className="ellipsisItem link delete"
             >
               Delete

@@ -2,6 +2,7 @@ import { mongooseErrors } from "../config/errors.js";
 import Playlist from "../models/playlist.model.js";
 import User from '../models/user.model.js';
 import { PLAYLISTS_PER_PAGE } from "../config/index.js";
+import { getUserFromToken } from "../middlewares/middlewares.js";
 
 
 const getAllPlaylists = async (req, res) => {
@@ -15,12 +16,18 @@ const getAllPlaylists = async (req, res) => {
         mongooseErrors(err, res)
     }
 }
-
+ 
 const getPlaylist = async (req, res) => {
     try {
         const { id } = req.params;
-        const playlist = await Playlist.findById(id).populate("user");
-        res.json({ success: true, playlist });
+        const playlist = await Playlist.findById({_id: id, isPublic: true}).populate("user");
+        if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
+        if(playlist.isPublic) return res.json({ success: true, playlist });
+        const user = getUserFromToken(req);
+        console.log(user, playlist)
+        if(!user) return res.status(401).json({ success: false, message: "Unauthorized" });
+        if(playlist.user._id.toString() === user._id.toString()) return res.json({ success: true, playlist });
+        return res.status(403).json({ success: false, message: "Unauthorized to view this playlist" });
     } catch (err) {
         mongooseErrors(err, res)
     }
@@ -76,4 +83,26 @@ const unlikePlaylist = async (req, res) => {
 }
 
 
-export { getAllPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist };
+const deletePlaylist = async (req, res) => {
+    try{
+        if(req.user.role === "admin"){
+            await Playlist.findByIdAndDelete(req.params.id);
+            return res.json({ success: true, message: "Playlist deleted successfully" });
+        }
+        else{
+            const playlist = await Playlist.findById(req.params.id);
+            if(playlist.user.toString() === req.user._id.toString()){
+                await Playlist.findByIdAndDelete(req.params.id);
+                return res.json({ success: true, message: "Playlist deleted successfully" });
+            }
+            else{
+                return res.status(403).json({ success: false, message: "Unauthorized to delete this playlist" });
+            }
+        }
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+
+export { getAllPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist };

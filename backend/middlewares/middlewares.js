@@ -45,4 +45,15 @@ const userRoute = (req, res, next) => {
     });
 };
 
-export { isValidId, adminRoute, userRoute };
+const getUserFromToken = (req) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return null
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        return decodedToken
+    } catch (error) {
+        return null
+    }
+}
+
+export { isValidId, adminRoute, userRoute, getUserFromToken };
