@@ -56,7 +56,7 @@ export default function EditPlaylist() {
         }
       }
       console.log(getDecodedToken())
-      if(getDecodedToken() === null || (getDecodedToken()._id !== response.data.playlist.user && getDecodedToken().role !== "admin")) navigate("/")
+      if(getDecodedToken() === null || (getDecodedToken()._id !== response.data.playlist.user._id && getDecodedToken().role !== "admin")) navigate("/")
     }catch(err){
       console.log(err)
     }

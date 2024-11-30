@@ -12,6 +12,8 @@
     min-width: 155px;
     max-width: 190px;
     min-height: 200px;
+    box-sizing: border-box;
+    overflow: hidden;
     &:hover{
         scale: 1.02;
     }
@@ -31,7 +33,9 @@
         }
     }
     .user{
-        display: flex;
+        display: grid;
+        grid-template-columns: calc(100% - 22px) 22px;
+        width: 100%;
         justify-content: space-between;
         align-items: center;
         .userInfo{
@@ -40,13 +44,13 @@
             grid-gap: 12px;
             .playlistName{
                 text-align: left;
+                white-space: nowrap;
+                overflow-x: auto;
+                overflow: hidden;
             }
             .username{
                 font-size: 13px;
                 color: #363636;
-            }
-            .playlistName{
-                overflow: hidden;
             }
         }
         .heartDiv{
@@ -56,9 +60,13 @@
             align-items: center;
             justify-content: center;
             align-self: flex-end;
-            .heart{
+            min-height: 22px;
+            min-width: 22px;
+            .heart {
+                white-space: nowrap; /* Prevents wrapping */
                 margin-top: auto;
-                font-size: 22px;
+                font-size: 22px; /* Ensures the font size stays consistent */
+                flex-shrink: 0; /* Prevents the icon from shrinking in flexbox */
             }
             .likes{
                 font-size: 10px;
@@ -86,6 +94,9 @@
             font-size: 13px;
             .userInfo{
                 grid-gap: 7px;
+                .playlistName{
+                    overflow-x: auto;
+                }
                 .username{
                     font-size: 11px;
                 }
