@@ -52,6 +52,7 @@ const getSong = async (req, res) => {
     try{
         const { id } = req.params;
         const song = await Song.findById(id).populate("user").populate("genre");
+        if(!song) return res.status(404).json({ success: false, message: "Song not found" });
         res.json({ success: true, song });
     }catch(err){
         mongooseErrors(err, res)

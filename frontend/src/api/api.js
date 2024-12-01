@@ -1,35 +1,74 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+const baseURL = 'https://repertorify.onrender.com/api';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://repertorify.onrender.com/api',
+    baseURL: baseURL,
     headers: { "Content-Type": "application/json" },
+    withCredentials: true
 });
+
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+const subscribeTokenRefresh = (callback) => {
+    refreshSubscribers.push(callback);
+};
+
+const onTokenRefreshed = (newToken) => {
+    refreshSubscribers.forEach(callback => callback(newToken));
+    refreshSubscribers = [];
+};
 
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
+        if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            toast.error("Unauthorized Access"); 
-        }if(error.response && error.response.status === 403) {
-            toast.error("Forbidden Access");
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            if (!isRefreshing) {
+                isRefreshing = true;
+
+                try {
+                    const { data } = await axios.post(`${baseURL}/auth/refresh`, {}, { withCredentials: true });
+                    if (!data.success) throw new Error("Failed to refresh token");
+
+                    const newToken = data.accessToken;
+                    localStorage.setItem("token", newToken);
+                    console.log("new token", newToken);
+                    onTokenRefreshed(newToken);
+                } catch (err) {
+                    console.error(err);
+                    localStorage.removeItem("token");
+                    toast.error("Session expired. Please log in again.");
+                    return Promise.reject(err);
+                } finally {
+                    isRefreshing = false;
+                }
+            }
+
+            return new Promise((resolve) => {
+                subscribeTokenRefresh((newToken) => {
+                    originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                    resolve(axiosInstance(originalRequest));
+                });
+            });
         }
+
+        if (error.response?.status === 403) toast.error("Forbidden Access");
+
         return Promise.reject(error);
     }
 );

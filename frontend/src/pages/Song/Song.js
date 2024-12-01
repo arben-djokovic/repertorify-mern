@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
@@ -19,6 +19,7 @@ import useToken from "../../controllers/TokenController";
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
+  const navigate = useNavigate()
   const {id} = useParams()
   let [song, setSong] = useState({
     title: "Loading...",
@@ -30,6 +31,7 @@ export default function Song() {
     try{
       const respone = await api.get('/songs/'+id)
       console.log(respone)
+      if(!respone.data.success) return navigate('/songs')
       setSong(respone.data.song)
     }catch(err){
       toast.error('Something went wrong')
@@ -45,9 +47,7 @@ export default function Song() {
         if(song.user.username === localStorage.getItem("username")){
           localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) - 1);
         }
-        return toast.success(respone.data.message)
       }
-      toast.error('Something went wrong')
     }catch(err){
       toast.error('Something went wrong')
       console.log(err)

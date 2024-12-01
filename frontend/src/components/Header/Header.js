@@ -6,7 +6,7 @@ import useToken from '../../controllers/TokenController';
 
 
 export default function Header() {
-    const { isAuthenticated, logout, getDecodedToken } = useToken()
+    const { isAuthenticated, logout } = useToken()
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const navigate = useNavigate()
     const formRef = useRef();
@@ -26,7 +26,7 @@ export default function Header() {
             {isAuthenticated() ? <div className="sign">
                 <Link to="/profile">{localStorage.getItem("username")}</Link>
                 <span> | </span>
-                <Link onClick={()=>{logout(navigate)}} className='delete'>Log out</Link>
+                <Link onClick={()=>{logout()}} className='delete'>Log out</Link>
             </div> :<div className="sign">
                 <Link to="/login">Log In</Link>
                 <span> | </span>

@@ -83,7 +83,7 @@ export default function AddSong() {
           </div>
           <div className="input">
             <label htmlFor="text">Text (with acords) <span className="inputerror" id="texterror"></span></label>
-            <textarea  id="text" rows={5} name="text" />
+            <textarea onChange={(e) => e.target.style.height = e.target.scrollHeight + "px"} id="text" rows={5} name="text" />
           </div>
           <div className="input">
             <label htmlFor="artist">Artist <span className="inputerror" id="artisterror"></span></label>

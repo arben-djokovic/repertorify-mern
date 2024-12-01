@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
         unique: true,
         minLength: 3,
         maxLength: 10,
-        trim: true
+        trim: true,
+        lovercase: true
     },
     hashedPassword: {
         type: String,

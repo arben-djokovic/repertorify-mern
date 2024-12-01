@@ -2,6 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { setFavourites } from "../redux/favourites";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import api from '../api/api'
 
 export default function useToken() {
   const dispatch = useDispatch();
@@ -18,10 +19,16 @@ export default function useToken() {
     }
     localStorage.setItem("username", getDecodedToken().username);
   };
-  const logout = () => {
+  const logout = async() => {
     localStorage.removeItem("token");
     localStorage.clear("persist:root");
     dispatch(setFavourites([]));
+    try{
+      const response = await api.post('/logout')
+      console.log(response)
+    }catch(err){
+      console.log(err)
+    }
     navigate("/login");
   };
   const isAuthenticated = () => {
@@ -36,7 +43,7 @@ export default function useToken() {
       const decoded = jwtDecode(token);
       const now = Math.floor(Date.now() / 1000);
       if (decoded.exp && decoded.exp < now) {
-        logout();
+        // logout();
         return null;
       }
       return decoded;

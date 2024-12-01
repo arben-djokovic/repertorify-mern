@@ -102,11 +102,11 @@ export default function Playlist() {
   return (
     <section className="playlist page pageContent">
       <div className="icons">
-        <div className="icon">
+        {!isMine && <div className="icon">
         {isLiked ? <FontAwesomeIcon onClick={unLikePlaylists} id='heart' className='heart' icon={faHeart} /> :
         <FontAwesomeIcon onClick={likePlaylist} id='heart' className='heart' icon={faRegularHeart} />}
         <p className="likes">{playlist.likes}</p>
-        </div>
+        </div>}
         <FontAwesomeIcon className="icon" icon={faFilePdf} />
         {isAuthenticated() && (isAdmin() || playlist.user.username === localStorage.getItem("username")) && <>
         <FontAwesomeIcon

@@ -42,6 +42,11 @@
                     padding: 8px;
                     font-size: 18px;
                 }
+                textarea{
+                    font-size: 13px;
+                    white-space: nowrap;
+                    resize: auto;
+                }
             }
             .terms{
                 display: flex;

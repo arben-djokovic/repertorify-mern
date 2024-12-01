@@ -31,21 +31,30 @@ const signUp = async (req, res) => {
 const logIn = async (req, res) => {
     try{
         let { username, password } = req.body;
-        username = username.toLowerCase();
+        username = username.toLowerCase().replace(/\s+/g, '');
         const user = await User.findOne({ username });
         if(!user) return res.json({ success: false, message: "User not found" });
         const isValid = await bcrypt.compare(password, user.hashedPassword);
         if(!isValid) return res.json({ success: false, message: "Wrong password" });
 
         const generateRefreshToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "7d" })
-        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "15m" })
+        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "10s" })
 
-        res.cookie("refreshToken", generateRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.cookie("refreshToken", generateRefreshToken, {
+            httpOnly: true,    // Prevent access to cookie via JavaScript
+            secure: false, // Use `true` in production for HTTPS, `false` for development
+            sameSite: 'lax',  // Required for cross-origin requests
+            path: '/',
+            domain: '',        // Empty is fine for localhost; if you have a specific subdomain, you may need to set this
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
 
         const numberOfSongs = await Song.countDocuments({ user: user._id });
         const numberOfPlaylists = await Playlist.countDocuments({ user: user._id });
 
-        res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists, numberOfSongs, numberOfPlaylists });
+        setTimeout(() => {
+            res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists, numberOfSongs, numberOfPlaylists });
+        }, 1000);
     }catch(err){
         mongooseErrors(err, res)
     }
@@ -53,7 +62,7 @@ const logIn = async (req, res) => {
 
 const changeUsername = async (req, res) => {
     try{
-        const reponse = await User.findByIdAndUpdate(req.user._id, { username: req.body.username }, { new: true });
+        const reponse = await User.findByIdAndUpdate(req.user._id, { username: req.body.username.toLowerCase().replace(/\s+/g, '') }, { new: true });
         res.json({ success: true, username: reponse.username })
     }catch(err){
         mongooseErrors(err, res)
@@ -81,5 +90,26 @@ const changePassword = async (req, res) => {
     }
 };
 
+const refreshAccessToken = async (req, res) => {
+    try{
+        const refreshToken = req.cookies.refreshToken;
+        if(!refreshToken) return res.json({ success: false, message: "Unauthorized" });
+        const user = jwt.verify(refreshToken, JWT_SECRET);
+        const accessToken = jwt.sign({ _id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "15m" });
+        res.json({ success: true, accessToken });
+    }catch(err){
+        mongooseErrors(err, res)
+        console.log(err)
+    }
+}
+const logOut = async (req, res) => {
+    try{
+        res.clearCookie("refreshToken");
+        res.json({ success: true });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 
-export { getAllUsers, signUp, logIn, changeUsername, changePassword };
+
+export { getAllUsers, signUp, logIn, changeUsername, changePassword, refreshAccessToken, logOut };
