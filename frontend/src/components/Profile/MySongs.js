@@ -24,6 +24,9 @@ export default function MySongs() {
   return (
     <section className="songsHome">
       <div className="listSongs">
+      {songs.length > 0 && <Link to={"/add-song"} className="addItemBtn addItemBtnSong">
+            <img src="/assets/plus.png" alt="" />
+        </Link>}
         {songs.length > 0 ? songs.map((song, i) => (
           <SongItem song={song} key={i} i={i} />
         )) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}

@@ -20,7 +20,7 @@ const getAllPlaylists = async (req, res) => {
 const getPlaylist = async (req, res) => {
     try {
         const { id } = req.params;
-        const playlist = await Playlist.findById({_id: id, isPublic: true}).populate("user");
+        const playlist = await Playlist.findById({_id: id, isPublic: true}).populate("user").populate("songs");
         if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
         if(playlist.isPublic) return res.json({ success: true, playlist });
         const user = getUserFromToken(req);
@@ -127,5 +127,17 @@ const editPlaylist = async (req, res) => {
     }
 }
 
+const addSongToPlaylists = async (req, res) => {
+    const songId = req.body.songId;
+    const playlistIds = req.body.playlistIds
+    const userId = req.user._id;
+    try{
+        await Playlist.updateMany({ _id: { $in: playlistIds }, user: userId, songs: { $nin: [songId] } }, { $push: { songs: songId } });
+        res.json({ success: true });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 
-export { getAllPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };
+
+export { getAllPlaylists, addSongToPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };

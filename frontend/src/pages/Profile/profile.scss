@@ -16,7 +16,7 @@
                     background-color: white;
                     color: #5B8EA8;
                     font-weight: bold;
-                    border-bottom: 2px solid #5B8EA8;
+                    border-bottom: 3px solid #5B8EA8;
                 }
                 li{
                     width: 33.3%;
@@ -24,7 +24,7 @@
                     padding: 15px;
                     border-bottom: none;
                     padding: 10px 30px;
-                    border-bottom: 1px solid black;
+                    // border-bottom: 1px solid black;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -60,6 +60,22 @@
           width: 100%;
           display: flex;
           flex-direction: column;
+        }
+    }
+    .addItemBtnSong{
+        width: 100%;
+        max-width: unset;
+        max-height: unset;
+        min-height: unset;
+        min-width: unset;
+        height: 38px;
+        margin: 0;
+        padding: 5px 0;
+        border-radius: 10px;
+        margin-bottom: 0px;
+        img{
+            height: 100%;
+            width: auto;
         }
     }
 }

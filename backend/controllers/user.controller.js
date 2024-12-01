@@ -38,14 +38,14 @@ const logIn = async (req, res) => {
         if(!isValid) return res.json({ success: false, message: "Wrong password" });
 
         const generateRefreshToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "7d" })
-        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "10s" })
+        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "15m" })
 
         res.cookie("refreshToken", generateRefreshToken, {
-            httpOnly: true,    // Prevent access to cookie via JavaScript
-            secure: false, // Use `true` in production for HTTPS, `false` for development
-            sameSite: 'lax',  // Required for cross-origin requests
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
             path: '/',
-            domain: '',        // Empty is fine for localhost; if you have a specific subdomain, you may need to set this
+            domain: '',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 

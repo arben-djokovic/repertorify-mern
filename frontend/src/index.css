@@ -70,6 +70,15 @@ label{
 .addItemBtn img{
   width: 50%;
 }
+.addBtn{
+  background-color: #FF9800;
+  color: white;
+  border-radius: 15px;
+  font-weight: bold;
+  padding: 10px 20px;
+  align-self: flex-end;
+  /* font-size: 15px; */
+}
 .chord{
   color: red;
 }

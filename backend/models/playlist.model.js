@@ -25,7 +25,8 @@ const playlistSchema = new mongoose.Schema({
     songs: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Song"
+            ref: "Song",
+            unique: true
         }
     ],
     imageLocation: {
