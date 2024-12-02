@@ -87,6 +87,11 @@ export default function Playlist() {
     try{
       const response = await api.delete(`/playlists/${playlist._id}`)
       if(response.data.success){
+        if(playlist.user.username === localStorage.getItem("username")){
+          let myPlaylists = JSON.parse(localStorage.getItem("numberOfPlaylists"))
+          myPlaylists = myPlaylists - 1
+          localStorage.setItem("numberOfPlaylists", JSON.stringify(myPlaylists))
+        }
         toast.success("Playlist deleted")
         navigate("/playlists")
       }

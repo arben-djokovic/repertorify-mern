@@ -105,6 +105,7 @@ const deletePlaylist = async (req, res) => {
             const playlist = await Playlist.findById(req.params.id);
             if(playlist.user.toString() === req.user._id.toString()){
                 await Playlist.findByIdAndDelete(req.params.id);
+                await User.updateMany({favouritePlaylists: { $in: [req.params.id] }}, { $pull: { favouritePlaylists: req.params.id } });
                 return res.json({ success: true, message: "Playlist deleted successfully" });
             }
             else{

@@ -1,5 +1,6 @@
 import { mongooseErrors } from "../config/errors.js";
 import Song from "../models/song.model.js";
+import Playlist from "../models/playlist.model.js";
 import { SONGS_PER_PAGE } from "../config/index.js";
 
 const songsPerLoad = SONGS_PER_PAGE;
@@ -82,7 +83,11 @@ const deleteSong = async (req, res) => {
         }
 
         if (song.user.toString() === userId.toString() || userRole === "admin") {
-            await Song.findByIdAndDelete(id);
+            await Song.findOneAndDelete({_id: id});
+            await Playlist.updateMany(
+                { songs: { $in: [id] } },
+                { $pull: { songs: id } }
+            );
             return res.json({ success: true, message: "Song deleted successfully", song });
         } else {
             return res.status(403).json({ success: false, message: "Unauthorized to delete this song" });
