@@ -137,7 +137,7 @@ export default function Playlist() {
       <h1 className="playlistTitle">{playlist.name}</h1>
       <div className="songsList">
         {playlist.songs.length > 0 ? playlist.songs.map((song, i) => (
-          <SongItem song={song} key={i} i={i} />
+          <SongItem inPlaylist={true} song={song} key={i} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} />
         )) : <p>No songs in playlist</p>}
       </div>
     </section>

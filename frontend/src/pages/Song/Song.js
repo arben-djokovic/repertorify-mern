@@ -15,6 +15,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
+import Modal from "../../components/Modal/Modal";
 
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
@@ -26,6 +27,9 @@ export default function Song() {
     text: "Loading...",
     artist: "Loading...",
   });
+  const [playlists, setPlaylists] = useState([]);
+  const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
 
   const fetchSong = async() => {
     try{
@@ -54,11 +58,61 @@ export default function Song() {
     }
   }
 
+  const selectPlaylist = (e) => {
+    const newPlaylists = [...selectedPlaylists];
+    if (e.target.checked) {
+      if (!newPlaylists.includes(e.target.name)) {
+        newPlaylists.push(e.target.name);
+      }
+    } else {
+      const index = newPlaylists.indexOf(e.target.name);
+      if (index > -1) {
+        newPlaylists.splice(index, 1);
+      }
+    }
+    setSelectedPlaylists(newPlaylists);
+    console.log(newPlaylists);
+  };
+
+
+  const addSongToPlaylists = async () => {
+    try{
+      const response = await api.post("/add-to-playlist", {songId: song._id, playlistIds: selectedPlaylists});
+      if(response.data.success){
+        toast.success(response.data.message);
+        setAddToPlaylistOpen(false);
+        setTimeout(() => {
+          fetchPlaylists();
+        }, 100);
+      }
+      console.log(response)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const fetchPlaylists = async () => {
+    try {
+      const response = await api.get("/playlists/my");
+      console.log(response);
+      if (response.data.success) {
+        setPlaylists(response.data.playlists);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (playlists.length == 0 && addToPlaylistOpen) {
+      fetchPlaylists();
+    }
+  }, [addToPlaylistOpen]);
   useEffect(() => {
     fetchSong()
   }, [])
 
-  return (
+  return (<>
     <div className="song page pageContent">
       <div className="icons">
         <FontAwesomeIcon className="icon" icon={faFilePdf} />
@@ -74,7 +128,7 @@ export default function Song() {
                 isEllipsisOpen={isEllipsisOpen}
                 setIsEllipsisOpen={setIsEllipsisOpen}
               >
-                <p id="ellipsisItem" className="ellipsisItem link">
+                <p onClick={() => setAddToPlaylistOpen(true)} id="ellipsisItem" className="ellipsisItem link">
                   Add to playlist
                 </p>
                 {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
@@ -114,5 +168,32 @@ export default function Song() {
         </div>
       </div>
     </div>
+    {addToPlaylistOpen && (
+        <Modal setModalOpen={setAddToPlaylistOpen}>
+          <div className="modalSong">
+            <div className="inputs">
+              {playlists.length === 0 && <p>No playlists found</p>}
+              {playlists.length > 0 && playlists.map((playlist, i) => {
+                let songIds = playlist.songs.map(song => song._id);
+                if(songIds.includes(song._id)) {
+                  return(
+                    <div key={i} className="input">
+                      <input disabled checked type="checkbox" name={playlist._id} id={i} />
+                      <label htmlFor={i}>{playlist.name}</label>
+                    </div>
+                  )
+                }
+                return(
+                <div key={i} className="input">
+                  <input onChange={selectPlaylist} type="checkbox" name={playlist._id} id={i} />
+                  <label htmlFor={i}>{playlist.name}</label>
+                </div>
+              )})}
+            </div>
+            <button onClick={addSongToPlaylists} className="addBtn">Add to playlist</button>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }

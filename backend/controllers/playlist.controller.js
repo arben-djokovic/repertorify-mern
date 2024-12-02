@@ -20,7 +20,7 @@ const getAllPlaylists = async (req, res) => {
 const getPlaylist = async (req, res) => {
     try {
         const { id } = req.params;
-        const playlist = await Playlist.findById({_id: id, isPublic: true}).populate("user").populate("songs");
+        const playlist = await Playlist.findById({_id: id, isPublic: true}).populate("user").populate({path: "songs", populate: {path: "user",model: "User"}});;
         if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
         if(playlist.isPublic) return res.json({ success: true, playlist });
         const user = getUserFromToken(req);
@@ -139,5 +139,18 @@ const addSongToPlaylists = async (req, res) => {
     }
 }
 
+const removeFromPlaylist = async (req, res) => {
+    const { songId, playlistId } = req.body;
+    if(!songId || !playlistId) return res.status(400).json({ success: false, message: "Missing songId or playlistId" });
+    try{
+        const playlist = await Playlist.findById(playlistId).populate("user");
+        if(playlist.user._id.toString() !== req.user._id && req.user.role !== "admin") return res.status(403).json({ success: false, message: "Unauthorized to edit this playlist" }); 
+        await Playlist.updateOne({ _id: playlistId, songs: { $in: [songId] }}, { $pull: { songs: songId } });
+        res.json({ success: true });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 
-export { getAllPlaylists, addSongToPlaylists, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };
+
+export { getAllPlaylists, addSongToPlaylists, removeFromPlaylist, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };

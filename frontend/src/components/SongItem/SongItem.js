@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./songItem.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
@@ -10,13 +10,14 @@ import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
 import Modal from "../Modal/Modal";
 
-export default function SongItem({ song, i }) {
+export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId }) {
   const { isAuthenticated, isAdmin } = useToken();
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  const songRef = useRef(null)
 
   const songClick = (e) => {
     if (
@@ -72,8 +73,23 @@ export default function SongItem({ song, i }) {
       if(response.data.success){
         toast.success(response.data.message);
         setAddToPlaylistOpen(false);
+        setTimeout(() => {
+          fetchPlaylists();
+        }, 100);
       }
       console.log(response)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const removeFromPlaylist = async() => {
+    try{
+      const response = await api.post("/remove-from-playlist", {songId: song._id, playlistId: playlistId});
+      if(response.data.success){
+        toast.success(response.data.message);
+        songRef.current.style.display = "none";
+      }
     }catch(err){
       console.log(err)
     }
@@ -104,6 +120,7 @@ export default function SongItem({ song, i }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: i * 0.05, duration: 0.3 }}
         onClick={songClick}
+        ref={songRef}
         className={`${i % 2 !== 0 ? "songitem" : "songitem2"} ${
           isEllipsisOpen ? "active " : "link"
         }`}
@@ -137,6 +154,9 @@ export default function SongItem({ song, i }) {
                   >
                     Add to playlist
                   </p>
+                  { playlistUserId && inPlaylist && (isAdmin() || playlistUserId === localStorage.getItem("username")) && (
+                    <p id="ellipsisItem" className="ellipsisItem link delete" onClick={removeFromPlaylist}>Remove from playlist</p>
+                  )}
                   {(isAdmin() ||
                     song.user.username ===
                       localStorage.getItem("username")) && (
