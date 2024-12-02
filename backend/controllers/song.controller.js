@@ -29,6 +29,7 @@ const getAllSongs = async (req, res) => {
         const songs = await Song.find(query)
             .populate("user")
             .populate("genre")
+            .sort({ addedToPlaylist: -1 })
             .limit(limit);
         
         const totalSongs = await Song.countDocuments(query);
@@ -61,7 +62,7 @@ const getSong = async (req, res) => {
 
 const getHomeSongs = async (req, res) => {
     try{
-        const songs = await Song.find().populate("user").populate("genre").limit(7);
+        const songs = await Song.find().populate("user").populate("genre").sort({ addedToPlaylist: -1 }).limit(7);
         res.json({ success: true, songs });
     }catch(err){
         mongooseErrors(err, res)
@@ -94,7 +95,7 @@ const deleteSong = async (req, res) => {
 const getMySongs = async (req, res) => {
     try{
         const userId = req.user._id;
-        const songs = await Song.find({ user: userId }).populate("user").populate("genre");
+        const songs = await Song.find({ user: userId }).populate("user").populate("genre").sort({ addedToPlaylist: -1 });
         res.json({ success: true, songs});
     }catch(err){
         mongooseErrors(err, res)

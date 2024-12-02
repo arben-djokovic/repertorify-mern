@@ -29,6 +29,10 @@ const songSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
+    },
+    addedToPlaylist: {
+        type: Number,
+        default: 0
     }
 })
 

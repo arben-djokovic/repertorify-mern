@@ -3,6 +3,7 @@ import Playlist from "../models/playlist.model.js";
 import User from '../models/user.model.js';
 import { PLAYLISTS_PER_PAGE } from "../config/index.js";
 import { getUserFromToken } from "../middlewares/middlewares.js";
+import Song from "../models/song.model.js";
 
 
 const getAllPlaylists = async (req, res) => {
@@ -14,7 +15,7 @@ const getAllPlaylists = async (req, res) => {
         query.name = { $regex: String(""), $options: "i" };
     }
     try {
-        const playlists = await Playlist.find(query).populate("user").limit(limit);
+        const playlists = await Playlist.find(query).populate("user").sort({ likes: -1 }).limit(limit);
         const totalPlaylists = await Playlist.countDocuments({isPublic: true});
         console.log(query)
         res.json({ success: true, playlists, hasMore: totalPlaylists > limit });
@@ -139,6 +140,7 @@ const addSongToPlaylists = async (req, res) => {
     const userId = req.user._id;
     try{
         await Playlist.updateMany({ _id: { $in: playlistIds }, user: userId, songs: { $nin: [songId] } }, { $push: { songs: songId } });
+        await Song.updateOne({ _id: songId }, { $inc: { addedToPlaylist: playlistIds.length } });
         res.json({ success: true });
     }catch(err){
         mongooseErrors(err, res)
@@ -152,6 +154,7 @@ const removeFromPlaylist = async (req, res) => {
         const playlist = await Playlist.findById(playlistId).populate("user");
         if(playlist.user._id.toString() !== req.user._id && req.user.role !== "admin") return res.status(403).json({ success: false, message: "Unauthorized to edit this playlist" }); 
         await Playlist.updateOne({ _id: playlistId, songs: { $in: [songId] }}, { $pull: { songs: songId } });
+        await Song.updateOne({ _id: songId }, { $inc: { addedToPlaylist: -1 } });
         res.json({ success: true });
     }catch(err){
         mongooseErrors(err, res)
