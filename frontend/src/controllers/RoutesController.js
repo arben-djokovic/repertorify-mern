@@ -22,8 +22,10 @@ export const AdminRoute = ({ children }) => {
 };
 
 export const UserRoute = ({ children }) => {
-    const { isAuthenticated } = useToken()
+    const { isAuthenticated, refreshToken } = useToken()
     if (!isAuthenticated()) {
+        const isSuccess = refreshToken()
+        if(isSuccess) return children
         toast.error("You are not logged in.");
         return <Navigate to="/login" replace />;
     }

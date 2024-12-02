@@ -37,14 +37,23 @@ export default function useToken() {
   const isAdmin = () => getDecodedToken()?.role === "admin";
 
   const getDecodedToken = () => {
-    const token = getToken();
+    let token = getToken();
     if (!token) return null;
     try {
       const decoded = jwtDecode(token);
       const now = Math.floor(Date.now() / 1000);
       if (decoded.exp && decoded.exp < now) {
-        // logout();
-        return null;
+        refreshToken()
+        setTimeout(() => { 
+          token = getToken();
+          if (!token) return null;
+          const decoded = jwtDecode(token);
+          const now = Math.floor(Date.now() / 1000);
+          if (decoded.exp && decoded.exp < now) {
+            return null
+          }
+          return decoded
+        }, 500);
       }
       return decoded;
     } catch (error) {
@@ -53,5 +62,22 @@ export default function useToken() {
     }
   };
 
-  return { getToken, login, logout, isAuthenticated, isAdmin, getDecodedToken };
+  const refreshToken = async() => {
+    try{
+        const response = await api.post('/auth/refresh');
+        console.log(response.data)
+        if(response.data.success){
+          localStorage.setItem("token", response.data.accessToken);
+        }else{
+          logout()
+        }
+        return response.data.success
+    }catch(err){
+      console.log(err)
+      logout()
+      return false
+    }
+  }
+
+  return { getToken, login, logout, isAuthenticated, isAdmin, getDecodedToken, refreshToken };
 }

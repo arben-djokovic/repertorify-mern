@@ -15,11 +15,10 @@ import useToken from "../../controllers/TokenController";
 
 
 export default function Sidebar() {
-  const { isAuthenticated, logout, getDecodedToken } = useToken();
+  const { isAuthenticated, logout } = useToken();
   let [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
-  const navigate = useNavigate()
 
-  const logOut = () => logout(navigate);
+  const logOut = () => {setIsEllipsisOpen(false);logout()};
 
   return (
     <nav className="sidebar">

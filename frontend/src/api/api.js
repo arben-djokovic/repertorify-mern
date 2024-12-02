@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const baseURL = 'https://repertorify.onrender.com/api';
+const baseURL = 'http://localhost:5000/api';
 
 const axiosInstance = axios.create({
     baseURL: baseURL,
@@ -50,10 +50,14 @@ axiosInstance.interceptors.response.use(
                     console.log("new token", newToken);
                     onTokenRefreshed(newToken);
                 } catch (err) {
-                    console.error(err);
                     localStorage.removeItem("token");
-                    toast.error("Session expired. Please log in again.");
-                    return Promise.reject(err);
+                    localStorage.clear("persist:root");
+                    try{
+                      const response = await axios.post(`${baseURL}/logout`)
+                      console.log(response)
+                    }catch(err){
+                      console.log(err)
+                    }
                 } finally {
                     isRefreshing = false;
                 }

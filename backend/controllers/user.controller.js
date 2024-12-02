@@ -38,7 +38,7 @@ const logIn = async (req, res) => {
         if(!isValid) return res.json({ success: false, message: "Wrong password" });
 
         const generateRefreshToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "7d" })
-        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "15m" })
+        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "12h" })
 
         res.cookie("refreshToken", generateRefreshToken, {
             httpOnly: true,
@@ -95,7 +95,7 @@ const refreshAccessToken = async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
         if(!refreshToken) return res.json({ success: false, message: "Unauthorized" });
         const user = jwt.verify(refreshToken, JWT_SECRET);
-        const accessToken = jwt.sign({ _id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "15m" });
+        const accessToken = jwt.sign({ _id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "12h" });
         res.json({ success: true, accessToken });
     }catch(err){
         mongooseErrors(err, res)
