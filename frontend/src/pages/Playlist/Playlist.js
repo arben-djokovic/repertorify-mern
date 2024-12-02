@@ -11,6 +11,7 @@ import useToken from "../../controllers/TokenController";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavourite, removeFavourite } from "../../redux/favourites";
+import AreYouSure from "../../components/AreYouSure/AreYouSure";
 
 
 export default function Playlist() {
@@ -18,6 +19,7 @@ export default function Playlist() {
     const { favourites } = useSelector(state => state.favourites)
     const { isAuthenticated, getDecodedToken, isAdmin } = useToken();
     const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [playlist, setPlaylist] = useState({
       name: "",
       songs: [], 
@@ -99,7 +101,7 @@ export default function Playlist() {
     }, [])
 
 
-  return (
+  return (<>
     <section className="playlist page pageContent">
       <div className="icons">
         {!isMine && <div className="icon">
@@ -125,7 +127,7 @@ export default function Playlist() {
             </Link>
             <p
               id="ellipsisItem"
-              onClick={deletePlaylist}
+              onClick={() => setDeleteModalOpen(true)}
               className="ellipsisItem link delete"
             >
               Delete
@@ -141,5 +143,7 @@ export default function Playlist() {
         )) : <p>No songs in playlist</p>}
       </div>
     </section>
+    {deleteModalOpen && <AreYouSure onYes={deletePlaylist} setModalOpen={setDeleteModalOpen} />}
+    </>
   );
 }

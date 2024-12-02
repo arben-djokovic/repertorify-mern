@@ -7,9 +7,12 @@ import { getUserFromToken } from "../middlewares/middlewares.js";
 
 const getAllPlaylists = async (req, res) => {
     const search = req.query.search || "";
-    const page = parseInt(req.query.page) || 1;
+    const page = parseInt(req.query.page) || 1; 
     const limit = page * PLAYLISTS_PER_PAGE;
     let query = { isPublic: true, name: { $regex: String(search), $options: "i" } };
+    if(search === 'undefined'){
+        query.name = { $regex: String(""), $options: "i" };
+    }
     try {
         const playlists = await Playlist.find(query).populate("user").limit(limit);
         const totalPlaylists = await Playlist.countDocuments({isPublic: true});

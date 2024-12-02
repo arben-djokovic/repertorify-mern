@@ -1,0 +1,14 @@
+.areYouSure{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    grid-gap: 20px;
+    .buttons{
+        display: flex;
+        grid-gap: 20px;
+        align-items: center;
+        justify-content: center;
+    }
+}

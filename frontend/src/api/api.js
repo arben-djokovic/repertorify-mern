@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const baseURL = 'https://repertorify.onrender.com/api';
+const baseURL = 'http://localhost:5000/api';
 
 const axiosInstance = axios.create({
     baseURL: baseURL,

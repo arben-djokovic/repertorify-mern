@@ -16,6 +16,7 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
 import Modal from "../../components/Modal/Modal";
+import AreYouSure from "../../components/AreYouSure/AreYouSure";
 
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
@@ -30,6 +31,8 @@ export default function Song() {
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [removeFromPlaylistModal, setRemoveFromPlaylistModal] = useState(false);
 
   const fetchSong = async() => {
     try{
@@ -137,7 +140,7 @@ export default function Song() {
                 </Link>
                 <p
                   id="ellipsisItem"
-                  onClick={deleteSong}
+                  onClick={()=>{setDeleteModalOpen(true)}}
                   className="ellipsisItem link delete"
                 >
                   Delete
@@ -194,6 +197,7 @@ export default function Song() {
           </div>
         </Modal>
       )}
+      {deleteModalOpen && <AreYouSure onYes={deleteSong} setModalOpen={setDeleteModalOpen} />}    
     </>
   );
 }

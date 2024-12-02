@@ -17,7 +17,7 @@ root.render(
           <App />
         </PersistGate>
       </Provider>
-      <ToastContainer />
+      <ToastContainer autoClose={1500} />
     </BrowserRouter>
   </React.StrictMode>
 );

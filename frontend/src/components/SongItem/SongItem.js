@@ -9,12 +9,15 @@ import { toast } from "react-toastify";
 import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
 import Modal from "../Modal/Modal";
-import { get } from "mongoose";
+import { get, set } from "mongoose";
+import AreYouSure from "../AreYouSure/AreYouSure";
 
 export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId }) {
   const { isAuthenticated, isAdmin, getDecodedToken } = useToken();
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [removeFromPlaylistModal, setRemoveFromPlaylistModal] = useState(false);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
@@ -42,6 +45,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
             Number(localStorage.getItem("numberOfSongs")) - 1
           );
         }
+        songRef.current.style.display = "none";
         return toast.success(respone.data.message);
       }
       toast.error("Something went wrong");
@@ -156,7 +160,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
                     Add to playlist
                   </p>
                   { playlistUserId && inPlaylist && (isAdmin() || playlistUserId === getDecodedToken()?._id) && (
-                    <p id="ellipsisItem" className="ellipsisItem link delete" onClick={removeFromPlaylist}>Remove from playlist</p>
+                    <p id="ellipsisItem" className="ellipsisItem link delete" onClick={()=>{setRemoveFromPlaylistModal(true)}}>Remove from playlist</p>
                   )}
                   {(isAdmin() ||
                     song.user.username ===
@@ -171,7 +175,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
                       </Link>
                       <p
                         id="ellipsisItem"
-                        onClick={deleteSong}
+                        onClick={()=>{setDeleteModalOpen(true)}}
                         className="ellipsisItem link delete"
                       >
                         Delete
@@ -210,6 +214,8 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
           </div>
         </Modal>
       )}
+      {deleteModalOpen && <AreYouSure onYes={deleteSong} setModalOpen={setDeleteModalOpen} />}
+      {removeFromPlaylistModal && <AreYouSure onYes={removeFromPlaylist} setModalOpen={setRemoveFromPlaylistModal} />}
     </>
   );
 }
