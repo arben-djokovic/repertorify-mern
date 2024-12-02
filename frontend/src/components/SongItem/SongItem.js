@@ -9,9 +9,10 @@ import { toast } from "react-toastify";
 import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
 import Modal from "../Modal/Modal";
+import { get } from "mongoose";
 
 export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId }) {
-  const { isAuthenticated, isAdmin } = useToken();
+  const { isAuthenticated, isAdmin, getDecodedToken } = useToken();
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
@@ -154,7 +155,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
                   >
                     Add to playlist
                   </p>
-                  { playlistUserId && inPlaylist && (isAdmin() || playlistUserId === localStorage.getItem("username")) && (
+                  { playlistUserId && inPlaylist && (isAdmin() || playlistUserId === getDecodedToken()?._id) && (
                     <p id="ellipsisItem" className="ellipsisItem link delete" onClick={removeFromPlaylist}>Remove from playlist</p>
                   )}
                   {(isAdmin() ||

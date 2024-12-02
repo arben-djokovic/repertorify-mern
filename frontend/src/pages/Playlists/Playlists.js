@@ -8,10 +8,11 @@ export default function Playlists() {
   const [playlists, setPlaylists] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
+  let searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
 
   const fetchPlaylists = async () => {
     try{
-      const response = await api.get("/playlists?page=" + page);
+      const response = await api.get(`/playlists?page=${page}&search=${searchFromUrl}`);
       if(response.data.success){
         setPlaylists(response.data.playlists)
         setHasMore(response.data.hasMore)
@@ -27,8 +28,9 @@ export default function Playlists() {
   }
 
   useEffect(()=> {
+    searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     fetchPlaylists()
-  }, [page])
+  }, [window.location.href, page])
   return (
     <div className='playlists page pageContent'>
         <h1>Playlists:</h1>

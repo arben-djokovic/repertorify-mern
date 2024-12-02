@@ -1,9 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import "./header.scss"
 import useToken from '../../controllers/TokenController';
-
-
 
 export default function Header() {
     const { isAuthenticated, logout } = useToken()
@@ -11,12 +9,17 @@ export default function Header() {
     const navigate = useNavigate()
     const formRef = useRef();
     const letters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+    const [selected, setSelected] = useState("songs")
 
-    const searchSongs = async () => {
+    const searchSelected = async () => {
         const formData = new FormData(formRef.current);
         const data = Object.fromEntries(formData);
         console.log(data["input"])
-        navigate(`/songs?search=${data["input"]}`)
+        if(selected === "playlists"){
+            navigate(`/playlists?search=${data["input"]}`)
+        }else{
+            navigate(`/songs?search=${data["input"]}`)
+        }
     }
 
   return (
@@ -37,7 +40,11 @@ export default function Header() {
             <img className='logo' onClick={()=>{navigate("/")}} src="/assets/logo.png" alt="" />
             <form ref={formRef} onSubmit={(e) => {e.preventDefault();}} className="search">
                 <input defaultValue={(searchFromUrl) ? searchFromUrl : ''} onChange={(e) => (e.target.value)} type="text" name='input' placeholder='Search for songs...' />
-                <button onClick={searchSongs} className='searchBtn'>Search</button>
+                <select defaultValue={selected} onChange={(e) => setSelected(e.target.value)} className="selectWhatis" name="" id="">
+                    <option value="songs">Songs</option>
+                    <option value="playlists">Playlists</option>
+                </select>
+                <button onClick={searchSelected} className='searchBtn'>Search</button>
             </form>
         </section>
         <section className="abc">

@@ -7,7 +7,7 @@ import Home from "./pages/Home/Home";
 import Footer from "./components/Footer/Footer";
 import Songs from "./pages/Songs/Songs";
 import Playlists from "./pages/Playlists/Playlists";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Profile from "./pages/Profile/Profile";
 import Login from "./pages/Registration/Login";
 import Signup from "./pages/Registration/Signup";
@@ -24,13 +24,18 @@ function App() {
   const location = useLocation();
   const formRef = useRef();
   const navigate = useNavigate();
+  const [selected, setSelected] = useState("songs")
 
-  const searchSongs = async () => {
-    const formData = new FormData(formRef.current);
-    const data = Object.fromEntries(formData);
-    console.log(data["input"])
-    navigate(`/songs?search=${data["input"]}`)
-}
+    const searchSelected = async () => {
+        const formData = new FormData(formRef.current);
+        const data = Object.fromEntries(formData);
+        console.log(data["input"])
+        if(selected === "playlists"){
+            navigate(`/playlists?search=${data["input"]}`)
+        }else{
+            navigate(`/songs?search=${data["input"]}`)
+        }
+    }
 
 
   useEffect(() => {
@@ -43,8 +48,12 @@ function App() {
       <main className="main">
         <Sidebar />
         <form ref={formRef} onSubmit={(e) => e.preventDefault()} className="mobile-search">
-            <input type="text" name="input" placeholder='Search for songs...' />
-            <button onClick={searchSongs} className='searchBtn'>Search</button>
+            <input type="text" name="input" placeholder='Search...' />
+            <select defaultValue={selected} onChange={(e) => setSelected(e.target.value)} className="selectWhatis" name="" id="">
+                <option value="songs">Songs</option>
+                <option value="playlists">Playlists</option>
+            </select>
+            <button onClick={searchSelected} className='searchBtn'>Search</button>
         </form>
         <div className="mainContent">
           <Routes>
