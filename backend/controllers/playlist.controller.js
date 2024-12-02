@@ -42,7 +42,7 @@ const getPlaylist = async (req, res) => {
 
 const getMyPlaylists = async (req, res) => {
     try{
-        const response = await Playlist.find({user: req.user._id}).populate("user").populate("songs");
+        const response = await Playlist.find({user: req.user._id}).populate("user").populate("songs").sort({ likes: -1 });
         res.json({ success: true, playlists: response });
     }catch(err){
         mongooseErrors(err, res)
@@ -63,7 +63,7 @@ const createPlaylist = async (req, res) => {
 const getFavouritePlaylists = async (req, res) => {
     try{
         const response = await User.findById(req.user._id).populate("favouritePlaylists")
-        const playlists = await Playlist.find({ _id: { $in: response.favouritePlaylists } }).populate("user");
+        const playlists = await Playlist.find({ _id: { $in: response.favouritePlaylists } }).populate("user").sort({ likes: -1 });
         res.json({ success: true, playlists: playlists });
     }catch(err){
         mongooseErrors(err, res)
