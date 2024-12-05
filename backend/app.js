@@ -7,31 +7,40 @@ import genreRoutes from "./routes/genre.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
 import path from 'path'
 import { NODE_ENV } from "./config/index.js";
+import helmet from 'helmet'
+import xssClean from 'xss-clean'
+import hpp from 'hpp'
+import rateLimit from 'express-rate-limit'
  
 const __dirname = path.resolve()
 
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000', 'https://repertorify.onrender.com'];
+app.use(helmet());
 
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
+app.use(cors({
+    origin: 'https://repertoar-b0ck.onrender.com/api',  // http://localhost:5000/api https://repertoar-b0ck.onrender.com/api
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-};
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+
+app.use(xssClean());
+
+app.use(hpp());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Too many requests from this IP, please try again later.'
+});
+app.use(limiter);
 
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
 
 // Use routes
 app.use("/api", songsRoutes);
