@@ -45,7 +45,9 @@
                 textarea{
                     font-size: 13px;
                     white-space: nowrap;
-                    resize: auto;
+                    resize: auto; 
+                    word-wrap: break-word; 
+                    overflow-wrap: normal;
                 }
             }
             .terms{

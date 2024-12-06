@@ -15,7 +15,7 @@ const getAllPlaylists = async (req, res) => {
         query.name = { $regex: String(""), $options: "i" };
     }
     try {
-        const playlists = await Playlist.find(query).populate("user").sort({ likes: -1 }).limit(limit);
+        const playlists = await Playlist.find(query).populate("user").sort({ likes: -1, _id: 1 }).limit(limit);
         const totalPlaylists = await Playlist.countDocuments({isPublic: true});
         console.log(query)
         res.json({ success: true, playlists, hasMore: totalPlaylists > limit });
@@ -42,7 +42,7 @@ const getPlaylist = async (req, res) => {
 
 const getMyPlaylists = async (req, res) => {
     try{
-        const response = await Playlist.find({user: req.user._id}).populate("user").populate("songs").sort({ likes: -1 });
+        const response = await Playlist.find({user: req.user._id}).populate("user").populate("songs").sort({ likes: -1, _id: 1 });
         res.json({ success: true, playlists: response });
     }catch(err){
         mongooseErrors(err, res)
@@ -63,7 +63,7 @@ const createPlaylist = async (req, res) => {
 const getFavouritePlaylists = async (req, res) => {
     try{
         const response = await User.findById(req.user._id).populate("favouritePlaylists")
-        const playlists = await Playlist.find({ _id: { $in: response.favouritePlaylists } }).populate("user").sort({ likes: -1 });
+        const playlists = await Playlist.find({ _id: { $in: response.favouritePlaylists } }).populate("user").sort({ likes: -1, _id: 1 });
         res.json({ success: true, playlists: playlists });
     }catch(err){
         mongooseErrors(err, res)

@@ -36,6 +36,7 @@ export default function Song() {
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [stepen, setStepen] = useState(0);
   // const [removeFromPlaylistModal, setRemoveFromPlaylistModal] = useState(false);
 
   const fetchSong = async() => {
@@ -69,6 +70,11 @@ export default function Song() {
   };
 
   const transposeText = (step) => {
+    if(step === 1){
+      setStepen(stepen => stepen + 1)
+    }else{
+      setStepen(stepen => stepen - 1)
+    }
     setSong((prevSong) => {
       const newText = prevSong.text.replace(/<span class=\"akord\">(.*?)<\/span>/g, (match, p1) => {
         return `<span class=\"akord\">${transposeChord(p1, step)}</span>`;
@@ -189,7 +195,7 @@ export default function Song() {
           <button onClick={() => transposeText(-1)}>
             <FontAwesomeIcon icon={faMinus} />
           </button>
-          <p>0</p>
+          <p>{stepen}</p>
           <button onClick={() => transposeText(1)}>
             <FontAwesomeIcon icon={faPlus} />
           </button>
