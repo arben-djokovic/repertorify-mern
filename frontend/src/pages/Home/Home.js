@@ -41,13 +41,13 @@ export default function Home() {
         >
           {[{
             title: "Rap songs",
-            imgSrcs: ["https://upload.wikimedia.org/wikipedia/bs/2/2f/%281981%29_Oziljak.jpg","https://static.kupindoslike.com/Crvena-Jabuka-%E2%80%93-Za-Sve-Ove-Godine_slika_O_142613141.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZkGUvRjAdv12SxW6SmseSBGQxUch3N6jEIw&s","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNH-P7zwfBJ1QOvBD644sVlVJzHaYytdNolw&s"]
+            imgSrcs: ["/assets/sobic.jpg", "/assets/sobic.jpg", "/assets/sobic.jpg", "/assets/sobic.jpg"]
           }, {
             title: "ExYu songs",
-            imgSrcs: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNH-P7zwfBJ1QOvBD644sVlVJzHaYytdNolw&s","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZkGUvRjAdv12SxW6SmseSBGQxUch3N6jEIw&s","https://static.kupindoslike.com/Crvena-Jabuka-%E2%80%93-Za-Sve-Ove-Godine_slika_O_142613141.jpg","https://upload.wikimedia.org/wikipedia/bs/2/2f/%281981%29_Oziljak.jpg"]
+            imgSrcs: ["/assets/sobic.jpg", "/assets/sobic.jpg", "/assets/sobic.jpg", "/assets/sobic.jpg"]
           }, {
             title: "Pop songs",
-            imgSrcs: ["https://static.kupindoslike.com/Crvena-Jabuka-%E2%80%93-Za-Sve-Ove-Godine_slika_O_142613141.jpg","https://upload.wikimedia.org/wikipedia/bs/2/2f/%281981%29_Oziljak.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNH-P7zwfBJ1QOvBD644sVlVJzHaYytdNolw&s","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZkGUvRjAdv12SxW6SmseSBGQxUch3N6jEIw&s"]
+            imgSrcs: ["/assets/sobic.jpg", "/assets/sobic.jpg", "/assets/sobic.jpg", "/assets/sobic.jpg"]
           }].map((slide, index) => (
             <SwiperSlide
               key={index}
@@ -60,7 +60,7 @@ export default function Home() {
                       <img onClick={(e) => {
                         const list = [...e.target.parentElement.parentElement.parentElement.classList]
                         if(list.includes("swiper-slide-active")){
-                          navigate("/songs/id")
+                          navigate("/songs/6746fb19612b94fd8478421e")
                         }
                       }} src={src} alt="" key={i} />
                   ))}

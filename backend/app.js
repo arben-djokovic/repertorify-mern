@@ -20,7 +20,7 @@ const app = express();
 app.use(helmet());
 
 app.use(cors({
-    origin: 'https://repertoar-b0ck.onrender.com/api',  // http://localhost:5000/api https://repertoar-b0ck.onrender.com/api
+    origin: 'https://repertoar-b0ck.onrender.com',  // http://localhost:3000 https://repertoar-b0ck.onrender.com
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
