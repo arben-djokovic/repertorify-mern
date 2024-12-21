@@ -44,10 +44,10 @@
                 }
                 textarea{
                     font-size: 13px;
-                    white-space: nowrap;
-                    resize: auto; 
-                    word-wrap: break-word; 
+                    white-space: pre;
+                    word-wrap: normal;
                     overflow-wrap: normal;
+                    resize: auto; 
                 }
             }
             .terms{

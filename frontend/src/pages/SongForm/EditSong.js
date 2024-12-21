@@ -93,7 +93,7 @@ export default function EditSong() {
           </div>
           <div className="input">
             <label htmlFor="text">Text (with acords) <span className="inputerror" id="texterror"></span></label>
-            <textarea defaultValue={songText} onChange={(e)=>{setSongText(e.target.value)}}  id="text" rows={5} name="text" />
+            <textarea defaultValue={songText} height={5} onChange={(e) => {e.target.style.height = e.target.scrollHeight + "px" ; setSongText(e.target.value)}}  id="text" rows={5} name="text" />
           </div>
           <div className="input">
             <label htmlFor="artist">Artist <span className="inputerror" id="artisterror"></span></label>

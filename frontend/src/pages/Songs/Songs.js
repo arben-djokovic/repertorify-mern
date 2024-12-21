@@ -15,6 +15,7 @@ export default function Songs() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState((searchFromUrl) ? searchFromUrl : '')
   const [genre, setGenre] = useState((genreFromUrl) ? genreFromUrl : '')
+  const [songsPerPage, setSongsPerPage] = useState(0)
 
   const navigate = useNavigate()
 
@@ -36,6 +37,9 @@ export default function Songs() {
       console.log(respone.data);
       setSongs(respone.data.songs);
       setHaveMore(respone.data.hasMore);
+      if(songsPerPage === 0){
+        setSongsPerPage(respone.data.songs.length)
+      }
     } catch (err) {
       console.log(err);
     }
@@ -86,9 +90,16 @@ export default function Songs() {
         {songs.length > 0 && <Link to={"/add-song"} className="addItemBtn">
             <img src="/assets/plus.png" alt="" />
         </Link>}
-        {songs.length > 0 ? songs.map((song, i) => (
-          <SongItem song={song} key={i} i={i} />
-        )) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
+        {songs.length > 0 ? songs.map((song, i) => {
+          let i2 = i
+          if(page > 1 && i > songsPerPage - 1) {
+            i2 = Math.round(i - songsPerPage * (page - 1)) 
+            console.log(i)
+            console.log(i2)
+          }
+          return(
+          <SongItem song={song} key={i} i={i2} />
+        )}) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
       </div>
       {haveMore && <button onClick={showMore} to="/songs" className="moreBtn">Show more...</button>}
     </section>
