@@ -18,11 +18,15 @@ const getAllSongs = async (req, res) => {
         const limit = page * songsPerLoad;
         const genre = req.query.genre || null; 
         const search = req.query.search || "";
+        const artist = req.query.artist || "";
         
         const query = { };
 
         if (genre) {
             query.genre = genre;
+        }
+        if (artist) {
+            query.artist = { $regex: String(artist), $options: "i" };
         }
 
         if (search) {
@@ -33,7 +37,6 @@ const getAllSongs = async (req, res) => {
             ];
         }
 
-        console.log(search)
         const songs = await Song.find(query)
             .populate("user")
             .populate("genre")
@@ -153,4 +156,14 @@ const downloadSong = async (req, res) => {
         console.log(err)
     }
 }
-export { getAllSongs, addSong, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };
+
+const getArtists = async (req, res) => {
+    try{
+        const { letter } = req.params;
+        const artists = await Song.distinct("artist", { artist: { $regex: `^${letter}`, $options: "i" } });
+        res.json({ success: true, artists });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+export { getAllSongs, addSong, getArtists, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };

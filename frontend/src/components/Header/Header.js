@@ -50,7 +50,7 @@ export default function Header() {
         <section className="abc">
             <div className="letters" >
                 {letters.map((letter, index) => (
-                    <p key={index} className="letter">
+                    <p onClick={() => navigate(`/artists/${letter.toLocaleLowerCase()}`)} key={index} className="letter">
                         {letter}
                     </p>
                 ))}

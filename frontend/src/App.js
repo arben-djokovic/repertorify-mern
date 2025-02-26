@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GuestRoute, UserRoute } from "./controllers/RoutesController";
 import EditPlaylist from "./pages/PlaylistForm/EditPlaylist";
 import EditSong from "./pages/SongForm/EditSong";
+import Artist from "./pages/Artist/Artist";
 
 function App() {
   const location = useLocation();
@@ -69,6 +70,7 @@ function App() {
             <Route path="/playlists/:id" element={<Playlist />} />
             <Route path="/playlists/:id/edit" element={<UserRoute><EditPlaylist /></UserRoute>} />
             <Route path="/songs/:id/edit" element={<UserRoute><EditSong /></UserRoute>} />
+            <Route path="/artists/:letter" element={<Artist />} />
             <Route path="/*" element={<>404</>} />
           </Routes>
         </div>
