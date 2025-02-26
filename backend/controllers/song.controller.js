@@ -77,7 +77,9 @@ const getSong = async (req, res) => {
                 if (index !== -1) {
                     nextSong = index < songs.length - 1 ? songs[index + 1] : songs[0];
                     prevSong = index > 0 ? songs[index - 1] : songs[songs.length - 1];
-                    randomSong = songs[Math.floor(Math.random() * songs.length)];
+                    while(randomSong === null || randomSong._id.toString() === id){
+                        randomSong = songs[Math.floor(Math.random() * songs.length)];
+                    }
                 }
             }
         }else{
@@ -86,7 +88,9 @@ const getSong = async (req, res) => {
             if (index !== -1) {
                 nextSong = index < allSongs.length - 1 ? allSongs[index + 1] : allSongs[0];
                 prevSong = index > 0 ? allSongs[index - 1] : allSongs[allSongs.length - 1];
-                randomSong = allSongs[Math.floor(Math.random() * allSongs.length)];
+                while(randomSong === null || randomSong._id.toString() === id){
+                    randomSong = allSongs[Math.floor(Math.random() * allSongs.length)];
+                }
             }
         }
         res.json({ success: true, song, nextSong, prevSong, randomSong });

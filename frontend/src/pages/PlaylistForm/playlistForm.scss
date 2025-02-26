@@ -63,15 +63,24 @@
                 align-items: center;
                 justify-content: flex-start;
                 grid-gap: 15px;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
                 .radio{
-                    display: flex;
+                    display: inline-flex;
                     grid-gap: 5px;
-                    min-width: 50px;
+                    min-width: auto;
+                    margin: 0;
+                    padding: 0;
+                    white-space: nowrap;
                     label, input{
                         font-size: 11px;
                         position: relative;
                         z-index: 1;
+                        margin: 0;
+                        padding: 0;
+                        width: auto;
+                        height: auto;
+                        line-height: 1;
+                        display: inline-block;
                     }
                 }
             }
@@ -132,6 +141,11 @@
             }
             form{
                 width: 100%;
+                .radioDiv {
+                    justify-content: center;
+                    flex-wrap: nowrap; 
+                    grid-gap: 10px;
+                }
             }
             .formBtn{
                 display: none;
