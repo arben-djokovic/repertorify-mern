@@ -2,6 +2,13 @@ import { mongooseErrors } from "../config/errors.js";
 import Song from "../models/song.model.js";
 import Playlist from "../models/playlist.model.js";
 import { SONGS_PER_PAGE } from "../config/index.js";
+import PDFDocument from "pdfkit";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const songsPerLoad = SONGS_PER_PAGE;
 
@@ -124,4 +131,26 @@ const editSong = async (req, res) => {
         mongooseErrors(err, res)
     }
 }
-export { getAllSongs, addSong, getSong, deleteSong, getMySongs, getHomeSongs, editSong };
+
+
+const downloadSong = async (req, res) => {
+    try{
+        const song = await Song.findById(req.params.id);
+        if(!song) return res.status(404).json({ success: false, message: "Song not found" });
+        const doc = new PDFDocument();
+        res.setHeader("Content-Type", "application/pdf")
+        res.setHeader("Content-Disposition", `attachment; filename="${song.title}.pdf"`);
+        doc.pipe(res);
+        const fontPath = path.join(__dirname, "../",  'public', 'fonts', 'DejaVuSans.ttf');
+        doc.font(fontPath);
+        doc.fontSize(20).text(song.title, { align: 'center' });
+        doc.fontSize(16).text(`Artist: ${song.artist}`, { align: 'center' });
+        doc.moveDown(2); 
+        doc.fontSize(12);
+        doc.text(song.text);
+        doc.end();
+    }catch(err){
+        console.log(err)
+    }
+}
+export { getAllSongs, addSong, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };

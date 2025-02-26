@@ -101,6 +101,24 @@ export default function Playlist() {
     }
   }
 
+  const downloadPlaylist = async () => {
+    try {
+      const response = await api.get(`/download/playlists/${id}`, {
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `playlist_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
     useEffect(() => {
         fetchPlaylist()
     }, [])
@@ -114,7 +132,7 @@ export default function Playlist() {
         <FontAwesomeIcon onClick={likePlaylist} id='heart' className='heart' icon={faRegularHeart} />}
         <p className="likes">{playlist.likes}</p>
         </div>}
-        <FontAwesomeIcon className="icon" icon={faFilePdf} />
+        <FontAwesomeIcon className="icon" onClick={downloadPlaylist} icon={faFilePdf} />
         {isAuthenticated() && (isAdmin() || playlist.user.username === localStorage.getItem("username")) && <>
         <FontAwesomeIcon
           id="icon"

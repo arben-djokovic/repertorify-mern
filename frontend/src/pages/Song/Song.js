@@ -143,11 +143,29 @@ export default function Song() {
     }
   };
 
+  const downloadSong = async () => {
+    try {
+      const response = await api.get(`/download/songs/${id}`, {
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `song_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
     if (playlists.length == 0 && addToPlaylistOpen) {
       fetchPlaylists();
     }
   }, [addToPlaylistOpen]);
+
   useEffect(() => {
     fetchSong()
   }, [])
@@ -155,7 +173,7 @@ export default function Song() {
   return (<>
     <div className="song page pageContent">
       <div className="icons">
-        <FontAwesomeIcon className="icon" icon={faFilePdf} />
+        <FontAwesomeIcon onClick={downloadSong} className="icon" icon={faFilePdf} />
         {isAuthenticated() && (
           <>
             <FontAwesomeIcon

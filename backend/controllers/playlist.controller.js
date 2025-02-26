@@ -4,6 +4,13 @@ import User from '../models/user.model.js';
 import { PLAYLISTS_PER_PAGE } from "../config/index.js";
 import { getUserFromToken } from "../middlewares/middlewares.js";
 import Song from "../models/song.model.js";
+import PDFDocument from "pdfkit";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const getAllPlaylists = async (req, res) => {
@@ -163,4 +170,32 @@ const removeFromPlaylist = async (req, res) => {
 }
 
 
-export { getAllPlaylists, addSongToPlaylists, removeFromPlaylist, createPlaylist, getPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };
+const downloadPlaylist = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const playlist = await Playlist.findById(id).populate("user").populate("songs");
+        if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
+        const doc = new PDFDocument();
+        res.setHeader("Content-Type", "application/pdf")
+        res.setHeader("Content-Disposition", `attachment; filename="${playlist.name}.pdf"`);
+        doc.pipe(res);
+        const fontPath = path.join(__dirname, "../",  'public', 'fonts', 'DejaVuSans.ttf');
+        doc.font(fontPath);
+        doc.fontSize(20).text(playlist.name, { align: 'center' });
+        doc.moveDown(4); 
+        doc.fontSize(12);
+        playlist.songs.forEach(song => {
+            doc.fontSize(20).text(song.title, { align: 'center' });
+            doc.fontSize(16).text(`Artist: ${song.artist}`, { align: 'center' });
+            doc.moveDown(2); 
+            doc.fontSize(12);
+            doc.text(song.text);
+            doc.moveDown(2); 
+        })
+        doc.end();
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+export { getAllPlaylists, addSongToPlaylists, removeFromPlaylist, createPlaylist, getPlaylist, downloadPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };

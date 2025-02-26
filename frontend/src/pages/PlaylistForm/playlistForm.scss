@@ -63,11 +63,15 @@
                 align-items: center;
                 justify-content: flex-start;
                 grid-gap: 15px;
+                flex-wrap: wrap;
                 .radio{
                     display: flex;
                     grid-gap: 5px;
+                    min-width: 50px;
                     label, input{
                         font-size: 11px;
+                        position: relative;
+                        z-index: 1;
                     }
                 }
             }
