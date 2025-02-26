@@ -67,6 +67,7 @@ function App() {
             <Route path="/create-playlist" element={<UserRoute><CreatePlaylist /></UserRoute>} />
             <Route path="/add-song" element={<UserRoute><AddSong /></UserRoute>} />
             <Route path="/songs/:id" element={<Song />} />
+            <Route path="/playlists/:playlistId/songs/:id" element={<Song />} />
             <Route path="/playlists/:id" element={<Playlist />} />
             <Route path="/playlists/:id/edit" element={<UserRoute><EditPlaylist /></UserRoute>} />
             <Route path="/songs/:id/edit" element={<UserRoute><EditSong /></UserRoute>} />

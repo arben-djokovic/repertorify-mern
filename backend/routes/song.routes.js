@@ -8,6 +8,7 @@ router.get('/songs/', getAllSongs);
 router.get('/songs/my', userRoute , getMySongs);
 router.get('/songs/home', getHomeSongs);
 router.get('/songs/:id', getSong);
+router.get('/playlists/:playlistId/songs/:id', getSong);
 router.post('/songs/', userRoute , addSong);
 router.delete('/songs/:id', userRoute , deleteSong);
 router.put("/songs/:id/edit", userRoute , editSong);

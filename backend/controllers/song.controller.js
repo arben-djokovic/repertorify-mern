@@ -62,10 +62,34 @@ const addSong = async (req, res) => {
 
 const getSong = async (req, res) => {
     try{
-        const { id } = req.params;
+        const { id, playlistId } = req.params;
         const song = await Song.findById(id).populate("user").populate("genre");
         if(!song) return res.status(404).json({ success: false, message: "Song not found" });
-        res.json({ success: true, song });
+        let nextSong = null;
+        let prevSong = null;
+        let randomSong = null;
+        if (playlistId) {
+            const playlist = await Playlist.findById(playlistId).populate("songs");
+            if (playlist && playlist.songs.length > 0) {
+                const songs = playlist.songs;
+                const index = songs.findIndex(s => s._id.toString() === id);
+
+                if (index !== -1) {
+                    nextSong = index < songs.length - 1 ? songs[index + 1] : songs[0];
+                    prevSong = index > 0 ? songs[index - 1] : songs[songs.length - 1];
+                    randomSong = songs[Math.floor(Math.random() * songs.length)];
+                }
+            }
+        }else{
+            const allSongs = await Song.find().sort({ addedToPlaylist: -1, _id: 1 });
+            const index = allSongs.findIndex(s => s._id.toString() === id);
+            if (index !== -1) {
+                nextSong = index < allSongs.length - 1 ? allSongs[index + 1] : allSongs[0];
+                prevSong = index > 0 ? allSongs[index - 1] : allSongs[allSongs.length - 1];
+                randomSong = allSongs[Math.floor(Math.random() * allSongs.length)];
+            }
+        }
+        res.json({ success: true, song, nextSong, prevSong, randomSong });
     }catch(err){
         mongooseErrors(err, res)
     }

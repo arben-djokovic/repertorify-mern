@@ -26,7 +26,7 @@ export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const navigate = useNavigate()
-  const {id} = useParams()
+  const {id, playlistId} = useParams()
   let [song, setSong] = useState({
     title: "Loading...",
     text: "Loading...",
@@ -37,17 +37,26 @@ export default function Song() {
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [stepen, setStepen] = useState(0);
+  const [nextSong, setNextSong] = useState(null);
+  const [prevSong, setPrevSong] = useState(null);
+  const [randomSong, setRandomSong] = useState(null);
+
   // const [removeFromPlaylistModal, setRemoveFromPlaylistModal] = useState(false);
 
   const fetchSong = async() => {
     try{
-      const response = await api.get('/songs/'+id)
+      let url = '/songs/'+id
+      if(playlistId) url = `/playlists/${playlistId}/songs/${id}`
+      const response = await api.get(url)
       console.log(response)
       if(!response.data.success) return navigate('/songs')
         setSong({
           ...response.data.song,
           text: wrapChords(response.data.song.text),
         });
+        setNextSong(response.data.nextSong)
+        setPrevSong(response.data.prevSong)
+        setRandomSong(response.data.randomSong)
     }catch(err){
       toast.error('Something went wrong')
       console.log(err)
@@ -160,6 +169,24 @@ export default function Song() {
     }
   }
 
+  const goToNextSong = () => {
+    if(!nextSong) return
+    let url = '/songs/'+nextSong._id
+    if(playlistId) url = `/playlists/${playlistId}/songs/${nextSong._id}`
+    navigate(url)
+  }
+  const goToPrevSong = () => {
+    if(!prevSong) return
+    let url = '/songs/'+prevSong._id
+    if(playlistId) url = `/playlists/${playlistId}/songs/${prevSong._id}`
+    navigate(url)
+  }
+  const goToRandomSong = () => {
+    if(!randomSong) return
+    let url = '/songs/'+randomSong._id
+    if(playlistId) url = `/playlists/${playlistId}/songs/${randomSong._id}`
+    navigate(url)
+  }
   useEffect(() => {
     if (playlists.length == 0 && addToPlaylistOpen) {
       fetchPlaylists();
@@ -168,7 +195,7 @@ export default function Song() {
 
   useEffect(() => {
     fetchSong()
-  }, [])
+  }, [window.location.href])
 
   return (<>
     <div className="song page pageContent">
@@ -223,9 +250,9 @@ export default function Song() {
             dangerouslySetInnerHTML={{ __html: song.text }}
           ></pre>
         <div className="arrows">
-          <FontAwesomeIcon className="arrow moreBtn link" icon={faArrowLeft} />
-          <FontAwesomeIcon className="shuffle link" icon={faShuffle} />
-          <FontAwesomeIcon className="arrow moreBtn link" icon={faArrowRight} />
+          <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />
+          <FontAwesomeIcon onClick={goToRandomSong} className="shuffle link" icon={faShuffle} />
+          <FontAwesomeIcon onClick={goToNextSong} className="arrow moreBtn link" icon={faArrowRight} />
         </div>
       </div>
     </div>

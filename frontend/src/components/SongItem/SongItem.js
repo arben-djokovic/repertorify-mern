@@ -29,8 +29,8 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
       e.target.id === "ellipsisItem" ||
       e.target.id === "ellipsisOpen" ||
       e.target.tagName === "path"
-    )
-      return;
+    )return;
+    if(inPlaylist) return navigate("/playlists/" + playlistId + "/songs/" + song._id);
     navigate("/songs/" + song._id);
   };
 
