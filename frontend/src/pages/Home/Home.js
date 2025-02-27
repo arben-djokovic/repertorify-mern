@@ -44,19 +44,19 @@ export default function Home() {
             images: [
               {
                 src: "/assets/prljavokazaliste.png",
-                id: "6759e303653772529493360f"
+                path: "Prljavo Kazalište"
               },
               {
                 src: "/assets/parnivaljak.jpg",
-                id: "675355a9e1018a6dedd926bc"
+                path: "Parni Valjak"
               },
               {
                 src: "/assets/plaviorkestar.jpg",
-                id: "6746fb19612b94fd8478421e"
+                path: "Plavi Orkestar"
               },
               {
                 src: "/assets/dinomerlin.jpg",
-                id: "6759e4706537725294933880"
+                path: "Dino Merlin"
               }
             ]
             }, {
@@ -64,38 +64,38 @@ export default function Home() {
             images: [
               {
                 src: "/assets/indexi.jpg",
-                id: "6753575de1018a6dedd92832"
+                path: "Indexi"
               },
               {
                 src: "/assets/bijelodugme.jpg",
-                id: "6746fb19612b94fd8478421e"
+                path: "Bijelo Dugme"
               },
               {
                 src: "/assets/crvenajabuka.jpg",
-                id: "675758367c72a70f4ff2f70d"
+                path: "Crvena Jabuka"
               },
               {
                 src: "/assets/sobic.jpg",
-                id: "6746fb19612b94fd8478421e"
+                path: "Miladin Sobic"
               }
             ]          }, {
             title: "Pop songs",
             images: [
               {
                 src: "/assets/sars.jpg",
-                id: "6746fb19612b94fd8478421e"
+                path: "Sars"
               },
               {
                 src: "/assets/tomazdravkovic.jpg",
-                id: "6755e355729c6c11f761e750"
+                path: "Toma Zdravković"
               },
               {
                 src: "/assets/yugrupa.jpg",
-                id: "6746fb19612b94fd8478421e"
+                path: "YuGrupa"
               },
               {
                 src: "/assets/zdravkocolic.jpg",
-                id: "6759de8d6537725294933225"
+                path: "Zdravko Čolić"
               }
             ]          }].map((slide, index) => (
             <SwiperSlide
@@ -109,7 +109,7 @@ export default function Home() {
                       <img onClick={(e) => {
                         const list = [...e.target.parentElement.parentElement.parentElement.classList]
                         if(list.includes("swiper-slide-active")){
-                          navigate("/songs/" + image.id)
+                          navigate("/songs?artist=" + image.path)
                         }
                       }} src={image.src} alt="" key={i} />
                   ))}

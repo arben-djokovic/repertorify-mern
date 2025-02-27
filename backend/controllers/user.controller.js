@@ -99,7 +99,6 @@ const refreshAccessToken = async (req, res) => {
         res.json({ success: true, accessToken });
     }catch(err){
         mongooseErrors(err, res)
-        console.log(err)
     }
 }
 const logOut = async (req, res) => {

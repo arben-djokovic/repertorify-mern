@@ -1,7 +1,7 @@
 import { mongooseErrors } from "../config/errors.js";
 import Playlist from "../models/playlist.model.js";
 import User from '../models/user.model.js';
-import { PLAYLISTS_PER_PAGE } from "../config/index.js";
+import { createDiacriticRegex, PLAYLISTS_PER_PAGE } from "../config/index.js";
 import { getUserFromToken } from "../middlewares/middlewares.js";
 import Song from "../models/song.model.js";
 import PDFDocument from "pdfkit";
@@ -17,16 +17,18 @@ const getAllPlaylists = async (req, res) => {
     const search = req.query.search || "";
     const page = parseInt(req.query.page) || 1; 
     const limit = page * PLAYLISTS_PER_PAGE;
-    let query = { isPublic: true, name: { $regex: String(search), $options: "i" } };
+    const searchRegex = createDiacriticRegex(search);
+    let query = { isPublic: true, name: { $regex: String(searchRegex), $options: "i" } };
     if(search === 'undefined'){
         query.name = { $regex: String(""), $options: "i" };
     }
+
+
     try {
         const playlists = await Playlist.find(query).populate("user").sort({ likes: -1, _id: 1 }).limit(limit);
         const totalPlaylists = await Playlist.countDocuments({isPublic: true});
-        console.log(query)
         res.json({ success: true, playlists, hasMore: totalPlaylists > limit });
-    } catch (error) {
+    } catch (err) {
         mongooseErrors(err, res)
     }
 }
@@ -38,7 +40,6 @@ const getPlaylist = async (req, res) => {
         if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
         if(playlist.isPublic) return res.json({ success: true, playlist });
         const user = getUserFromToken(req);
-        console.log(user, playlist)
         if(!user) return res.status(401).json({ success: false, message: "Unauthorized" });
         if(playlist.user._id.toString() === user._id.toString()) return res.json({ success: true, playlist });
         return res.status(403).json({ success: false, message: "Unauthorized to view this playlist" });

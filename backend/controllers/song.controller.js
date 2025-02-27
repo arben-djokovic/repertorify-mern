@@ -5,12 +5,14 @@ import { SONGS_PER_PAGE } from "../config/index.js";
 import PDFDocument from "pdfkit";
 import path from "path";
 import { fileURLToPath } from 'url';
+import { createDiacriticRegex } from "../config/index.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const songsPerLoad = SONGS_PER_PAGE;
+
 
 const getAllSongs = async (req, res) => {
     try{
@@ -23,17 +25,19 @@ const getAllSongs = async (req, res) => {
         const query = { };
 
         if (genre) {
-            query.genre = genre;
+            query.genre = createDiacriticRegex(genre);
         }
         if (artist) {
-            query.artist = { $regex: String(artist), $options: "i" };
+            const artistRegex = createDiacriticRegex(artist);
+            query.artist = { $regex: String(artistRegex), $options: "i" };
         }
 
         if (search) {
+            let searchRegex = createDiacriticRegex(search);
             query.$or = [
-                { title: { $regex: String(search), $options: "i" } },
-                { artist: { $regex: String(search), $options: "i" } },
-                { text: { $regex: String(search), $options: "i" } },
+                { title: { $regex: String(searchRegex), $options: "i" } },
+                { artist: { $regex: String(searchRegex), $options: "i" } },
+                { text: { $regex: String(searchRegex), $options: "i" } },
             ];
         }
 
