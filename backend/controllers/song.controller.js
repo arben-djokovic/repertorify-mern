@@ -18,14 +18,14 @@ const getAllSongs = async (req, res) => {
     try{
         const page = parseInt(req.query.page) || 1;
         const limit = page * songsPerLoad;
-        const genre = req.query.genre || null; 
+        const genre = req.query.genre || ""; 
         const search = req.query.search || "";
         const artist = req.query.artist || "";
         
         const query = { };
 
         if (genre) {
-            query.genre = createDiacriticRegex(genre);
+            query.genre = genre;
         }
         if (artist) {
             const artistRegex = createDiacriticRegex(artist);
