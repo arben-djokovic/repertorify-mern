@@ -33,7 +33,10 @@ export default function EditSong() {
       const respone = await api.get('/songs/'+id)
       if(respone.data.success){
         console.log(respone.data.song)
-        setSelectedGenre(respone.data.song.genre._id)
+        if(respone.data.song.genre && respone.data.song.genre._id){
+          setSelectedGenre(respone.data.song.genre._id)
+        }
+
         setSongTitle(respone.data.song.title)
         setSongText(respone.data.song.text)
         setSongArtist(respone.data.song.artist)

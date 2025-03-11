@@ -25,7 +25,7 @@ const addGenre = async (req, res) => {
         const { name } = req.body;
         const genre = await Genre.create({ name });
         res.json({ success: true, genre });
-    } catch (error) {
+    } catch (err) {
         mongooseErrors(err, res)
     }
 };

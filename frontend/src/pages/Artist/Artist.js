@@ -21,7 +21,7 @@ export default function Artist() {
     <div className='artist page pageContent'>
         <h1>{letter.toLocaleUpperCase()}</h1>
         <div className="artists">
-            {artists.map(artist => (<Link to={`/songs?artist=${artist}`} className="artistItem">{artist}</Link>))}
+            {artists.length ? artists.map(artist => (<Link to={`/songs?artist=${artist}`} className="artistItem">{artist}</Link>)) : "No artists found"}
         </div>
     </div>
   )

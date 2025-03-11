@@ -8,14 +8,14 @@ import {
   faMusic,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
 import useToken from "../../controllers/TokenController";
 
 
 
 export default function Sidebar() {
-  const { isAuthenticated, logout } = useToken();
+  const { isAuthenticated, logout, isAdmin } = useToken();
   let [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
 
   const logOut = () => {setIsEllipsisOpen(false);logout()};
@@ -55,6 +55,7 @@ export default function Sidebar() {
             <Link to="/profile" className="ellipsisItem link">Profile</Link>
             <Link to="/add-song" className="ellipsisItem link">Add Song</Link>
             <Link to="/create-playlist" className="ellipsisItem link">Create Playlist</Link>
+            {isAdmin() && <Link to="/genre/create" className="ellipsisItem link">Create Genre</Link>}
             <Link onClick={logOut} className="ellipsisItem link delete" >Log out</Link>
         </Dropdown>
       </div>}

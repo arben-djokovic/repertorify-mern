@@ -16,10 +16,11 @@ import AddSong from "./pages/SongForm/AddSong";
 import Song from "./pages/Song/Song";
 import Playlist from "./pages/Playlist/Playlist";
 import 'react-toastify/dist/ReactToastify.css';
-import { GuestRoute, UserRoute } from "./controllers/RoutesController";
+import { AdminRoute, GuestRoute, UserRoute } from "./controllers/RoutesController";
 import EditPlaylist from "./pages/PlaylistForm/EditPlaylist";
 import EditSong from "./pages/SongForm/EditSong";
 import Artist from "./pages/Artist/Artist";
+import CreateGenre from "./pages/GenreForm/CreateGenre";
 
 function App() {
   const location = useLocation();
@@ -72,6 +73,7 @@ function App() {
             <Route path="/playlists/:id/edit" element={<UserRoute><EditPlaylist /></UserRoute>} />
             <Route path="/songs/:id/edit" element={<UserRoute><EditSong /></UserRoute>} />
             <Route path="/artists/:letter" element={<Artist />} />
+            <Route path="/genre/create" element={<AdminRoute><CreateGenre /></AdminRoute>} />
             <Route path="/*" element={<>404</>} />
           </Routes>
         </div>
