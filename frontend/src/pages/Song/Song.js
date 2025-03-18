@@ -18,10 +18,6 @@ import useToken from "../../controllers/TokenController";
 import Modal from "../../components/Modal/Modal";
 import AreYouSure from "../../components/AreYouSure/AreYouSure";
 
-const CHORDS = [
-  "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab", "A", "A#", "Bb", "H", "Cm", "C#m", "Dbm", "Dm", "D#m", "Ebm", "Em", "Fm", "F#m", "Gbm", "Gm", "G#m", "Abm", "Am", "A#m", "Bbm", "Hm", "C7", "C#7", "Db7", "D7", "D#7", "Eb7", "E7", "F7", "F#7", "Gb7", "G7", "G#7", "Ab7", "A7", "A#7", "Bb7", "H7", "Cm7", "C#m7", "Dbm7", "Dm7", "D#m7", "Ebm7", "Em7", "Fm7", "F#m7", "Gbm7", "Gm7", "G#m7", "Abm7", "Am7", "A#m7", "Bbm7", "Hm7", "Cmaj7", "C#maj7", "Dbmaj7", "Dmaj7", "D#maj7", "Ebmaj7", "Emaj7", "Fmaj7", "F#maj7", "Gbmaj7", "Gmaj7", "G#maj7", "Abmaj7", "Amaj7", "A#maj7", "Bbmaj7", "Hmaj7", "Csus4", "C#sus4", "Dbsus4", "Dsus4", "D#sus4", "Ebsus4", "Esus4", "Fsus4", "F#sus4", "Gbsus4", "Gsus4", "G#sus4", "Absus4", "Asus4", "A#sus4", "Bbsus4", "Hsus4", "Csus2", "C#sus2", "Dbsus2", "Dsus2", "D#sus2", "Ebsus2", "Esus2", "Fsus2", "F#sus2", "Gbsus2", "Gsus2", "G#sus2", "Absus2", "Asus2", "A#sus2", "Bbsus2", "Hsus2"
-];
-
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
@@ -36,12 +32,62 @@ export default function Song() {
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [stepen, setStepen] = useState(0);
   const [nextSong, setNextSong] = useState(null);
   const [prevSong, setPrevSong] = useState(null);
   const [randomSong, setRandomSong] = useState(null);
+  const [transposeSteps, setTransposeSteps] = useState(0);
 
-  // const [removeFromPlaylistModal, setRemoveFromPlaylistModal] = useState(false);
+  const chordRegex = /(?<!\S)([A-GH](#|b)?(?:maj|min|m|m7|maj7|dim|dim7|aug|sus2|sus4|add9|add11|7|6|9|11|13)?(?:\/[A-GH](#|b)?)?)(?!\S)/g;
+  const chordMap = {
+    "C": 0,
+    'C#': 1,
+    'D': 2,
+    'D#': 3,
+    'E': 4,
+    'F': 5,
+    'F#': 6,
+    'G': 7,
+    'G#': 8,
+    'A': 9,
+    'A#': 10,
+    'B': 11
+  };
+
+  const reverseChordMap = Object.fromEntries(
+    Object.entries(chordMap).map(([chord, value]) => [value, chord])
+  );
+
+  const transposeChord = (chord, semitones) => {
+    const rootMatch = chord.match(/^([A-GH](#|b)?)/);
+    if (!rootMatch) return chord; 
+
+    const root = rootMatch[0]; 
+    const suffix = chord.substring(root.length); 
+    const currentVal = chordMap[root];
+
+    if (currentVal === undefined) return chord; 
+
+    const transposedVal = (currentVal + semitones + 12) % 12;
+    const transposedRoot = reverseChordMap[transposedVal];
+
+    return transposedRoot + suffix;
+};
+const transposeSong = (semitones) => {
+  let songText = song.text;
+  songText = songText.replace(chordRegex, (match) => transposeChord(match, semitones));
+  setSong((prevSong) => ({ ...prevSong, text: songText }));
+};
+
+  const handleTranspose = (direction) => {
+    if (direction === "up" && transposeSteps < 5) {
+      setTransposeSteps((prev) => prev + 1);
+      transposeSong(1);
+    } else if (direction === "down" && transposeSteps > -5) {
+      setTransposeSteps((prev) => prev - 1);
+      transposeSong(-1);
+    }
+  };
+
 
   const fetchSong = async() => {
     try{
@@ -50,10 +96,7 @@ export default function Song() {
       const response = await api.get(url)
       console.log(response)
       if(!response.data.success) return navigate('/songs')
-        setSong({
-          ...response.data.song,
-          text: wrapChords(response.data.song.text),
-        });
+        setSong(response.data.song);
         setNextSong(response.data.nextSong)
         setPrevSong(response.data.prevSong)
         setRandomSong(response.data.randomSong)
@@ -62,35 +105,6 @@ export default function Song() {
       console.log(err)
     }
   }
-  const wrapChords = (text) => {
-    const chordsRegex = new RegExp(`\\b(${CHORDS.join("|")})\\b`, "g");
-    return text.replace(chordsRegex, (match) => {
-      return `<span class=\"akord\">${match}</span>`;
-    });
-  };
-
-  const transposeChord = (chord, step) => {
-    const baseChord = chord.replace(/m|7|maj7|sus4|sus2/g, "");
-    const modifier = chord.replace(baseChord, "");
-    const index = CHORDS.indexOf(baseChord);
-    if (index === -1) return chord;
-    const newIndex = (index + step + CHORDS.length) % CHORDS.length;
-    return CHORDS[newIndex] + modifier;
-  };
-
-  const transposeText = (step) => {
-    if(step === 1){
-      setStepen(stepen => stepen + 1)
-    }else{
-      setStepen(stepen => stepen - 1)
-    }
-    setSong((prevSong) => {
-      const newText = prevSong.text.replace(/<span class=\"akord\">(.*?)<\/span>/g, (match, p1) => {
-        return `<span class=\"akord\">${transposeChord(p1, step)}</span>`;
-      });
-      return { ...prevSong, text: newText };
-    });
-  };
 
   const deleteSong = async() => {
     try{
@@ -169,6 +183,11 @@ export default function Song() {
     }
   }
 
+  const highlightChords = (text) => {
+    return text.replace(chordRegex, (match) => `<span class="akord">${match.replace("#", "&#35;")}</span>`);
+};
+
+
   const goToNextSong = () => {
     if(!nextSong) return
     let url = '/songs/'+nextSong._id
@@ -195,6 +214,7 @@ export default function Song() {
 
   useEffect(() => {
     fetchSong()
+    setTransposeSteps(0);
   }, [window.location.href])
 
   return (<>
@@ -237,17 +257,17 @@ export default function Song() {
         <h1 className="title">{song.title}</h1>
         <p>{song.artist}</p>
         <div className="songsBtns">
-          <button onClick={() => transposeText(-1)}>
+          <button onClick={() => {handleTranspose("down");}}>
             <FontAwesomeIcon icon={faMinus} />
           </button>
-          <p>{stepen}</p>
-          <button onClick={() => transposeText(1)}>
+          <p>{transposeSteps}</p>
+          <button onClick={() => {handleTranspose("up");}}>
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
         <pre
             className="text"
-            dangerouslySetInnerHTML={{ __html: song.text }}
+            dangerouslySetInnerHTML={{ __html: highlightChords(song.text) }}
           ></pre>
         <div className="arrows">
           <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />
