@@ -49,8 +49,8 @@ export default function Song() {
     'G': 7,
     'G#': 8,
     'A': 9,
-    'A#': 10,
-    'B': 11
+    'B': 10,
+    'H': 11
   };
 
   const reverseChordMap = Object.fromEntries(
@@ -260,7 +260,7 @@ const transposeSong = (semitones) => {
           <button onClick={() => {handleTranspose("down");}}>
             <FontAwesomeIcon icon={faMinus} />
           </button>
-          <p>{transposeSteps}</p>
+          <p className="transpose">{transposeSteps}</p>
           <button onClick={() => {handleTranspose("up");}}>
             <FontAwesomeIcon icon={faPlus} />
           </button>

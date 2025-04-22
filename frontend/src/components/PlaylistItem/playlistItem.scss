@@ -17,6 +17,9 @@
     &:hover{
         scale: 1.02;
     }
+    .greaterThan{
+        display: none;
+    }
     .img{
         display: flex;
         justify-content: center;
@@ -88,6 +91,9 @@
             scale: unset;
             opacity: unset;
         }
+        .greaterThan{
+            display: block;
+        }
         .user{
             justify-content: space-between;
             width: 100%;
@@ -119,3 +125,4 @@
     }
 }
   
+

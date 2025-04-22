@@ -16,9 +16,9 @@ export default function Profile() {
         <nav className="profileNav">
           <ul>
             <li onClick={() => setSelected("mySongs")} className={selected === "mySongs" ? "active" : ""}>
-              <p>My Songs</p> </li>
-            <li onClick={() => setSelected("myPlaylists")} className={selected === "myPlaylists" ? "active" : ""}><p>My Playlists</p></li>
-            <li onClick={() => setSelected("favPlaylists")} className={selected === "favPlaylists" ? "active" : ""}><p>Favourite Playlists</p></li>
+              <p>My songs</p> </li>
+            <li onClick={() => setSelected("myPlaylists")} className={selected === "myPlaylists" ? "active" : ""}><p>My playlists</p></li>
+            <li onClick={() => setSelected("favPlaylists")} className={selected === "favPlaylists" ? "active" : ""}><p>Favourites</p></li>
           </ul>
         </nav>
         {selected === "mySongs" && <MySongs />}
