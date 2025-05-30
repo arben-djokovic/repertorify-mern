@@ -32,10 +32,10 @@ export default function Sidebar() {
         <FontAwesomeIcon icon={faList} />
         <p>Playlists</p>
       </Link>
-      <Link onClick={() => setIsEllipsisOpen(false)} to="/genres" className="navlink link">
+      {isAdmin() && <Link onClick={() => setIsEllipsisOpen(false)} to="/genres" className="navlink link">
         <FontAwesomeIcon icon={faThList} />
         <p>Genres</p>
-      </Link>
+      </Link>}
       {!isAuthenticated() ? <Link onClick={() => setIsEllipsisOpen(false)} to="/login" className="navlink link">
         <FontAwesomeIcon icon={faUser} />
         <p>Log in</p>
