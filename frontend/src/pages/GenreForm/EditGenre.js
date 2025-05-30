@@ -2,21 +2,32 @@ import React, { useRef, useState } from 'react'
 import './genreForm.scss'
 import api from '../../api/api'
 import { toast } from 'react-toastify';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from 'react';
 
-export default function CreateGenre() {
+export default function EditGenre() {
   const [genre, setGenre] = useState('');
   const navigate = useNavigate();
   const formRef = useRef();
+  const { id } = useParams();
 
-  const createGenre = async() => {
+  const getGenre = async() => {
+    try{
+      const respone = await api.get(`/genres/${id}`)
+      setGenre(respone.data.genre.name)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const editGenre = async() => {
     if(genre.length < 2 || genre.length > 20){
       document.getElementById('genreerror').innerText = 'Genre must be between 2 and 20 characters long.'
     }
     try{
-      const respone = await api.post('/genres', {name: genre})
+      const respone = await api.put(`/genres/${id}/edit`, {name: genre})
       if(respone.data.success){
-        toast.success("Genre created")
+        toast.success("Genre edited")
         navigate("/genres")
       }
       console.log(respone)
@@ -34,6 +45,10 @@ export default function CreateGenre() {
     }
   }
 
+  useEffect(() => {
+    getGenre()
+  }, [])
+
   return (
     <div className="registrationGenre page pageContent">
       <div className="formDiv">
@@ -44,13 +59,13 @@ export default function CreateGenre() {
           ref={formRef}
         >
           <div className="header">
-            <h1>Create genre</h1>
+            <h1>Edit genre</h1>
           </div>
           <div className="input">
             <label htmlFor="title">Genre: <span className="inputerror" id="genreerror"></span></label>
             <input onChange={(e) => setGenre(e.target.value)} value={genre} type="text" id="name" name="genre" />
           </div>
-          <button onClick={createGenre} className="formBtn">Create genre</button>
+          <button onClick={editGenre} className="formBtn">Edit genre</button>
         </form>
       </div>
     </div>

@@ -198,4 +198,16 @@ const getArtists = async (req, res) => {
         mongooseErrors(err, res)
     }
 }
-export { getAllSongs, addSong, getArtists, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };
+
+const getTopByArtists = async (req, res) => {
+    try{
+        const { songId } = req.params;
+        const { artist } = await Song.findById(songId);
+        const artistRegex = createDiacriticRegex(artist);
+        const songs = await Song.find({ artist: { $regex: String(artistRegex), $options: "i" } }).populate("user").populate("genre").sort({ addedToPlaylist: -1, _id: 1 }).limit(10);
+        res.json({ success: true, songs });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+export { getAllSongs, addSong, getTopByArtists, getArtists, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };

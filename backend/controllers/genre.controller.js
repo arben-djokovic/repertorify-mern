@@ -30,6 +30,17 @@ const addGenre = async (req, res) => {
     }
 };
 
+const editGenre = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const { name } = req.body;
+        const genre = await Genre.findByIdAndUpdate(id, { name }, { new: true });
+        res.json({ success: true, genre });
+    } catch (err) {
+        mongooseErrors(err, res)
+    }
+}
+
 const addMoreGenres = async (req, res) => {
     try {
         const genres = req.body.genres;
@@ -56,4 +67,4 @@ const deleteGenre = async (req, res) => {
     }
 };
 
-export { getAllGenres, addGenre, getOneGenre, deleteGenre, addMoreGenres };
+export { getAllGenres, addGenre, getOneGenre, deleteGenre, addMoreGenres, editGenre };

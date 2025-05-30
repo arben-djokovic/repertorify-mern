@@ -121,7 +121,7 @@ export default function Playlist() {
 
     useEffect(() => {
         fetchPlaylist()
-    }, [])
+    }, [window.location.href])
 
 
   return (<>

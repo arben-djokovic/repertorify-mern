@@ -111,6 +111,7 @@ const transposeSong = (semitones) => {
       const respone = await api.delete('/songs/'+id)
       console.log(respone)
       if(respone.data.success){
+        toast.success("Song deleted")
         if(song.user.username === localStorage.getItem("username")){
           localStorage.setItem("numberOfSongs", Number(localStorage.getItem("numberOfSongs")) - 1);
         }

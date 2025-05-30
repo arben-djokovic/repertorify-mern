@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllSongs, addSong, getSong, deleteSong, getMySongs, getArtists, getHomeSongs, downloadSong, editSong } from "../controllers/song.controller.js";
+import { getAllSongs, addSong, getSong, deleteSong, getTopByArtists, getMySongs, getArtists, getHomeSongs, downloadSong, editSong } from "../controllers/song.controller.js";
 import { userRoute } from "../middlewares/middlewares.js";
 
 const router = express.Router();
@@ -14,5 +14,6 @@ router.delete('/songs/:id', userRoute , deleteSong);
 router.put("/songs/:id/edit", userRoute , editSong);
 router.get("/download/songs/:id", downloadSong);
 router.get('/artists/:letter', getArtists);
+router.get('/songs/top-five/:songId', getTopByArtists);
 
 export default router;

@@ -199,4 +199,13 @@ const downloadPlaylist = async (req, res) => {
     }
 }
 
-export { getAllPlaylists, addSongToPlaylists, removeFromPlaylist, createPlaylist, getPlaylist, downloadPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };
+const getTopFive = async (req, res) => {
+    try{
+        const playlists = await Playlist.find({ isPublic: true }).sort({ likes: -1 }).limit(5)
+        res.json({ success: true, playlists });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+export { getAllPlaylists, addSongToPlaylists, removeFromPlaylist, getTopFive, createPlaylist, getPlaylist, downloadPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };

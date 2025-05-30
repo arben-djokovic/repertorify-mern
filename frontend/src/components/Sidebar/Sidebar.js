@@ -7,6 +7,7 @@ import {
   faList,
   faMusic,
   faUser,
+  faThList
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
@@ -30,6 +31,10 @@ export default function Sidebar() {
       <Link onClick={() => setIsEllipsisOpen(false)} to="/playlists" className="navlink link">
         <FontAwesomeIcon icon={faList} />
         <p>Playlists</p>
+      </Link>
+      <Link onClick={() => setIsEllipsisOpen(false)} to="/genres" className="navlink link">
+        <FontAwesomeIcon icon={faThList} />
+        <p>Genres</p>
       </Link>
       {!isAuthenticated() ? <Link onClick={() => setIsEllipsisOpen(false)} to="/login" className="navlink link">
         <FontAwesomeIcon icon={faUser} />

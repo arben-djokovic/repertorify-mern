@@ -21,6 +21,8 @@ import EditPlaylist from "./pages/PlaylistForm/EditPlaylist";
 import EditSong from "./pages/SongForm/EditSong";
 import Artist from "./pages/Artist/Artist";
 import CreateGenre from "./pages/GenreForm/CreateGenre";
+import Genres from "./pages/Genres/Genres";
+import EditGenre from "./pages/GenreForm/EditGenre";
 
 function App() {
   const location = useLocation();
@@ -74,6 +76,8 @@ function App() {
             <Route path="/songs/:id/edit" element={<UserRoute><EditSong /></UserRoute>} />
             <Route path="/artists/:letter" element={<Artist />} />
             <Route path="/genre/create" element={<AdminRoute><CreateGenre /></AdminRoute>} />
+            <Route path="/genre/edit/:id" element={<AdminRoute><EditGenre /></AdminRoute>} />
+            <Route path="/genres" element={<AdminRoute><Genres /></AdminRoute>} />
             <Route path="/*" element={<>404</>} />
           </Routes>
         </div>
