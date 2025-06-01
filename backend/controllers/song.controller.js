@@ -78,7 +78,7 @@ const getSong = async (req, res) => {
                 const songs = playlist.songs;
                 const index = songs.findIndex(s => s._id.toString() === id);
 
-                if (index !== -1) {
+                if (index !== -1 && songs.length > 1) {
                     nextSong = index < songs.length - 1 ? songs[index + 1] : songs[0];
                     prevSong = index > 0 ? songs[index - 1] : songs[songs.length - 1];
                     while(randomSong === null || randomSong._id.toString() === id){
