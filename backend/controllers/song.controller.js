@@ -6,6 +6,7 @@ import PDFDocument from "pdfkit";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { createDiacriticRegex } from "../config/index.js";
+import mongoose from "mongoose";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -67,6 +68,7 @@ const addSong = async (req, res) => {
 const getSong = async (req, res) => {
     try{
         const { id, playlistId } = req.params;
+        if(!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: "Invalid id" });
         let playlist = null;
         const song = await Song.findById(id).populate("user").populate("genre");
         if(!song) return res.status(404).json({ success: false, message: "Song not found" });
@@ -74,6 +76,7 @@ const getSong = async (req, res) => {
         let prevSong = null;
         let randomSong = null;
         if (playlistId) {
+            if(!mongoose.isValidObjectId(playlistId)) return res.status(404).json({ success: false, message: "Invalid id" });
             playlist = await Playlist.findById(playlistId).populate("songs");
             if (playlist && playlist.songs.length > 0) {
                 const songs = playlist.songs;
@@ -171,7 +174,9 @@ const editSong = async (req, res) => {
 
 const downloadSong = async (req, res) => {
     try{
-        const song = await Song.findById(req.params.id);
+        const { id } = req.params;
+        if(!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: "Invalid id" });
+        const song = await Song.findById(id);
         if(!song) return res.status(404).json({ success: false, message: "Song not found" });
         const doc = new PDFDocument();
         res.setHeader("Content-Type", "application/pdf")
@@ -203,6 +208,7 @@ const getArtists = async (req, res) => {
 const getTopByArtists = async (req, res) => {
     try{
         const { songId } = req.params;
+        if(!mongoose.isValidObjectId(songId)) return res.status(404).json({ success: false, message: "Invalid id" });
         const { artist } = await Song.findById(songId);
         const artistRegex = createDiacriticRegex(artist);
         const songs = await Song.find({ artist: { $regex: String(artistRegex), $options: "i" } }).populate("user").populate("genre").sort({ addedToPlaylist: -1, _id: 1 }).limit(10);

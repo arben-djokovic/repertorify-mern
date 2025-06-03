@@ -7,6 +7,7 @@ import Song from "../models/song.model.js";
 import PDFDocument from "pdfkit";
 import path from "path";
 import { fileURLToPath } from 'url';
+import mongoose from "mongoose";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,6 +37,7 @@ const getAllPlaylists = async (req, res) => {
 const getPlaylist = async (req, res) => {
     try {
         const { id } = req.params;
+        if(!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: "Invalid id" });
         const playlist = await Playlist.findById({_id: id, isPublic: true}).populate("user").populate({path: "songs", populate: {path: "user",model: "User"}});;
         if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
         if(playlist.isPublic) return res.json({ success: true, playlist });
@@ -174,6 +176,7 @@ const removeFromPlaylist = async (req, res) => {
 const downloadPlaylist = async (req, res) => {
     try{
         const { id } = req.params;
+        if(!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: "Invalid id" });
         const playlist = await Playlist.findById(id).populate("user").populate("songs");
         if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
         const doc = new PDFDocument();

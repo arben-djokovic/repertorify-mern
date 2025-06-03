@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { mongooseErrors } from "../config/errors.js";
 import Genre from "../models/genre.model.js";
 
@@ -13,6 +14,7 @@ const getAllGenres = async (req, res) => {
 const getOneGenre = async (req, res) => {
     try {
         const { id } = req.params;
+        if(!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: "Invalid id" });
         const genre = await Genre.findById(id);
         res.json({ success: true, genre });
     } catch (error) {

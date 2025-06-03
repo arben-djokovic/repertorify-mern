@@ -73,6 +73,11 @@ axiosInstance.interceptors.response.use(
 
         if (error.response?.status === 403) toast.error("Forbidden Access");
 
+        if (error.response?.status === 404) {
+            //redirect to 404 page
+            window.location.href = "/404";
+        }
+
         return Promise.reject(error);
     }
 );

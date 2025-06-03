@@ -24,6 +24,7 @@ import CreateGenre from "./pages/GenreForm/CreateGenre";
 import Genres from "./pages/Genres/Genres";
 import EditGenre from "./pages/GenreForm/EditGenre";
 import WhatIsRepertorify from "./pages/WhatIsRepertorify/WhatIsRepertorify";
+import PageNotFound from "./pages/PageNotFound/PageNotFound";
 
 function App() {
   const location = useLocation();
@@ -80,7 +81,8 @@ function App() {
             <Route path="/genre/edit/:id" element={<AdminRoute><EditGenre /></AdminRoute>} />
             <Route path="/genres" element={<AdminRoute><Genres /></AdminRoute>} />
             <Route path="/about-us" element={<WhatIsRepertorify />} />
-            <Route path="/*" element={<>404</>} />
+            <Route path="/404" element={<PageNotFound />} />
+            <Route path="/*" element={<PageNotFound />} />
           </Routes>
         </div>
         <RightSidebar />
