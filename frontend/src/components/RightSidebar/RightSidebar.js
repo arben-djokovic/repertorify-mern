@@ -13,6 +13,7 @@ export default function RightSidebar() {
   const matchSonginPlaylistId = useMatch("/playlists/:id/songs/:id")
   let isSongView = matchSongId || matchSonginPlaylistId
 
+  
   const getTopFive = async() => {
     try{
       const response = await api.get('/playlists/top-five');
@@ -31,8 +32,8 @@ export default function RightSidebar() {
       console.log(err)
     }
   }
-
   useEffect(() => {
+    if(window.innerWidth <= 1000) return
     isSongView = matchSongId || matchSonginPlaylistId
     if(isSongView){
       getTopSongs()

@@ -23,6 +23,7 @@ import Artist from "./pages/Artist/Artist";
 import CreateGenre from "./pages/GenreForm/CreateGenre";
 import Genres from "./pages/Genres/Genres";
 import EditGenre from "./pages/GenreForm/EditGenre";
+import WhatIsRepertorify from "./pages/WhatIsRepertorify/WhatIsRepertorify";
 
 function App() {
   const location = useLocation();
@@ -78,6 +79,7 @@ function App() {
             <Route path="/genre/create" element={<AdminRoute><CreateGenre /></AdminRoute>} />
             <Route path="/genre/edit/:id" element={<AdminRoute><EditGenre /></AdminRoute>} />
             <Route path="/genres" element={<AdminRoute><Genres /></AdminRoute>} />
+            <Route path="/about-us" element={<WhatIsRepertorify />} />
             <Route path="/*" element={<>404</>} />
           </Routes>
         </div>

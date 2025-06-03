@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./song.scss";
 import {
     faArrowLeft,
@@ -36,6 +36,7 @@ export default function Song() {
   const [prevSong, setPrevSong] = useState(null);
   const [randomSong, setRandomSong] = useState(null);
   const [transposeSteps, setTransposeSteps] = useState(0);
+  const [playlistName, setPlaylistName] = useState(null);
 
   const chordRegex = /(?<!\S)([A-GH](#|b)?(?:maj|min|m|m7|maj7|dim|dim7|aug|sus2|sus4|add9|add11|7|6|9|11|13)?(?:\/[A-GH](#|b)?)?)(?!\S)/g;
   const chordMap = {
@@ -100,6 +101,7 @@ const transposeSong = (semitones) => {
         setNextSong(response.data.nextSong)
         setPrevSong(response.data.prevSong)
         setRandomSong(response.data.randomSong)
+        setPlaylistName(response.data.playlistName)
     }catch(err){
       toast.error('Something went wrong')
       console.log(err)
@@ -117,7 +119,7 @@ const transposeSong = (semitones) => {
         }
       }
     }catch(err){
-      toast.error('Something went wrong')
+      toast.error('Sometahing went wrong')
       console.log(err)
     }
   }
@@ -256,7 +258,7 @@ const transposeSong = (semitones) => {
       </div>
       <div className="songInfo">
         <h1 className="title">{song.title}</h1>
-        <p>{song.artist}</p>
+        <p className="artistName" onClick={() => navigate(`/songs?artist=${song.artist}`)}>{song.artist}</p>
         <div className="songsBtns">
           <button onClick={() => {handleTranspose("down");}}>
             <FontAwesomeIcon icon={faMinus} />

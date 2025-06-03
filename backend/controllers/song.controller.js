@@ -29,7 +29,7 @@ const getAllSongs = async (req, res) => {
         }
         if (artist) {
             const artistRegex = createDiacriticRegex(artist);
-            query.artist = { $regex: String(artistRegex), $options: "i" };
+            query.artist = { $regex: `^${artistRegex}$`, $options: "i" };
         }
 
         if (search) {
@@ -67,13 +67,14 @@ const addSong = async (req, res) => {
 const getSong = async (req, res) => {
     try{
         const { id, playlistId } = req.params;
+        let playlist = null;
         const song = await Song.findById(id).populate("user").populate("genre");
         if(!song) return res.status(404).json({ success: false, message: "Song not found" });
         let nextSong = null;
         let prevSong = null;
         let randomSong = null;
         if (playlistId) {
-            const playlist = await Playlist.findById(playlistId).populate("songs");
+            playlist = await Playlist.findById(playlistId).populate("songs");
             if (playlist && playlist.songs.length > 0) {
                 const songs = playlist.songs;
                 const index = songs.findIndex(s => s._id.toString() === id);
@@ -97,7 +98,7 @@ const getSong = async (req, res) => {
                 }
             }
         }
-        res.json({ success: true, song, nextSong, prevSong, randomSong });
+        res.json({ success: true, song, nextSong, prevSong, randomSong, playlistName: playlist ? playlist.name : null });
     }catch(err){
         mongooseErrors(err, res)
     }
