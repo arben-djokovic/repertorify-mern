@@ -78,7 +78,8 @@ const getSong = async (req, res) => {
         if (playlistId) {
             if(!mongoose.isValidObjectId(playlistId)) return res.status(404).json({ success: false, message: "Invalid id" });
             playlist = await Playlist.findById(playlistId).populate("songs");
-            if (playlist && playlist.songs.length > 0) {
+            if(!playlist) return res.status(404).json({ success: false, message: "Playlist not found" });
+            if (playlist.songs.length > 0) {
                 const songs = playlist.songs;
                 const index = songs.findIndex(s => s._id.toString() === id);
 

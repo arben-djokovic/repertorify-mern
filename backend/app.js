@@ -17,10 +17,17 @@ const __dirname = path.resolve()
 
 const app = express();
 
+app.use((req, res, next) => {
+  if (req.hostname === "repertoar-b0ck.onrender.com") {
+    return res.redirect(301, "https://repertorify.com" + req.originalUrl);
+  }
+  next();
+});
+
 app.use(helmet());
 
 app.use(cors({
-    origin: 'https://repertoar-b0ck.onrender.com',  // http://localhost:3000 https://repertoar-b0ck.onrender.com
+    origin: ['https://repertoar-b0ck.onrender.com', 'https://repertorify.com'],  // http://localhost:3000 https://repertoar-b0ck.onrender.com
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
