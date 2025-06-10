@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
         minLength: 3,
         maxLength: 10,
         trim: true,
-        lovercase: true
+        lowercase: true
     },
     hashedPassword: {
         type: String,
@@ -24,7 +24,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["user", "admin"],
         default: "user"
-    }
+    },
+    songSteps: [
+        {
+            songId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Song"
+            },
+            step: {
+                type: Number,
+                required: true,
+                min: -5,
+                max: 5
+            }
+        }
+    ]
 })
 
 const User = mongoose.model("User", userSchema);

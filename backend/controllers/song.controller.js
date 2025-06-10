@@ -7,6 +7,8 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { createDiacriticRegex } from "../config/index.js";
 import mongoose from "mongoose";
+import User from "../models/user.model.js";
+import { validateToken } from "../middlewares/middlewares.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -68,6 +70,7 @@ const addSong = async (req, res) => {
 const getSong = async (req, res) => {
     try{
         const { id, playlistId } = req.params;
+        let step = null
         if(!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: "Invalid id" });
         let playlist = null;
         const song = await Song.findById(id).populate("user").populate("genre");
@@ -102,7 +105,13 @@ const getSong = async (req, res) => {
                 }
             }
         }
-        res.json({ success: true, song, nextSong, prevSong, randomSong, playlistName: playlist ? playlist.name : null });
+        if(req.headers.authorization){
+            validateToken(req, res, (err) => { })
+            const user = await User.findById(req.user._id)
+            if(!user) return res.status(404).json({ success: false, message: "User not found" });
+            if(user.songSteps.find(s => s.songId.toString() === id)) step = user.songSteps.find(s => s.songId.toString() === id).step
+        }
+        res.json({ success: true, song, nextSong, prevSong, randomSong, playlistName: playlist ? playlist.name : null, step });
     }catch(err){
         mongooseErrors(err, res)
     }
@@ -218,4 +227,29 @@ const getTopByArtists = async (req, res) => {
         mongooseErrors(err, res)
     }
 }
-export { getAllSongs, addSong, getTopByArtists, getArtists, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };
+
+const changeStepToSong = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const { step } = req.body;
+        const user = req.user;
+        const userModel = await User.findById(user._id);
+        if(!userModel) return res.status(404).json({ success: false, message: "User not found" });
+
+        const existingStep = userModel.songSteps.find(s => s.songId.toString() === id);
+
+        if (existingStep) {
+            existingStep.step = step;
+        } else {
+            userModel.songSteps.push({ songId: id, step });
+        }
+
+        await userModel.save();
+        res.json({ success: true });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+
+export { getAllSongs, changeStepToSong, addSong, getTopByArtists, getArtists, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };

@@ -56,4 +56,4 @@ const getUserFromToken = (req) => {
     }
 }
 
-export { isValidId, adminRoute, userRoute, getUserFromToken };
+export { isValidId, adminRoute, userRoute, getUserFromToken, validateToken };

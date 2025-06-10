@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./song.scss";
 import {
     faArrowLeft,
@@ -17,9 +17,12 @@ import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
 import Modal from "../../components/Modal/Modal";
 import AreYouSure from "../../components/AreYouSure/AreYouSure";
+import { isAuthenticated } from "../../controllers/TokenController";
 
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
+  const upButtonRef = useRef();
+  const downButtonRef = useRef();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const navigate = useNavigate()
   const {id, playlistId} = useParams()
@@ -73,13 +76,25 @@ export default function Song() {
 
     return transposedRoot + suffix;
 };
-const transposeSong = (semitones) => {
+const transposeSong = async(semitones) => {
+  let transposeStepsTest = transposeSteps + semitones
   let songText = song.text;
   songText = songText.replace(chordRegex, (match) => transposeChord(match, semitones));
   setSong((prevSong) => ({ ...prevSong, text: songText }));
+  if(!isAuthenticated()) return checkStepenDisableButtons(transposeStepsTest)
+  try{
+    const response = await api.put(`/songs/${id}/step`, {step: transposeStepsTest})
+    console.log(response.data)
+    checkStepenDisableButtons(transposeStepsTest)
+  }catch(err){
+    console.log(err)
+    checkStepenDisableButtons(transposeStepsTest)
+  }
 };
 
   const handleTranspose = (direction) => {
+      downButtonRef.current.disabled = true;
+      upButtonRef.current.disabled = true;
     if (direction === "up" && transposeSteps < 5) {
       setTransposeSteps((prev) => prev + 1);
       transposeSong(1);
@@ -89,8 +104,21 @@ const transposeSong = (semitones) => {
     }
   };
 
+  const checkStepenDisableButtons = (step) => {
+    if (step === 5) {
+      downButtonRef.current.disabled = false;
+      upButtonRef.current.disabled = true;
+    } else if (step === -5) {
+      upButtonRef.current.disabled = false;
+      downButtonRef.current.disabled = true;
+    }else {
+      upButtonRef.current.disabled = false;
+      downButtonRef.current.disabled = false;
+    }
+  };
 
   const fetchSong = async() => {
+    let songText = song.text
     try{
       let url = '/songs/'+id
       if(playlistId) url = `/playlists/${playlistId}/songs/${id}`
@@ -102,6 +130,12 @@ const transposeSong = (semitones) => {
         setPrevSong(response.data.prevSong)
         setRandomSong(response.data.randomSong)
         setPlaylistName(response.data.playlistName)
+        if(response.data.step){
+          setTransposeSteps(response.data.step)
+          songText = response.data.song.text.replace(chordRegex, (match) => transposeChord(match, response.data.step));
+          setSong({...response.data.song, text: songText})
+          checkStepenDisableButtons(response.data.step)
+        }
     }catch(err){
       toast.error('Something went wrong')
       console.log(err)
@@ -260,11 +294,11 @@ const transposeSong = (semitones) => {
         <h1 className="title">{song.title}</h1>
         <p className="artistName" onClick={() => navigate(`/songs?artist=${song.artist}`)}>{song.artist}</p>
         <div className="songsBtns">
-          <button onClick={() => {handleTranspose("down");}}>
+          <button ref={downButtonRef} onClick={() => {handleTranspose("down");}}>
             <FontAwesomeIcon icon={faMinus} />
           </button>
           <p className="transpose">{transposeSteps}</p>
-          <button onClick={() => {handleTranspose("up");}}>
+          <button ref={upButtonRef} onClick={() => {handleTranspose("up");}}>
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
