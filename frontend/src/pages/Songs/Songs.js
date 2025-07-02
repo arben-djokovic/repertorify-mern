@@ -3,6 +3,7 @@ import "./songs.scss";
 import SongItem from "../../components/SongItem/SongItem";
 import api from "../../api/api";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export default function Songs() {
   const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
@@ -73,6 +74,13 @@ export default function Songs() {
   }, [])
   return (
     <section className="songs page pageContent">
+      <Helmet>
+        <title>Browse Songs with Guitar Chords | Repertorify</title>
+        <meta
+          name="description"
+          content="Explore songs complete with guitar chords and lyrics on Repertorify. Transpose with one click and find the perfect key for your voice."
+        />
+      </Helmet>
       <div className="songsHeader">
         <h1>Songs:</h1>
         <div className="genres">

@@ -7,6 +7,7 @@ import "./playlistForm.scss";
 import { toast } from "react-toastify";
 import api from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export default function CreatePlaylist() {
   const formRef = useRef(null)
@@ -53,6 +54,13 @@ export default function CreatePlaylist() {
 
   return (
     <div className="registrationPlaylist page pageContent">
+      <Helmet>
+        <title>Create a Playlist | Repertorify</title>
+        <meta
+          name="description"
+          content="Create your playlist with songs containing guitar chords and lyrics on Repertorify. Organize your personal songbook easily."
+        />
+      </Helmet>
       <div className="formDiv">
         <button onClick={createPlaylist} className="formBtnMobile">Create</button>
         <div className="slider">

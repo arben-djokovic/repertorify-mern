@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /profile
+Disallow: /login
+Disallow: /signup
+Disallow: /create-playlist
+Disallow: /add-song
+Disallow: /playlists/*/edit
+Disallow: /songs/*/edit
+Disallow: /genre/create
+Disallow: /genre/edit/*
+Disallow: /genres
+Disallow: /404
+Disallow: /admin
+Allow: /
+Sitemap: https://repertorify.com/sitemap.xml

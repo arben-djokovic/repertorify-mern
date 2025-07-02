@@ -4,6 +4,7 @@ import api from '../../api/api'
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from 'react';
+import { Helmet } from "react-helmet-async";
 
 export default function EditGenre() {
   const [genre, setGenre] = useState('');
@@ -51,6 +52,13 @@ export default function EditGenre() {
 
   return (
     <div className="registrationGenre page pageContent">
+      <Helmet>
+        <title>Edit Genre Details | Repertorify Admin</title>
+        <meta
+          name="description"
+          content="Update existing music genre information on Repertorify. Keep genres accurate and organized for a seamless user experience."
+        />
+      </Helmet>
       <div className="formDiv">
         <form
           onSubmit={(e) => {

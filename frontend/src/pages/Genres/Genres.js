@@ -8,6 +8,7 @@ import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import AreYouSure from '../../components/AreYouSure/AreYouSure';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Helmet } from "react-helmet-async";
 
 export default function Genres() {
   const [genres, setGenres] = useState([])
@@ -44,6 +45,13 @@ export default function Genres() {
   }, [])
   return (  
     <div className='genres'>
+      <Helmet>
+        <title>Genres | Repertorify</title>
+        <meta
+          name="description"
+          content="Manage and browse genres on Repertorify to find songs with guitar chords and lyrics by style and mood."
+        />
+      </Helmet>
       <Link to="/genre/create"><button>Add new genre</button></Link>
         <ul>
           {genres.map(genre => (

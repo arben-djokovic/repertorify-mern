@@ -6,6 +6,7 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import useToken from "../../controllers/TokenController";
+import { Helmet } from "react-helmet-async";
 
 export default function AddSong() {
   const { getDecodedToken } = useToken();
@@ -67,6 +68,13 @@ export default function AddSong() {
 
   return (
     <div className="registrationAddSong page pageContent">
+      <Helmet>
+        <title>Add Your Song with Guitar Chords | Repertorify</title>
+        <meta
+          name="description"
+          content="Share your music by adding songs with guitar chords and lyrics to Repertorify. Help others grow their songbook while showcasing your talent."
+        />
+      </Helmet>
       <div className="formDiv">
         <form
           onSubmit={(e) => {

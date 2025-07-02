@@ -4,6 +4,7 @@ import ProfileHeader from "../../components/Profile/ProfileHeader/ProfileHeader"
 import MySongs from "../../components/Profile/MySongs";
 import MyPlaylists from "../../components/Profile/MyPlaylists";
 import FavPlaylists from "../../components/Profile/FavPlaylists";
+import { Helmet } from "react-helmet-async";
 
 export default function Profile() {
 
@@ -11,6 +12,13 @@ export default function Profile() {
 
   return (
     <div className="page profile pageContent">
+      <Helmet>
+        <title>Your Profile | Repertorify</title>
+        <meta
+          name="description"
+          content="Manage your Repertorify profile, edit your playlists, and track your personal guitar songbook with ease."
+        />
+      </Helmet>
       <ProfileHeader />
       <div className="profileMain">
         <nav className="profileNav">

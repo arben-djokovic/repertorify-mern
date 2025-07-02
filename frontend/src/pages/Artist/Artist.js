@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './artist.scss'
 import { Link, useParams } from 'react-router-dom';
 import api from '../../api/api'
+import { Helmet } from "react-helmet-async";
+
 export default function Artist() {
     const { letter } = useParams()
     const [artists, setArtists] = useState([])
@@ -19,6 +21,13 @@ export default function Artist() {
     }, [window.location.href])
   return (
     <div className='artist page pageContent'>
+        <Helmet>
+            <title>Artists Starting with {letter.toUpperCase()} | Repertorify</title>
+            <meta
+                name="description"
+                content={`Browse artists starting with the letter ${letter.toUpperCase()} and discover their songs with guitar chords and lyrics on Repertorify.`}
+            />
+        </Helmet>
         <h1>{letter.toLocaleUpperCase()}</h1>
         <div className="artists">
             {artists.length ? artists.map(artist => (<Link to={`/songs?artist=${artist}`} className="artistItem">{artist}</Link>)) : "No artists found"}

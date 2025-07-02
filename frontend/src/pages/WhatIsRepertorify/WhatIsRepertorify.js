@@ -1,8 +1,16 @@
 import { Link } from 'react-router-dom'
 import './whatIsRepertorifty.scss'
+import { Helmet } from "react-helmet-async";
 
 export default function WhatIsRepertorify() {
     return (<div className='whatIsRepertorify'>
+        <Helmet>
+            <title>About Repertorify – Your Guitar Songbook</title>
+            <meta
+                name="description"
+                content="Learn more about Repertorify, the digital songbook for guitar chords and lyrics. Discover how you can build playlists and find songs easily."
+            />
+        </Helmet>
         <div className="about-container">
             <h1 className="about-title">🎸 Welcome to Repertorify</h1>
 

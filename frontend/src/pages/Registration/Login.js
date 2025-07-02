@@ -8,6 +8,7 @@ import api from "../../api/api";
 import { useDispatch } from "react-redux";
 import { setFavourites } from "../../redux/favourites";
 import useToken from "../../controllers/TokenController";
+import { Helmet } from "react-helmet-async";
 
 
 export default function Login() {
@@ -39,6 +40,13 @@ export default function Login() {
   };
   return (
     <div className="registration page pageContent">
+      <Helmet>
+        <title>Login to Repertorify</title>
+        <meta
+          name="description"
+          content="Login to Repertorify to create playlists, save your favorite songs with guitar chords, and manage your personal songbook."
+        />
+      </Helmet>
       <div className="formDiv">
         <FontAwesomeIcon className="icon" icon={faUser} />
         <form ref={formRef} onSubmit={(e) => {e.preventDefault();}}>

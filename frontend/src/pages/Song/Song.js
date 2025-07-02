@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import useToken from "../../controllers/TokenController";
 import Modal from "../../components/Modal/Modal";
 import AreYouSure from "../../components/AreYouSure/AreYouSure";
-import { isAuthenticated } from "../../controllers/TokenController";
+import { Helmet } from "react-helmet-async";
 
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
@@ -256,6 +256,13 @@ const transposeSong = async(semitones) => {
 
   return (<>
     <div className="song page pageContent">
+      <Helmet>
+        <title>{song ? `${song.title} - ${song.artist} Chords & Lyrics | Repertorify` : "Loading Song..."}</title>
+        <meta
+          name="description"
+          content={song ? `View ${song.title} - ${song.artist} with guitar chords and lyrics on Repertorify. Transpose easily and add to your songbook.` : "Loading song details on Repertorify."}
+        />
+      </Helmet>
       <div className="icons">
         <FontAwesomeIcon onClick={downloadSong} className="icon" icon={faFilePdf} />
         {isAuthenticated() && (

@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import SongItem from "../../components/SongItem/SongItem";
 import api from "../../api/api";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   const navigate = useNavigate()
@@ -28,6 +29,13 @@ export default function Home() {
 
   return (
     <div className="home page">
+      <Helmet>
+        <title>Repertorify – Guitar Chords, Lyrics & Songbook</title>
+        <meta
+          name="description"
+          content="Find songs with guitar chords and lyrics, transpose easily, and build your digital songbook on Repertorify. Start playing today."
+        />
+      </Helmet>
       <section className="swiperSection">
         <Swiper
           slidesPerView={3}

@@ -5,6 +5,7 @@ import "./registration.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../api/api";
+import { Helmet } from "react-helmet-async";
 
 export default function Signup() {
   const formRef = React.createRef();
@@ -70,6 +71,13 @@ export default function Signup() {
 
   return (
     <div className="registration page pageContent">
+      <Helmet>
+        <title>Create a Free Account | Repertorify</title>
+        <meta
+          name="description"
+          content="Create your free Repertorify account to start building playlists, add songs with guitar chords, and organize your digital songbook."
+        />
+      </Helmet>
       <div className="formDiv">
         <FontAwesomeIcon className="icon" icon={faUser} />
         <form ref={formRef} onSubmit={(e) => {e.preventDefault();}}>

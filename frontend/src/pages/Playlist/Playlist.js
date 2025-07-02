@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavourite, removeFavourite } from "../../redux/favourites";
 import AreYouSure from "../../components/AreYouSure/AreYouSure";
+import { Helmet } from "react-helmet-async";
 
 
 export default function Playlist() {
@@ -126,6 +127,13 @@ export default function Playlist() {
 
   return (<>
     <section className="playlist page pageContent">
+      <Helmet>
+        <title>{playlist ? `${playlist.name} Playlist | Repertorify` : "Loading Playlist..."}</title>
+        <meta
+          name="description"
+          content={playlist ? `Explore the ${playlist.name} playlist featuring songs with guitar chords and lyrics on Repertorify.` : "Loading playlist details on Repertorify."}
+        />
+      </Helmet>
       <div className="icons">
         {!isMine && <div className="icon">
         {isLiked ? <FontAwesomeIcon onClick={unLikePlaylists} id='heart' className='heart' icon={faHeart} /> :

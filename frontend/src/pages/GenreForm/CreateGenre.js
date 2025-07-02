@@ -3,6 +3,7 @@ import './genreForm.scss'
 import api from '../../api/api'
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export default function CreateGenre() {
   const [genre, setGenre] = useState('');
@@ -36,6 +37,13 @@ export default function CreateGenre() {
 
   return (
     <div className="registrationGenre page pageContent">
+      <Helmet>
+        <title>Create a New Genre | Repertorify Admin</title>
+        <meta
+          name="description"
+          content="Add a new music genre to Repertorify's catalog. Help organize songs and playlists by creating genres for better browsing and discovery."
+        />
+      </Helmet>
       <div className="formDiv">
         <form
           onSubmit={(e) => {
