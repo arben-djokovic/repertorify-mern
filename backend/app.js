@@ -11,6 +11,7 @@ import helmet from 'helmet'
 import xssClean from 'xss-clean'
 import hpp from 'hpp'
 import rateLimit from 'express-rate-limit'
+import { generateSiteMapFile } from './controllers/sitemap.controller.js'
  
 const __dirname = path.resolve()
 
@@ -54,6 +55,7 @@ app.use("/api", songsRoutes);
 app.use("/api", userRoutes);
 app.use("/api", genreRoutes);
 app.use("/api", playlistRoutes);
+app.get("/sitemap.xml", generateSiteMapFile)
 
 if(NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/frontend/build')))
