@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import api from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
 import useToken from "../../controllers/TokenController"
+import { Helmet } from "react-helmet-async";
 
 export default function EditPlaylist() {
   const formRef = useRef(null)
@@ -81,6 +82,19 @@ export default function EditPlaylist() {
 
   return (
     <div className="registrationPlaylist page pageContent">
+      <Helmet>
+        <title>{playlistName ? `Uredi plejlistu: ${playlistName} | Repertorify` : "Uredi plejlistu | Repertorify"}</title>
+        <meta
+          name="description"
+          content={playlistName ? `Uredi svoju plejlistu "${playlistName}" koja sadrži pjesme sa akordima na Repertorify.` : "Uredi svoju plejlistu na Repertorify."}
+        />
+        <meta property="og:title" content={playlistName ? `Uredi plejlistu: ${playlistName} | Repertorify` : "Uredi plejlistu | Repertorify"} />
+        <meta
+          property="og:description"
+          content={playlistName ? `Uredi svoju plejlistu "${playlistName}" koja sadrži pjesme sa akordima na Repertorify.` : "Uredi svoju plejlistu na Repertorify."}
+        />
+        <meta property="og:url" content={window.location.href} />
+      </Helmet>
       <div className="formDiv">
         <button onClick={editPlaylist} className="formBtnMobile">Edit playlist</button>
         <div className="slider">

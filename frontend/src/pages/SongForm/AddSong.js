@@ -69,11 +69,17 @@ export default function AddSong() {
   return (
     <div className="registrationAddSong page pageContent">
       <Helmet>
-        <title>Add Your Song with Guitar Chords | Repertorify</title>
+        <title>Dodaj svoju pjesmu sa akordima | Repertorify</title>
         <meta
           name="description"
-          content="Share your music by adding songs with guitar chords and lyrics to Repertorify. Help others grow their songbook while showcasing your talent."
+          content="Podijeli svoje pjesme sa akordima i tekstom na Repertorify. Pomozi drugima da prošire svoj repertoar i pokaži svoj talenat."
         />
+        <meta property="og:title" content="Dodaj svoju pjesmu sa akordima | Repertorify" />
+        <meta
+          property="og:description"
+          content="Podijeli svoje pjesme sa akordima i tekstom na Repertorify. Pomozi drugima da prošire svoj repertoar i pokaži svoj talenat."
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <div className="formDiv">
         <form

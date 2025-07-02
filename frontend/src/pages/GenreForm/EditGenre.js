@@ -53,11 +53,17 @@ export default function EditGenre() {
   return (
     <div className="registrationGenre page pageContent">
       <Helmet>
-        <title>Edit Genre Details | Repertorify Admin</title>
+        <title>Izmijeni detalje žanra | Repertorify Admin</title>
         <meta
           name="description"
-          content="Update existing music genre information on Repertorify. Keep genres accurate and organized for a seamless user experience."
+          content="Ažuriraj informacije o postojećem muzičkom žanru na Repertorify. Održavaj žanrove tačnim i urednim radi bolje korisničke podrške."
         />
+        <meta property="og:title" content="Izmijeni detalje žanra | Repertorify Admin" />
+        <meta
+          property="og:description"
+          content="Ažuriraj informacije o postojećem muzičkom žanru na Repertorify. Održavaj žanrove tačnim i urednim radi bolje korisničke podrške."
+        />
+        <meta property="og:url" content={`https://repertorify.com/genre/edit/${id}`} />
       </Helmet>
       <div className="formDiv">
         <form

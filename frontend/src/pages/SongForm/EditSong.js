@@ -6,6 +6,7 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import useToken from "../../controllers/TokenController";
+import { Helmet } from "react-helmet-async";
 
 export default function EditSong() {
   const { id } = useParams();
@@ -80,6 +81,19 @@ export default function EditSong() {
 
   return (
     <div className="registrationAddSong page pageContent">
+      <Helmet>
+        <title>Izmijeni pjesmu | Repertorify</title>
+        <meta
+          name="description"
+          content="Izmijeni detalje svoje pjesme na Repertorify. Održi svoj digitalni repertoar uvijek svježim."
+        />
+        <meta property="og:title" content="Izmijeni pjesmu | Repertorify" />
+        <meta
+          property="og:description"
+          content="Izmijeni detalje svoje pjesme na Repertorify. Održi svoj digitalni repertoar uvijek svježim."
+        />
+        <meta property="og:url" content={window.location.href} />
+      </Helmet>
       <div className="formDiv">
         <form
           onSubmit={(e) => {

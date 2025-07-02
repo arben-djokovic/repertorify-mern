@@ -55,11 +55,17 @@ export default function CreatePlaylist() {
   return (
     <div className="registrationPlaylist page pageContent">
       <Helmet>
-        <title>Create a Playlist | Repertorify</title>
+        <title>Napravi plejlistu | Repertorify</title>
         <meta
           name="description"
-          content="Create your playlist with songs containing guitar chords and lyrics on Repertorify. Organize your personal songbook easily."
+          content="Napravi svoju plejlistu sa pjesmama koje sadrže pjesme sa akordima na Repertorify. Lako organizuj svoj lični pjesmaricu."
         />
+        <meta property="og:title" content="Napravi plejlistu | Repertorify" />
+        <meta
+          property="og:description"
+          content="Napravi svoju plejlistu sa pjesmama koje sadrže pjesme sa akordima na Repertorify. Lako organizuj svoj lični pjesmaricu."
+        />
+        <meta property="og:url" content="https://repertorify.com/create-playlist" />
       </Helmet>
       <div className="formDiv">
         <button onClick={createPlaylist} className="formBtnMobile">Create</button>

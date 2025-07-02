@@ -72,11 +72,17 @@ export default function Signup() {
   return (
     <div className="registration page pageContent">
       <Helmet>
-        <title>Create a Free Account | Repertorify</title>
+        <title>Napravite besplatan nalog | Repertorify</title>
         <meta
           name="description"
-          content="Create your free Repertorify account to start building playlists, add songs with guitar chords, and organize your digital songbook."
+          content="Napravite besplatan nalog na Repertorify i počnite da kreirate plejliste, dodajete pjesme sa gitarom i organizujete svoj digitalni repertoar."
         />
+        <meta property="og:title" content="Napravite besplatan nalog | Repertorify" />
+        <meta
+          property="og:description"
+          content="Napravite besplatan nalog na Repertorify i počnite da kreirate plejliste, dodajete pjesme sa gitarom i organizujete svoj digitalni repertoar."
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <div className="formDiv">
         <FontAwesomeIcon className="icon" icon={faUser} />

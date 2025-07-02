@@ -30,11 +30,17 @@ export default function Home() {
   return (
     <div className="home page">
       <Helmet>
-        <title>Repertorify – Guitar Chords, Lyrics & Songbook</title>
+        <title>Repertorify – Najbolje pjesme sa akordima</title>
         <meta
           name="description"
-          content="Find songs with guitar chords and lyrics, transpose easily, and build your digital songbook on Repertorify. Start playing today."
+          content="Pronađi omiljene pjesme sa akordima, lako ih prilagodi i uživaj u sviranju uz Repertorify."
         />
+        <meta property="og:title" content="Repertorify – Najbolje pjesme sa akordima" />
+        <meta
+          property="og:description"
+          content="Pronađi omiljene pjesme sa akordima, lako ih prilagodi i uživaj u sviranju uz Repertorify."
+        />
+        <meta property="og:url" content="https://repertorify.com/" />
       </Helmet>
       <section className="swiperSection">
         <Swiper

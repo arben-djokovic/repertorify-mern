@@ -128,11 +128,17 @@ export default function Playlist() {
   return (<>
     <section className="playlist page pageContent">
       <Helmet>
-        <title>{playlist ? `${playlist.name} Playlist | Repertorify` : "Loading Playlist..."}</title>
+        <title>{playlist ? `${playlist.name} plejlista | Repertorify` : "Učitavanje plejliste..."}</title>
         <meta
           name="description"
-          content={playlist ? `Explore the ${playlist.name} playlist featuring songs with guitar chords and lyrics on Repertorify.` : "Loading playlist details on Repertorify."}
+          content={playlist ? `Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.` : "Učitavanje detalja plejliste na Repertorify."}
         />
+        <meta property="og:title" content={playlist ? `${playlist.name} plejlista | Repertorify` : "Učitavanje plejliste..."} />
+        <meta
+          property="og:description"
+          content={playlist ? `Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.` : "Učitavanje detalja plejliste na Repertorify."}
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <div className="icons">
         {!isMine && <div className="icon">

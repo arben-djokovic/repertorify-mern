@@ -13,11 +13,17 @@ export default function Profile() {
   return (
     <div className="page profile pageContent">
       <Helmet>
-        <title>Your Profile | Repertorify</title>
+        <title>Tvoj Profil | Repertorify</title>
         <meta
           name="description"
-          content="Manage your Repertorify profile, edit your playlists, and track your personal guitar songbook with ease."
+          content="Upravljaj svojim Repertorify profilom, uređuj plejliste i prati svoju ličnu kolekciju pjesama lako i brzo."
         />
+        <meta property="og:title" content="Tvoj Profil | Repertorify" />
+        <meta
+          property="og:description"
+          content="Upravljaj svojim Repertorify profilom, uređuj plejliste i prati svoju ličnu kolekciju pjesama lako i brzo."
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <ProfileHeader />
       <div className="profileMain">

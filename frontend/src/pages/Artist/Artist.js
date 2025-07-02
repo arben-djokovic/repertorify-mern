@@ -22,11 +22,17 @@ export default function Artist() {
   return (
     <div className='artist page pageContent'>
         <Helmet>
-            <title>Artists Starting with {letter.toUpperCase()} | Repertorify</title>
+            <title>Izvođači koji počinju sa slovom {letter.toUpperCase()} | Repertorify</title>
             <meta
                 name="description"
-                content={`Browse artists starting with the letter ${letter.toUpperCase()} and discover their songs with guitar chords and lyrics on Repertorify.`}
+                content={`Pregledaj izvođače čija imena počinju slovom ${letter.toUpperCase()} i pronađi njihove pjesme sa akordima i tekstovima na Repertorify.`}
             />
+            <meta property="og:title" content={`Izvođači koji počinju sa slovom ${letter.toUpperCase()} | Repertorify`} />
+            <meta
+                property="og:description"
+                content={`Pregledaj izvođače čija imena počinju slovom ${letter.toUpperCase()} i pronađi njihove pjesme sa akordima i tekstovima na Repertorify.`}
+            />
+            <meta property="og:url" content={`https://repertorify.com/artists/${letter}`} />
         </Helmet>
         <h1>{letter.toLocaleUpperCase()}</h1>
         <div className="artists">

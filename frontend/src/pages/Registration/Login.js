@@ -41,11 +41,17 @@ export default function Login() {
   return (
     <div className="registration page pageContent">
       <Helmet>
-        <title>Login to Repertorify</title>
+        <title>Prijavi se na Repertorify</title>
         <meta
           name="description"
-          content="Login to Repertorify to create playlists, save your favorite songs with guitar chords, and manage your personal songbook."
+          content="Prijavi se na Repertorify i kreiraj plejliste, sačuvaj omiljene pjesme sa gitarom i upravljaj svojim ličnim repertoarom."
         />
+        <meta property="og:title" content="Prijavi se na Repertorify" />
+        <meta
+          property="og:description"
+          content="Prijavi se na Repertorify i kreiraj plejliste, sačuvaj omiljene pjesme sa gitarom i upravljaj svojim ličnim repertoarom."
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <div className="formDiv">
         <FontAwesomeIcon className="icon" icon={faUser} />

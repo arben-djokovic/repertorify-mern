@@ -35,11 +35,17 @@ export default function Playlists() {
   return (
     <div className='playlists page pageContent'>
       <Helmet>
-        <title>Top Guitar Playlists from Repertorify Users</title>
+        <title>Najpopularnije plejliste korisnika Repertorify</title>
         <meta
           name="description"
-          content="Discover the most popular guitar playlists created by Repertorify users. Explore, play, and get inspired by curated collections of your favorite songs with chords and lyrics."
+          content="Otkrijte najpopularnije plejliste koje su kreirali korisnici Repertorify. Istražite, slušajte i inspirišite se pažljivo odabranim kolekcijama omiljenih pjesama sa akordima i tekstovima."
         />
+        <meta property="og:title" content="Najpopularnije plejliste korisnika Repertorify" />
+        <meta
+          property="og:description"
+          content="Otkrijte najpopularnije plejliste koje su kreirali korisnici Repertorify. Istražite, slušajte i inspirišite se pažljivo odabranim kolekcijama omiljenih pjesama sa akordima i tekstovima."
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <h1>Playlists:</h1>
       <div className="playlistsContent">

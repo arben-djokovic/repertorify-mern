@@ -46,11 +46,17 @@ export default function Genres() {
   return (  
     <div className='genres'>
       <Helmet>
-        <title>Genres | Repertorify</title>
+        <title>Žanrovi | Repertorify</title>
         <meta
           name="description"
-          content="Manage and browse genres on Repertorify to find songs with guitar chords and lyrics by style and mood."
+          content="Pregledaj i upravljaj žanrovima na Repertorify, i pronađi pjesme sa akordima i tekstovima po stilu i raspoloženju."
         />
+        <meta property="og:title" content="Žanrovi | Repertorify" />
+        <meta
+          property="og:description"
+          content="Pregledaj i upravljaj žanrovima na Repertorify, i pronađi pjesme sa akordima i tekstovima po stilu i raspoloženju."
+        />
+        <meta property="og:url" content="https://repertorify.com/genres" />
       </Helmet>
       <Link to="/genre/create"><button>Add new genre</button></Link>
         <ul>

@@ -38,11 +38,17 @@ export default function CreateGenre() {
   return (
     <div className="registrationGenre page pageContent">
       <Helmet>
-        <title>Create a New Genre | Repertorify Admin</title>
+        <title>Dodaj novi žanr | Repertorify Admin</title>
         <meta
           name="description"
-          content="Add a new music genre to Repertorify's catalog. Help organize songs and playlists by creating genres for better browsing and discovery."
+          content="Dodaj novi muzički žanr u Repertorify katalog. Pomozite da pjesme i plej-liste budu bolje organizovane i lakše za pronalaženje."
         />
+        <meta property="og:title" content="Dodaj novi žanr | Repertorify Admin" />
+        <meta
+          property="og:description"
+          content="Dodaj novi muzički žanr u Repertorify katalog. Pomozite da pjesme i plej-liste budu bolje organizovane i lakše za pronalaženje."
+        />
+        <meta property="og:url" content="https://repertorify.com/genre/create" />
       </Helmet>
       <div className="formDiv">
         <form

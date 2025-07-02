@@ -257,11 +257,17 @@ const transposeSong = async(semitones) => {
   return (<>
     <div className="song page pageContent">
       <Helmet>
-        <title>{song ? `${song.title} - ${song.artist} Chords & Lyrics | Repertorify` : "Loading Song..."}</title>
+        <title>{song ? `${song.title} - ${song.artist} Akordi i Tekst | Repertorify` : "Učitavam pjesmu..."}</title>
         <meta
           name="description"
-          content={song ? `View ${song.title} - ${song.artist} with guitar chords and lyrics on Repertorify. Transpose easily and add to your songbook.` : "Loading song details on Repertorify."}
+          content={song ? `"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.` : "Učitavam detalje pjesme na Repertorify."}
         />
+        <meta property="og:title" content={song ? `${song.title} - ${song.artist} Akordi i Tekst | Repertorify` : "Učitavam pjesmu..."} />
+        <meta
+          property="og:description"
+          content={song ? `"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.` : "Učitavam detalje pjesme na Repertorify."}
+        />
+        <meta property="og:url" content={window.location.href} />
       </Helmet>
       <div className="icons">
         <FontAwesomeIcon onClick={downloadSong} className="icon" icon={faFilePdf} />

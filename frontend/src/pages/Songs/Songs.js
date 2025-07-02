@@ -74,13 +74,19 @@ export default function Songs() {
   }, [])
   return (
     <section className="songs page pageContent">
-      <Helmet>
-        <title>Browse Songs with Guitar Chords | Repertorify</title>
-        <meta
-          name="description"
-          content="Explore songs complete with guitar chords and lyrics on Repertorify. Transpose with one click and find the perfect key for your voice."
-        />
-      </Helmet>
+    <Helmet>
+      <title>Pregledaj pjesme sa akordima | Repertorify</title>
+      <meta
+        name="description"
+        content="Pronađi pjesme sa akordima i tekstom, lako transponuj i prilagodi ton svom glasu na Repertorify."
+      />
+      <meta property="og:title" content="Pregledaj pjesme sa akordima | Repertorify" />
+      <meta
+        property="og:description"
+        content="Pronađi pjesme sa akordima i tekstom, lako transponuj i prilagodi ton svom glasu na Repertorify."
+      />
+      <meta property="og:url" content={window.location.href} />
+    </Helmet>
       <div className="songsHeader">
         <h1>Songs:</h1>
         <div className="genres">
