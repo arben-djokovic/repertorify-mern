@@ -61,7 +61,7 @@ export default function Login() {
             <Link to="/signup" className="link">Sign up</Link>
           </div>
           <div className="input">
-            <label htmlFor="username">Username/Email</label>
+            <label htmlFor="username">Username</label>
             <input type="text" id="username" name="username" />
           </div>
           <div className="input">

@@ -18,6 +18,8 @@ const __dirname = path.resolve()
 
 const app = express();
 
+app.set('trust proxy', true);
+
 app.use((req, res, next) => {
   if (req.hostname === "repertoar-b0ck.onrender.com") {
     return res.redirect(301, "https://repertorify.com" + req.originalUrl);
@@ -40,7 +42,7 @@ app.use(hpp());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 10000,
+    max: 1000,
     message: 'Too many requests from this IP, please try again later.'
 });
 app.use(limiter);
