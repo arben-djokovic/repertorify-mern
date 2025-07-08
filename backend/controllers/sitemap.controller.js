@@ -5,7 +5,7 @@ import Playlist from '../models/playlist.model.js';
 const generateSiteMapFile = async (req, res) => {
     try {
         const songs = await Song.find({});
-        const playlists = await Playlist.find({});
+        const playlists = await Playlist.find({isPublic: true});
 
         const baseUrl = 'https://repertorify.com';
 
