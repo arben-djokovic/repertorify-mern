@@ -53,7 +53,7 @@ const logIn = async (req, res) => {
         const numberOfPlaylists = await Playlist.countDocuments({ user: user._id });
 
         setTimeout(() => {
-            res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists, numberOfSongs, numberOfPlaylists });
+            res.json({ success: true, accessToken: generateAccessToken, favouritePlaylists: user.favouritePlaylists, numberOfSongs, numberOfPlaylists, user: user });
         }, 1000);
     }catch(err){
         mongooseErrors(err, res)
@@ -110,5 +110,13 @@ const logOut = async (req, res) => {
     }
 }
 
+const getUser = async (req, res) => {
+    try{
+        const user = await User.findById(req.params.id).populate("favouritePlaylists");
+        res.json({ success: true, user });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 
-export { getAllUsers, signUp, logIn, changeUsername, changePassword, refreshAccessToken, logOut };
+export { getAllUsers, getUser, signUp, logIn, changeUsername, changePassword, refreshAccessToken, logOut };

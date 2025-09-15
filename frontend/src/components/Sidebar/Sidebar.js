@@ -57,7 +57,7 @@ export default function Sidebar() {
           </p>
         </div>
         <Dropdown isEllipsisOpen={isEllipsisOpen} setIsEllipsisOpen={setIsEllipsisOpen}>
-            <Link to="/profile" className="ellipsisItem link">Profile</Link>
+            <Link to={"/user/"+localStorage.getItem("userid")} className="ellipsisItem link">Profile</Link>
             <Link to="/add-song" className="ellipsisItem link">Add Song</Link>
             <Link to="/create-playlist" className="ellipsisItem link">Create Playlist</Link>
             {isAdmin() && <Link to="/genre/create" className="ellipsisItem link">Create Genre</Link>}

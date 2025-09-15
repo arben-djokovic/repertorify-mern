@@ -59,6 +59,14 @@ const getMyPlaylists = async (req, res) => {
     }
 }
 
+const getUserPublicPlaylists = async (req, res) => {
+    try{
+        const response = await Playlist.find({user: req.params.id, isPublic: true}).populate("user").populate("songs").sort({ likes: -1, _id: 1 });
+        res.json({ success: true, playlists: response });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 const createPlaylist = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -211,4 +219,4 @@ const getTopFive = async (req, res) => {
     }
 }
 
-export { getAllPlaylists, addSongToPlaylists, removeFromPlaylist, getTopFive, createPlaylist, getPlaylist, downloadPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };
+export { getAllPlaylists, addSongToPlaylists, getUserPublicPlaylists, removeFromPlaylist, getTopFive, createPlaylist, getPlaylist, downloadPlaylist, getMyPlaylists, getFavouritePlaylists, likePlaylist, unlikePlaylist, deletePlaylist, editPlaylist };

@@ -30,7 +30,8 @@ app.use((req, res, next) => {
 app.use(helmet());
 
 app.use(cors({
-    origin: ['https://repertoar-b0ck.onrender.com', 'https://repertorify.com'],  // http://localhost:3000 https://repertoar-b0ck.onrender.com
+    origin: ['https://repertoar-b0ck.onrender.com', 'https://repertorify.com'], 
+    // origin: ['http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true

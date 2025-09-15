@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import api from '../../../api/api'
 import { toast } from 'react-toastify'
 
-export default function ProfileHeader() {
+export default function ProfileHeader({ user }) {
   const navigate = useNavigate() 
   const formRef = useRef()
   const [modalOpen, setModalOpen] = useState(false)
@@ -65,19 +65,20 @@ export default function ProfileHeader() {
     <FontAwesomeIcon className='userIcon link' icon={faUser} onClick={()=>{navigate("/profile")}} />
     <div className="userInfo">
       <div className="username">
-        <h1 onClick={()=>{navigate("/profile")}} className='link'>{localStorage.getItem("username")}</h1>
+        <h1 onClick={()=>{navigate("/profile")}} className='link'>{user.username}</h1>
       </div>
+      {user._id === localStorage.getItem("userid") && 
       <div className="info">
         <p>{localStorage.getItem("numberOfSongs") || "?"} songs</p>
         <span>-</span>
         <p>{localStorage.getItem("numberOfPlaylists") || "?"} playlists</p>
         <span>-</span>
         <p>{favourites.length} favourites</p>
-      </div>
+      </div>}
     </div>
-       <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} />
+    {user._id === localStorage.getItem("userid") && <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} />}
 
-    {modalOpen && <Modal setModalOpen={setModalOpen}>
+    {user._id === localStorage.getItem("userid") && modalOpen && <Modal setModalOpen={setModalOpen}>
       <div className="modalChangeProfile registration">
       <div className="formDiv">
         <FontAwesomeIcon className="icon" icon={faUser} />

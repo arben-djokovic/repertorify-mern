@@ -66,7 +66,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/songs" element={<Songs />} />
             <Route path="/playlists" element={<Playlists />} />
-            <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
+            <Route path="/user/:id" element={<Profile />} />
             <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
             <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />
             <Route path="/create-playlist" element={<UserRoute><CreatePlaylist /></UserRoute>} />

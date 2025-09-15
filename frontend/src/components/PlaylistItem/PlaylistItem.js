@@ -73,7 +73,7 @@ export default function PlaylistItem({playlist, i}) {
             <p className='username'>{playlist.user.username} - {playlist.songs.length} songs</p>
         </div>
         <div className='greaterThan'>
-            <FontAwesomeIcon  icon={faGreaterThan} /> 
+            {/* <FontAwesomeIcon  icon={faGreaterThan} />  */}
         </div>
     </div>
 </motion.div>)

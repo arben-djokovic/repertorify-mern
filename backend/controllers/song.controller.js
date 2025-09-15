@@ -107,6 +107,7 @@ const getSong = async (req, res) => {
         }
         if(req.headers.authorization){
             validateToken(req, res, (err) => { })
+            if(req?.user?._id) return
             const user = await User.findById(req.user._id)
             if(!user) return res.status(404).json({ success: false, message: "User not found" });
             if(user.songSteps.find(s => s.songId.toString() === id)) step = user.songSteps.find(s => s.songId.toString() === id).step
@@ -153,9 +154,9 @@ const deleteSong = async (req, res) => {
     }
 };
 
-const getMySongs = async (req, res) => {
+const getUserSongs = async (req, res) => {
     try{
-        const userId = req.user._id;
+        const userId = req.params.id;
         const songs = await Song.find({ user: userId }).populate("user").populate("genre").sort({ addedToPlaylist: -1, _id: 1 });
         res.json({ success: true, songs});
     }catch(err){
@@ -252,4 +253,4 @@ const changeStepToSong = async (req, res) => {
 }
 
 
-export { getAllSongs, changeStepToSong, addSong, getTopByArtists, getArtists, getSong, deleteSong, getMySongs, getHomeSongs, downloadSong, editSong };
+export { getAllSongs, changeStepToSong, addSong, getTopByArtists, getArtists, getSong, deleteSong, getUserSongs, getHomeSongs, downloadSong, editSong };

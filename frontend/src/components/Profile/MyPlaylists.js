@@ -4,10 +4,21 @@ import { Link } from "react-router-dom";
 import PlaylistItem from "../PlaylistItem/PlaylistItem";
 import api from "../../api/api";
 
-export default function MyPlaylists() {
+export default function MyPlaylists({ userId}) {
   const [playlists, setPlaylists] = useState([]);
 
   const fetchPlaylists = async () => {
+    try{
+      const response = await api.get("/playlists/user/" + userId);
+      if(response.data.success){
+        setPlaylists(response.data.playlists)
+        console.log(response.data.playlists)
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
+    const fetchMyPlaylists = async () => {
     try{
       const response = await api.get("/playlists/my");
       if(response.data.success){
@@ -20,17 +31,21 @@ export default function MyPlaylists() {
   }
   
   useEffect(() => {
-    fetchPlaylists()
+    if(userId == localStorage.getItem("userid")) {
+      fetchMyPlaylists()
+    }else{
+      fetchPlaylists()
+    }
   }, [])
   return (
     <section className="myPlaylists">
       <div className="list">
-        {playlists.length > 0 && <Link to={"/create-playlist"} className="addItemBtn">
+        {playlists.length > 0 && userId == localStorage.getItem("userid") && <Link to={"/create-playlist"} className="addItemBtn">
           <img src="/assets/plus.png" alt="" />
         </Link>}
         {playlists.length > 0 ? playlists.map((playlist, i) => (
           <PlaylistItem playlist={playlist} isMine={true} className={i} key={i} i={i} />
-        )) : <p className="noPlaylists">No playlists found - <Link to={"/create-playlist"} className="link linkcolor">Create a playlist</Link></p>}
+        )) : <p className="noPlaylists">No playlists found</p>}
       </div>
     </section>
   );

@@ -28,7 +28,7 @@ export default function Login() {
       console.log(response)
       if(response.data.success) {
         dispatch(setFavourites(response.data.favouritePlaylists || []))
-        login(response.data.accessToken, response.data.numberOfSongs, response.data.numberOfPlaylists)
+        login(response.data.accessToken, response.data.numberOfSongs, response.data.numberOfPlaylists, response.data.user)
         navigate("/")
       }else{
         toast.error("Wrong username or password")

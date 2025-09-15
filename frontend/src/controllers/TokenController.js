@@ -9,14 +9,15 @@ export default function useToken() {
   const navigate = useNavigate()
 
   const getToken = () => localStorage.getItem("token");
-  const login = (token, numberOfSongs, numberOfPlaylists) => {
+  const login = (token, numberOfSongs, numberOfPlaylists, user) => {
     localStorage.setItem("token", token);
     if(numberOfSongs !== undefined && numberOfSongs !== null){
-        localStorage.setItem("numberOfSongs", numberOfSongs);
+      localStorage.setItem("numberOfSongs", numberOfSongs);
     }
     if(numberOfPlaylists !== undefined && numberOfPlaylists !== null){
-        localStorage.setItem("numberOfPlaylists", numberOfPlaylists);
+      localStorage.setItem("numberOfPlaylists", numberOfPlaylists);
     }
+    localStorage.setItem("userid", user._id);
     localStorage.setItem("username", getDecodedToken().username);
   };
   const logout = async() => {

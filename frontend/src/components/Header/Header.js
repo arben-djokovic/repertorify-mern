@@ -27,7 +27,7 @@ export default function Header() {
         <section className="top">
             <Link to="/about-us">What is Repertorify? </Link>
             {isAuthenticated() ? <div className="sign">
-                <Link to="/profile">{localStorage.getItem("username")}</Link>
+                <Link to={"/user/"+localStorage.getItem("userid")}>{localStorage.getItem("username")}</Link>
                 <span> | </span>
                 <Link onClick={()=>{logout()}} className='delete'>Log out</Link>
             </div> :<div className="sign">
