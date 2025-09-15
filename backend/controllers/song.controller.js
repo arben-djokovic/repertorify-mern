@@ -107,7 +107,9 @@ const getSong = async (req, res) => {
         }
         if(req.headers.authorization){
             validateToken(req, res, (err) => { })
-            if(req?.user?._id) return
+            if(req?.user?._id) {
+                if(!user) return res.status(404).json({ success: false, message: "User not found" });
+            }
             const user = await User.findById(req.user._id)
             if(!user) return res.status(404).json({ success: false, message: "User not found" });
             if(user.songSteps.find(s => s.songId.toString() === id)) step = user.songSteps.find(s => s.songId.toString() === id).step
