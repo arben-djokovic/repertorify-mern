@@ -4,6 +4,7 @@ import api from '../../api/api'
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useMatch } from "react-router-dom";
+import PlaylistItem from '../PlaylistItem/PlaylistItem'
 
 export default function RightSidebar() {
   const [topFivePlaylists, setTopFivePlaylists] = useState([])
@@ -47,11 +48,11 @@ export default function RightSidebar() {
       <div className="rightSidebarFilter">
         <ul className="custom-list">
           {!isSongView && topFivePlaylists.map((playlist, i) => {
-            return <Link to={`/playlists/${playlist._id}`} key={i}><li className="playlist-item" key={i}>{playlist.name}</li></Link>
+            return <PlaylistItem isMobile={true} playlist={playlist} key={i} i={i} />
           })}
-          {isSongView && topSongs.map((song, i) => {
-            return <Link to={`/songs/${song._id}`} key={i}><li className="song-item" key={i}>{song.title}</li></Link>
-          })}
+          {isSongView && <><h6>Songs from same artist</h6>{topSongs.map((song, i) => {
+            return <Link to={`/songs/${song._id}`} id={`a${i}`} key={i}><li className="song-item" key={i}>{song.title}</li></Link>
+          })}</>}
         </ul>
       </div>
     </div>

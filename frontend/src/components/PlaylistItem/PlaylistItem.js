@@ -1,23 +1,9 @@
-import React from 'react'
 import "./playlistItem.scss"
-import { faGreaterThan, faHeart,  } from '@fortawesome/free-solid-svg-icons'
-import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import api from '../../api/api'
-import { toast } from 'react-toastify'
-import { useDispatch, useSelector } from 'react-redux'
-import { addFavourite, removeFavourite } from '../../redux/favourites'
-import useToken from '../../controllers/TokenController';
 
-export default function PlaylistItem({playlist, i}) {
-    const { getDecodedToken, isAuthenticated } = useToken();
-    const dispatch = useDispatch()
+export default function PlaylistItem({playlist, i, isMobile}) {
     const navigate = useNavigate()
-    const isMine = getDecodedToken()?.username === playlist.user.username
-    const { favourites } = useSelector(state => state.favourites)
-    let isLiked = favourites.includes(playlist._id)
     
 
     const playlistClick = (e) => {
@@ -63,7 +49,7 @@ export default function PlaylistItem({playlist, i}) {
     //     }
     // }
 
-  return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1, duration: 0.3 }} className="playlistItem link" onClick={playlistClick}>
+  return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1, duration: 0.3 }} className={isMobile ? "playlistItem playlistItemMobile link" : "playlistItem link"} onClick={playlistClick}>
     <div className="img">
         <img src={`/assets/${playlist.imageLocation}`} alt="" />
     </div>

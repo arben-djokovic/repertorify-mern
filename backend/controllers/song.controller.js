@@ -107,12 +107,11 @@ const getSong = async (req, res) => {
         }
         if(req.headers.authorization){
             validateToken(req, res, (err) => { })
-            if(req?.user?._id) {
-                if(!user) return res.status(404).json({ success: false, message: "User not found" });
+            if(req?.user?._id){
+                const user = await User.findById(req.user._id)
+                if(!user) return;
+                if(user.songSteps.find(s => s.songId.toString() === id)) step = user.songSteps.find(s => s.songId.toString() === id).step
             }
-            const user = await User.findById(req.user._id)
-            if(!user) return res.status(404).json({ success: false, message: "User not found" });
-            if(user.songSteps.find(s => s.songId.toString() === id)) step = user.songSteps.find(s => s.songId.toString() === id).step
         }
         res.json({ success: true, song, nextSong, prevSong, randomSong, playlistName: playlist ? playlist.name : null, step });
     }catch(err){
@@ -224,7 +223,7 @@ const getTopByArtists = async (req, res) => {
         if(!mongoose.isValidObjectId(songId)) return res.status(404).json({ success: false, message: "Invalid id" });
         const { artist } = await Song.findById(songId);
         const artistRegex = createDiacriticRegex(artist);
-        const songs = await Song.find({ artist: { $regex: String(artistRegex), $options: "i" } }).populate("user").populate("genre").sort({ addedToPlaylist: -1, _id: 1 }).limit(10);
+        const songs = await Song.find({ artist: { $regex: String(artistRegex), $options: "i" } }).populate("user").populate("genre").sort({ addedToPlaylist: -1, _id: 1 }).limit(50);
         res.json({ success: true, songs });
     }catch(err){
         mongooseErrors(err, res)

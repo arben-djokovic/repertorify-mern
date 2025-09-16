@@ -212,7 +212,7 @@ const downloadPlaylist = async (req, res) => {
 
 const getTopFive = async (req, res) => {
     try{
-        const playlists = await Playlist.find({ isPublic: true }).sort({ likes: -1 }).limit(5)
+        const playlists = await Playlist.find({ isPublic: true }).populate("user").sort({ likes: -1 }).limit(5)
         res.json({ success: true, playlists });
     }catch(err){
         mongooseErrors(err, res)

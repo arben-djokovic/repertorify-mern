@@ -1,44 +1,42 @@
 .rightSidebar{
     width: 180px;
-    padding: 20px;
+    padding: 20px 10px;
 }
 .custom-list {
     list-style: none; 
     padding: 0;
     margin: 0;
+    h6{
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+      width: 100%;
+    }
   }
   
-  .custom-list .playlist-item {
-    justify-content: center;
-    background-color: #D9D9D9; 
-    color: #000000; 
-    padding: 10px 15px; 
-    border-radius: 15px; 
-    margin-bottom: 10px;
-    font-size: 13px; 
-    font-family: Arial, sans-serif; 
-    display: flex; 
-    align-items: center; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-    transition: transform 0.2s ease, box-shadow 0.2s ease; 
-  }
-  .custom-list .playlist-item:hover {
-    border: 1px solid black; 
-    transform: translateY(-2px); 
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); 
+  .custom-list .playlistItem {
+    margin-bottom: 3px;
   }
 
   .custom-list .song-item{
     justify-content: center;
-    color: rgb(43, 109, 196); 
+    color: black; 
     border-radius: 15px; 
-    margin-bottom: 10px;
-    font-size: 13px; 
+    margin-bottom: 3px;
+    font-size: 9px; 
+    padding: 7px 3px;
+    text-align: center;
     font-family: Arial, sans-serif; 
-    text-decoration: underline;
+    background-color: white;
+    font-weight: bold;
     &:hover{
       cursor: pointer;
     }
+  }
+  .custom-list [id^="a"]:nth-child(odd) .song-item{
+    background-color: #5b8ea8cf;
+    color: white;
   }
 
 @media (max-width: 1000px) {
