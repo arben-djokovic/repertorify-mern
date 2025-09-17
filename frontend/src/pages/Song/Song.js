@@ -30,6 +30,10 @@ export default function Song() {
     title: "Loading...",
     text: "Loading...",
     artist: "Loading...",
+    user: {
+      username: "Loading...",
+      _id: "Loading..."
+    }
   });
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
@@ -319,11 +323,14 @@ const transposeSong = async(semitones) => {
             className="text"
             dangerouslySetInnerHTML={{ __html: highlightChords(song.text) }}
           ></pre>
-        <div className="arrows">
-          <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />
-          <FontAwesomeIcon onClick={goToRandomSong} className="shuffle link" icon={faShuffle} />
-          <FontAwesomeIcon onClick={goToNextSong} className="arrow moreBtn link" icon={faArrowRight} />
-        </div>
+          <div className="bottom">
+            <div className="arrows">
+              <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />
+              <FontAwesomeIcon onClick={goToRandomSong} className="shuffle link" icon={faShuffle} />
+              <FontAwesomeIcon onClick={goToNextSong} className="arrow moreBtn link" icon={faArrowRight} />
+            </div>
+            <div className="creator">Created by <span onClick={() => navigate(`/user/${song.user._id}`)} className="username">{song.user.username}</span></div>
+          </div>
       </div>
     </div>
     {addToPlaylistOpen && (
