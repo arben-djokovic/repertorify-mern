@@ -4,6 +4,8 @@ import SongItem from "../../components/SongItem/SongItem";
 import api from "../../api/api";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { faArrowCircleLeft, faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Songs() {
   const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
@@ -17,6 +19,7 @@ export default function Songs() {
   const [search, setSearch] = useState((searchFromUrl) ? searchFromUrl : '')
   const [genre, setGenre] = useState((genreFromUrl) ? genreFromUrl : '')
   const [songsPerPage, setSongsPerPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
 
   const navigate = useNavigate()
 
@@ -38,7 +41,10 @@ export default function Songs() {
       const respone = await api.get("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
       console.log(respone.data);
       setSongs(respone.data.songs);
+      console.log(respone.data.songs.length);
       setHaveMore(respone.data.hasMore);
+      console.log(respone.data.hasMore);
+      setTotalPages(respone.data.totalPages)
       if(songsPerPage === 0){
         setSongsPerPage(respone.data.songs.length)
       }
@@ -55,6 +61,17 @@ export default function Songs() {
 
   const showMore = () => {
     setPage( (prevPage) => prevPage + 1)
+    const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
+    const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
+    const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
+    navigate("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
+  }
+  const showLess = () => {
+    setPage( (prevPage) => prevPage - 1)
+    const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
+    const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
+    const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
+    navigate("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
   }
 
   useEffect(() => {
@@ -66,10 +83,13 @@ export default function Songs() {
 
     fetchSongs()
 
+    window.scrollTo(0, 0);
+
   }, [window.location.href, page])
 
 
   useEffect(() => {
+    
     fetchGenres()
   }, [])
   return (
@@ -116,7 +136,11 @@ export default function Songs() {
           <SongItem song={song} key={i} i={i2} />
         )}) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
       </div>
-      {haveMore && <button onClick={showMore} to="/songs" className="moreBtn">Show more...</button>}
+      <div className="icons">
+        <button disabled={page === 1} onClick={showLess}><FontAwesomeIcon className="icon" icon={faArrowCircleLeft} /></button>
+        <p className="pageNo">{page} / {totalPages}</p>
+        <button disabled={!haveMore} onClick={showMore}><FontAwesomeIcon className="icon" icon={faArrowCircleRight} /></button>
+      </div>
     </section>
   );
 }

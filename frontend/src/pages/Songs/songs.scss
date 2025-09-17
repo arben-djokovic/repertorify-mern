@@ -49,6 +49,20 @@
             width: auto;
         }
     }
+    .icons{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        grid-gap: 2vw;
+        margin-top: 20px;
+        .icon{
+            cursor: pointer;
+            height: 27px;
+        }
+        button:disabled{
+            opacity: .5;
+        }
+    }
     .moreBtn{
         margin-top: 10px;
     }

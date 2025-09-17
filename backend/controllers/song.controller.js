@@ -20,7 +20,8 @@ const songsPerLoad = SONGS_PER_PAGE;
 const getAllSongs = async (req, res) => {
     try{
         const page = parseInt(req.query.page) || 1;
-        const limit = page * songsPerLoad;
+        const limit = songsPerLoad;
+        const skip = (page - 1) * songsPerLoad;
         const genre = req.query.genre || ""; 
         const search = req.query.search || "";
         const artist = req.query.artist || "";
@@ -48,10 +49,13 @@ const getAllSongs = async (req, res) => {
             .populate("user")
             .populate("genre")
             .sort({ addedToPlaylist: -1, _id: 1 })
+            .skip(skip)
             .limit(limit);
         
         const totalSongs = await Song.countDocuments(query);
-        res.status(200).json({ success: true, songs, hasMore: totalSongs > limit });
+        let hasMore = totalSongs > Number(skip) + Number(limit);
+        let totalPages = Math.ceil(totalSongs / songsPerLoad);
+        res.status(200).json({ success: true, songs, hasMore, totalPages });
     }catch(err){
         mongooseErrors(err, res)
     }
