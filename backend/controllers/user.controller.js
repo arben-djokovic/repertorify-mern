@@ -119,4 +119,22 @@ const getUser = async (req, res) => {
     }
 }
 
-export { getAllUsers, getUser, signUp, logIn, changeUsername, changePassword, refreshAccessToken, logOut };
+const blockUser = async (req, res) => {
+    try{
+        const response = await User.findByIdAndUpdate(req.params.id, { isBlocked: true }, { new: true });
+        res.json({ success: true, user: response });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+const unblockUser = async (req, res) => {
+    try{
+        const response = await User.findByIdAndUpdate(req.params.id, { isBlocked: false }, { new: true });
+        res.json({ success: true, user: response });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
+
+export { getAllUsers, getUser, signUp, logIn, changeUsername, changePassword, unblockUser, refreshAccessToken, logOut, blockUser };

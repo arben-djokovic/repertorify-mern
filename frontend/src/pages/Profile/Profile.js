@@ -44,7 +44,7 @@ export default function Profile() {
         />
         <meta property="og:url" content={window.location.href} />
       </Helmet>
-      <ProfileHeader user={user} />
+      <ProfileHeader setUser={setUser} user={user} />
       <div className="profileMain">
         <nav className="profileNav">
           <ul>

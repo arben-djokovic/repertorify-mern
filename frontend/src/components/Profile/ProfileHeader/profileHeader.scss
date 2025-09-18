@@ -49,6 +49,35 @@
         width: 100%;
         justify-content: space-around;
     }
+    .block{
+        font-size: 13px;
+        align-self: center;
+        justify-self: flex-end;
+        margin-left: auto;
+        cursor: pointer;
+        background-color: red;
+        padding: 6px 10px;
+        color: white;
+        border-radius: 10px;
+        border: 2px solid rgb(255, 162, 0);
+        &:hover{
+            opacity: .8;
+        }
+    }
+    .unblock{
+        font-size: 13px;
+        align-self: center;
+        justify-self: flex-end;
+        margin-left: auto;
+        cursor: pointer;
+        background-color: darkslategrey;
+        padding: 6px 10px;
+        color: white;
+        border-radius: 10px;
+        &:hover{
+            opacity: .8;
+        }
+    }
 }
 
 @media (max-width: 1170px) {

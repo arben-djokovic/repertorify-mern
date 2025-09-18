@@ -8,15 +8,43 @@ import '../../../pages/Registration/registration.scss'
 import { useSelector } from 'react-redux'
 import api from '../../../api/api'
 import { toast } from 'react-toastify'
+import  isAdmin  from '../../../controllers/TokenController'
+import AreYouSure from '../../AreYouSure/AreYouSure'
 
-export default function ProfileHeader({ user }) {
+export default function ProfileHeader({ user, setUser }) {
   const navigate = useNavigate() 
   const formRef = useRef()
   const [modalOpen, setModalOpen] = useState(false)
   const [isChangePassword, setIsChangePassword] = useState(false)
+  const [areYouSure, setAreYouSure] = useState(false)
+  const [areYouSure2, setAreYouSure2] = useState(false)
   const favourites = useSelector(state => state.favourites.favourites)
   const openModal = () => {
     setModalOpen(true)
+  }
+
+  const blockUser = async() => {
+    try{
+      const response = await api.put("/users/block/" + user._id)
+      if(response.data.success){
+        setUser(response.data.user)
+        toast.success("User blocked")
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const unblockUser = async() => {
+    try{
+      const response = await api.put("/users/unblock/" + user._id)
+      if(response.data.success){
+        setUser(response.data.user)
+        toast.success("User unblocked")
+      }
+    }catch(err){
+      console.log(err)
+    }
   }
 
   const changeMe = async() => {
@@ -76,7 +104,7 @@ export default function ProfileHeader({ user }) {
         <p>{favourites.length} favourites</p>
       </div>}
     </div>
-    {user._id === localStorage.getItem("userid") && <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} />}
+    {user._id === localStorage.getItem("userid") ? <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} /> : (user?.isBlocked ? <div onClick={()=> setAreYouSure2(true)} className='unblock'>unblock</div> : <div onClick={()=> setAreYouSure(true)} className='block'>block</div>)}
 
     {user._id === localStorage.getItem("userid") && modalOpen && <Modal setModalOpen={setModalOpen}>
       <div className="modalChangeProfile registration">
@@ -111,6 +139,9 @@ export default function ProfileHeader({ user }) {
       </div>
       </div>
       </Modal>}
+
+    {isAdmin() && user._id !== localStorage.getItem("userid") && areYouSure && <AreYouSure setModalOpen={setAreYouSure} onYes={blockUser}/>}
+    {isAdmin() && user._id !== localStorage.getItem("userid") && areYouSure2 && <AreYouSure setModalOpen={setAreYouSure2} onYes={unblockUser}/>}
   </section>
   )
 }
