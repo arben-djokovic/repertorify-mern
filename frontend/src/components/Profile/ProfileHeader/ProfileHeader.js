@@ -8,10 +8,11 @@ import '../../../pages/Registration/registration.scss'
 import { useSelector } from 'react-redux'
 import api from '../../../api/api'
 import { toast } from 'react-toastify'
-import  isAdmin  from '../../../controllers/TokenController'
 import AreYouSure from '../../AreYouSure/AreYouSure'
+import useToken from "../../../controllers/TokenController";
 
 export default function ProfileHeader({ user, setUser }) {
+  const { isAdmin } = useToken();
   const navigate = useNavigate() 
   const formRef = useRef()
   const [modalOpen, setModalOpen] = useState(false)
@@ -28,7 +29,6 @@ export default function ProfileHeader({ user, setUser }) {
       const response = await api.put("/users/block/" + user._id)
       if(response.data.success){
         setUser(response.data.user)
-        toast.success("User blocked")
       }
     }catch(err){
       console.log(err)
@@ -40,7 +40,6 @@ export default function ProfileHeader({ user, setUser }) {
       const response = await api.put("/users/unblock/" + user._id)
       if(response.data.success){
         setUser(response.data.user)
-        toast.success("User unblocked")
       }
     }catch(err){
       console.log(err)
@@ -104,7 +103,7 @@ export default function ProfileHeader({ user, setUser }) {
         <p>{favourites.length} favourites</p>
       </div>}
     </div>
-    {user._id === localStorage.getItem("userid") ? <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} /> : (user?.isBlocked ? <div onClick={()=> setAreYouSure2(true)} className='unblock'>unblock</div> : <div onClick={()=> setAreYouSure(true)} className='block'>block</div>)}
+    {user._id === localStorage.getItem("userid") ? <FontAwesomeIcon onClick={openModal} className='userPenIcon link' icon={faUserPen} /> : (isAdmin() ? (user?.isBlocked ? <div onClick={()=> setAreYouSure2(true)} className='unblock'>unblock</div> : <div onClick={()=> setAreYouSure(true)} className='block'>block</div>) : <></>)}
 
     {user._id === localStorage.getItem("userid") && modalOpen && <Modal setModalOpen={setModalOpen}>
       <div className="modalChangeProfile registration">
