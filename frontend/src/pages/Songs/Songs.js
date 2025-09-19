@@ -10,12 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function Songs() {
   const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
   const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
-  
+  let pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
   
   const [songs, setSongs] = useState([]);
   const [genres, setGenres] = useState([])
   const [haveMore, setHaveMore] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState((pageFromUrl && pageFromUrl > 0) ? Number(pageFromUrl) : 1);
   const [search, setSearch] = useState((searchFromUrl) ? searchFromUrl : '')
   const [genre, setGenre] = useState((genreFromUrl) ? genreFromUrl : '')
   const [songsPerPage, setSongsPerPage] = useState(0)
@@ -37,13 +37,17 @@ export default function Songs() {
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
+    let pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
+    if(pageFromUrl){
+      setPage(pageFromUrl)
+    }else{
+      pageFromUrl = 1;
+      setPage(1)
+    }
     try {
-      const respone = await api.get("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
-      console.log(respone.data);
+      const respone = await api.get("/songs?page=" + pageFromUrl + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
       setSongs(respone.data.songs);
-      console.log(respone.data.songs.length);
       setHaveMore(respone.data.hasMore);
-      console.log(respone.data.hasMore);
       setTotalPages(respone.data.totalPages)
       if(songsPerPage === 0){
         setSongsPerPage(respone.data.songs.length)
@@ -64,14 +68,14 @@ export default function Songs() {
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
-    navigate("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
+    navigate("/songs?page=" + (Number(page) + 1) + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
   }
   const showLess = () => {
     setPage( (prevPage) => prevPage - 1)
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
-    navigate("/songs?page=" + page + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
+    navigate("/songs?page=" + (Number(page) - 1) + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
   }
 
   useEffect(() => {
@@ -88,8 +92,7 @@ export default function Songs() {
   }, [window.location.href, page])
 
 
-  useEffect(() => {
-    
+  useEffect(() => {  
     fetchGenres()
   }, [])
   return (
@@ -137,7 +140,7 @@ export default function Songs() {
         )}) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
       </div>
       <div className="icons">
-        <button disabled={page === 1} onClick={showLess}><FontAwesomeIcon className="icon" icon={faArrowCircleLeft} /></button>
+        <button disabled={Number(page) <= 1} onClick={showLess}><FontAwesomeIcon className="icon" icon={faArrowCircleLeft} /></button>
         <p className="pageNo">{page} / {totalPages}</p>
         <button disabled={!haveMore} onClick={showMore}><FontAwesomeIcon className="icon" icon={faArrowCircleRight} /></button>
       </div>

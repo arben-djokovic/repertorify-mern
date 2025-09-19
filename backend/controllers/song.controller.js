@@ -20,6 +20,7 @@ const songsPerLoad = SONGS_PER_PAGE;
 const getAllSongs = async (req, res) => {
     try{
         const page = parseInt(req.query.page) || 1;
+        if(page < 1) return res.status(404).json({ success: false, message: "Invalid page number" });
         const limit = songsPerLoad;
         const skip = (page - 1) * songsPerLoad;
         const genre = req.query.genre || ""; 
