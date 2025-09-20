@@ -63,7 +63,8 @@ function App() {
         </form>
         <div className="mainContent">
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} /> */}
+            <Route path="/" element={<Songs />} />
             <Route path="/songs" element={<Songs />} />
             <Route path="/playlists" element={<Playlists />} />
             <Route path="/user/:id" element={<Profile />} />

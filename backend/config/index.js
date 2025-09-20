@@ -40,4 +40,39 @@ const createDiacriticRegex = (str) => {
         .join("");
 };
 
-export { createDiacriticRegex };
+  const chordRegex =
+    /(?<!\S)([A-GH](#|b)?(?:maj|min|m|m7|maj7|dim|dim7|aug|sus2|sus4|add9|add11|7|6|9|11|13)?(?:\/[A-GH](#|b)?)?)(?!\S)/g;
+  const chordMap = {
+    C: 0,
+    "C#": 1,
+    D: 2,
+    "D#": 3,
+    E: 4,
+    F: 5,
+    "F#": 6,
+    G: 7,
+    "G#": 8,
+    A: 9,
+    B: 10,
+    H: 11,
+  };
+  const transposeChord = (chord, semitones) => {
+    const rootMatch = chord.match(/^([A-GH](#|b)?)/);
+    if (!rootMatch) return chord;
+
+    const root = rootMatch[0];
+    const suffix = chord.substring(root.length);
+    const currentVal = chordMap[root];
+
+    if (currentVal === undefined) return chord;
+
+    const transposedVal = (currentVal + semitones + 12) % 12;
+    const transposedRoot = reverseChordMap[transposedVal];
+
+    return transposedRoot + suffix;
+  };
+    const reverseChordMap = Object.fromEntries(
+    Object.entries(chordMap).map(([chord, value]) => [value, chord])
+  );
+  
+export { createDiacriticRegex, chordRegex, transposeChord, reverseChordMap, chordMap };
