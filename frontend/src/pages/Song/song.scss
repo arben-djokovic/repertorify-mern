@@ -8,8 +8,24 @@
     display: flex;
     flex-direction: column;
     grid-gap: 10px;
+    .top{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .playlistName{
+        font-style: italic;
+        font-size: 13px;
+        .playlistNameSpan{
+            margin-right: auto;
+            color: #0390FC;
+            cursor: pointer;
+            &:hover{
+                opacity: .8;
+            }
+        }
+    }
     .icons{
-        align-self: flex-end;
         display: flex;
         align-items: center;
         grid-gap: 15px;

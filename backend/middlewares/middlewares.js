@@ -40,6 +40,8 @@ const userRoute = (req, res, next) => {
         const user = req.user;
         if (user?.role !== "user" && user?.role !== "admin") {
             return res.status(403).json({ success: false, message: "You are not a user." });
+        }else if (user.isBlocked) {
+            return res.status(403).json({ success: false, message: "You are blocked." });
         }
         next();
     });

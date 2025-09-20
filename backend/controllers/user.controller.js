@@ -37,8 +37,8 @@ const logIn = async (req, res) => {
         const isValid = await bcrypt.compare(password, user.hashedPassword);
         if(!isValid) return res.json({ success: false, message: "Wrong password" });
 
-        const generateRefreshToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "7d" })
-        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role }, JWT_SECRET, { expiresIn: "12h" })
+        const generateRefreshToken = jwt.sign({ _id: user._id,  username, role: user.role, isBlocked: user?.isBlocked }, JWT_SECRET, { expiresIn: "7d" })
+        const generateAccessToken = jwt.sign({ _id: user._id,  username, role: user.role, isBlocked: user?.isBlocked }, JWT_SECRET, { expiresIn: "12h" })
 
         res.cookie("refreshToken", generateRefreshToken, {
             httpOnly: true,

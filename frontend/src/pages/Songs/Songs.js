@@ -38,7 +38,7 @@ export default function Songs() {
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
     let pageFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('page'))[0]?.split('=')[1]
-    if(pageFromUrl){
+    if(pageFromUrl && pageFromUrl > 0){
       setPage(pageFromUrl)
     }else{
       pageFromUrl = 1;
@@ -49,6 +49,9 @@ export default function Songs() {
       setSongs(respone.data.songs);
       setHaveMore(respone.data.hasMore);
       setTotalPages(respone.data.totalPages)
+      if(page > respone.data.totalPages){
+        navigate('/songs?page=' + respone.data.totalPages + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
+      }
       if(songsPerPage === 0){
         setSongsPerPage(respone.data.songs.length)
       }

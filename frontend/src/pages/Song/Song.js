@@ -35,6 +35,7 @@ export default function Song() {
       _id: "Loading..."
     }
   });
+  const [playlist, setPlaylist] = useState({});
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
@@ -258,6 +259,22 @@ const transposeSong = async(semitones) => {
     setTransposeSteps(0);
   }, [window.location.href])
 
+  useEffect(() => {
+    if(!playlistId) return
+    const fetchPlaylist = async () => {
+      try {
+        const response = await api.get(`/playlists/${playlistId}`);
+        console.log(response);
+        if (response.data.success) {
+          setPlaylist(response.data.playlist);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchPlaylist();
+  }, [playlistId])
+
   return (<>
     <div className="song page pageContent">
       <Helmet>
@@ -273,39 +290,42 @@ const transposeSong = async(semitones) => {
         />
         <meta property="og:url" content={window.location.href} />
       </Helmet>
-      <div className="icons">
-        <FontAwesomeIcon onClick={downloadSong} className="icon" icon={faFilePdf} />
-        {isAuthenticated() && (
-          <>
-            <FontAwesomeIcon
-              id="icon"
-              onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
-              icon={faEllipsisV}
-            />
-            {isEllipsisOpen && (
-              <Dropdown
-                isEllipsisOpen={isEllipsisOpen}
-                setIsEllipsisOpen={setIsEllipsisOpen}
-              >
-                <p onClick={() => setAddToPlaylistOpen(true)} id="ellipsisItem" className="ellipsisItem link">
-                  Add to playlist
-                </p>
-                {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
-                <Link to={`/songs/${id}/edit`} id="ellipsisItem" className="ellipsisItem link">
-                  Edit
-                </Link>
-                <p
-                  id="ellipsisItem"
-                  onClick={()=>{setDeleteModalOpen(true)}}
-                  className="ellipsisItem link delete"
+      <div className="top">
+        {(playlist && playlistId) ? <p className="playlistName">In playlist: <span className="playlistNameSpan" onClick={() => navigate(`/playlists/${playlist._id}`)}>{playlist.name}</span></p> : <span></span>}
+        <div className="icons">
+          <FontAwesomeIcon onClick={downloadSong} className="icon" icon={faFilePdf} />
+          {isAuthenticated() && (
+            <>
+              <FontAwesomeIcon
+                id="icon"
+                onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
+                icon={faEllipsisV}
+              />
+              {isEllipsisOpen && (
+                <Dropdown
+                  isEllipsisOpen={isEllipsisOpen}
+                  setIsEllipsisOpen={setIsEllipsisOpen}
                 >
-                  Delete
-                </p>
-                </>)}
-              </Dropdown>
-            )}
-          </>
-        )}
+                  <p onClick={() => setAddToPlaylistOpen(true)} id="ellipsisItem" className="ellipsisItem link">
+                    Add to playlist
+                  </p>
+                  {(isAdmin() || song.user.username === localStorage.getItem("username")) && (<>
+                  <Link to={`/songs/${id}/edit`} id="ellipsisItem" className="ellipsisItem link">
+                    Edit
+                  </Link>
+                  <p
+                    id="ellipsisItem"
+                    onClick={()=>{setDeleteModalOpen(true)}}
+                    className="ellipsisItem link delete"
+                  >
+                    Delete
+                  </p>
+                  </>)}
+                </Dropdown>
+              )}
+            </>
+          )}
+        </div>
       </div>
       <div className="songInfo">
         <h1 className="title">{song.title}</h1>
@@ -322,7 +342,7 @@ const transposeSong = async(semitones) => {
         <pre
             className="text"
             dangerouslySetInnerHTML={{ __html: highlightChords(song.text) }}
-          ></pre>
+          ></pre> 
           <div className="bottom">
             <div className="arrows">
               <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />

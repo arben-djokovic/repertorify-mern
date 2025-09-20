@@ -72,11 +72,19 @@ axiosInstance.interceptors.response.use(
             });
         }
 
-        if (error.response?.status === 403) toast.error("Forbidden Access");
+        if (error.response?.status === 403) {
+            if(error.response?.data?.message) {
+                toast.error(error.response.data.message)
+            }
+            else{
+                toast.error("Forbidden Access")
+            }
+        }
 
         if (error.response?.status === 404) {
             //redirect to 404 page
-            window.location.href = "/404";
+            console.log(error.response);
+            // window.location.href = "/404";
         }
 
         return Promise.reject(error);
