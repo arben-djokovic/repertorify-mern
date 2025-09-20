@@ -56,8 +56,21 @@
             margin-bottom: 20px;
             font-weight: normal;
         }
+        .deleteBtn{
+            font-size: 13px;;
+            cursor: pointer;
+            padding: 6px 10px;
+            color: white;
+            border-radius: 10px;
+            margin-right: auto;
+            background-color: rgba(255, 0, 0, 0.77);
+            margin-bottom: 20px;
+            &:hover{
+                opacity: .8;
+            }
+        }
         .listSongs{
-          margin-bottom: 20px;
+            margin-bottom: 20px;
           width: 100%;
           display: flex;
           flex-direction: column;

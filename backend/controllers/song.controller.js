@@ -258,5 +258,14 @@ const changeStepToSong = async (req, res) => {
     }
 }
 
+const deleteAllSongsFromUser = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const response = await Song.deleteMany({ user: id });
+        res.json({ success: true, response });
+    }catch(err){
+        mongooseErrors(err, res)
+    }
+}
 
-export { getAllSongs, changeStepToSong, addSong, getTopByArtists, getArtists, getSong, deleteSong, getUserSongs, getHomeSongs, downloadSong, editSong };
+export { getAllSongs, changeStepToSong, addSong, getTopByArtists, getArtists, getSong, deleteSong, deleteAllSongsFromUser, getUserSongs, getHomeSongs, downloadSong, editSong };
