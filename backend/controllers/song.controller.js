@@ -121,9 +121,12 @@ const getSong = async (req, res) => {
         }
       }
     }
+    let tokenFailure = false;
     if (req.headers.authorization) {
-      validateToken(req, res, (err) => {});
-      if (req?.user?._id) {
+      validateToken(req, res, (err) => {
+        if (err) tokenFailure = true;
+      });
+      if (req?.user?._id && !tokenFailure) {
         const user = await User.findById(req.user._id);
         if (!user) return;
         if (user.songSteps.find((s) => s.songId.toString() === id))

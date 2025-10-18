@@ -12,31 +12,31 @@ const isValidId = (req, res, next) => {
 const validateToken = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-        return res.status(401).json({ success: false, message: "No token provided" });
+        // return error that can be caught in this function
+        return next(new Error("You are not logged in."));
     }
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decodedToken;
         next();
     } catch (error) {
-        return res.status(401).json({ success: false, message: "Invalid token" });
+        console.warn("Invalid token:", error.message);
+        next();
     }
 };
 
 const adminRoute = (req, res, next) => {
-    validateToken(req, res, (err) => {
-        if (err) return; 
+        if (err) return res.status(403).json({ success: false, message: "You are not logged in." }); 
         const user = req.user;
         if (user?.role !== "admin") {
             return res.status(403).json({ success: false, message: "You are not an admin." });
         }
         next();
-    });
 };
 
 const userRoute = (req, res, next) => {
     validateToken(req, res, (err) => {
-        if (err) return; 
+        if (err) return res.status(403).json({ success: false, message: "You are not logged in." }); 
         const user = req.user;
         if (user?.role !== "user" && user?.role !== "admin") {
             return res.status(403).json({ success: false, message: "You are not a user." });

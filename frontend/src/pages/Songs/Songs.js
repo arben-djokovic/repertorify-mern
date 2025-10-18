@@ -67,14 +67,15 @@ export default function Songs() {
   }
 
   const showMore = () => {
-    setPage( (prevPage) => prevPage + 1)
+    // setPage( (prevPage) => prevPage + 1)
+
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
     navigate("/songs?page=" + (Number(page) + 1) + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
   }
   const showLess = () => {
-    setPage( (prevPage) => prevPage - 1)
+    // setPage( (prevPage) => prevPage - 1)
     const searchFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('search'))[0]?.split('=')[1]
     const genreFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('genre'))[0]?.split('=')[1]
     const artistFromUrl = window.location.search.slice(1).split(/[&?]/).filter(el => el.includes('artist'))[0]?.split('=')[1]
