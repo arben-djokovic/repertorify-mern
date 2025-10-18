@@ -26,12 +26,14 @@ const validateToken = (req, res, next) => {
 };
 
 const adminRoute = (req, res, next) => {
+    validateToken(req, res, (err) => {
         if (err) return res.status(403).json({ success: false, message: "You are not logged in." }); 
         const user = req.user;
         if (user?.role !== "admin") {
-            return res.status(403).json({ success: false, message: "You are not an admin." });
+            return res.status(403).json({ success: false, message: "You are not a admin." });
         }
         next();
+    });
 };
 
 const userRoute = (req, res, next) => {
