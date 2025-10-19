@@ -129,7 +129,7 @@ export default function Songs() {
         </div>
       </div>
       <div className="songsList">
-        {songs.length > 0 && <Link to={"/add-song"} className="addItemBtn">
+        {songs.length > 0 && <Link to={"/add-song"} className="addItemBtn addItemBtnSongs">
             <img src="/assets/plus.png" alt="" />
         </Link>}
         {songs.length > 0 ? songs.map((song, i) => {
