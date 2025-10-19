@@ -21,9 +21,10 @@
           padding: 10px;
         }
         input{
-          border: 1px solid gray;
-            width: 70%;
-            max-width: 300px;
+          border: 1px solid lightgray;
+          width: 70%;
+          max-width: 300px;
+          border-right: none;
         }
         .searchBtn{
             background-color: #FF9800;
@@ -36,7 +37,7 @@
         border-radius: 0;
         width: 18px;
         height: 37px;
-        border: 1px solid gray;
+        border: 1px solid lightgray;
       }
     }
   

@@ -17,6 +17,10 @@
       scale: 1.01;
       .title{
         color: #006FEA;
+        .artistTitle{
+          color: #006FEA;
+          font-weight: normal;
+        }
       }
     }
     &.active { 
@@ -40,11 +44,15 @@
       display: flex;
       white-space: nowrap;
       overflow: hidden; 
-      grid-gap: 3px;
+      grid-gap: 2px;
       flex-direction: column;
       .artistTitle{
-        font-family: 'Courier New', Courier, monospace;
+        // font-family: 'Courier New', Courier, monospace;
+        // font-weight: bold;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        color: darkgray !important;
         font-size: 12px;
+        letter-spacing: 1px;
       }
       span{
         flex-shrink: 0;
@@ -53,7 +61,7 @@
     .right{
       display: flex;
       align-items: center;
-      color: #3a3a3a;
+      color: gray;
       .username{
         margin-right: 15px;
         font-size: 12px;
@@ -85,9 +93,10 @@
 // }
 .rightSide{
   .title{
-    font-size: 13px;
+    font-size: 1px;
     .artistTitle{
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: bold !important;
     }
   }
   .musicIcon{
@@ -140,12 +149,13 @@
       flex-direction: column;
       grid-gap: 2px;
       overflow: auto;
-      font-size: 12px !important;
+      font-size: 12px;
       .line{
         display: none;
       }
-      span:last-of-type{
-        color: #3a3a3a;
+    }
+    .right{
+      .username{
         font-size: 10px;
       }
     }
