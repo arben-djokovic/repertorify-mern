@@ -307,7 +307,7 @@ const getTopByArtists = async (req, res) => {
       .populate("user")
       .populate("genre")
       .sort({ addedToPlaylist: -1, _id: 1 })
-      .limit(50);
+      .limit(20);
     res.json({ success: true, songs });
   } catch (err) {
     mongooseErrors(err, res);

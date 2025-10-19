@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useMatch } from "react-router-dom";
 import PlaylistItem from '../PlaylistItem/PlaylistItem'
+import SongItem from "../SongItem/SongItem";
 
 export default function RightSidebar() {
   const [topFivePlaylists, setTopFivePlaylists] = useState([])
@@ -51,7 +52,7 @@ export default function RightSidebar() {
             return <PlaylistItem isMobile={true} playlist={playlist} key={i} i={i} />
           })}
           {isSongView && <><h6>Songs from same artist</h6>{topSongs.map((song, i) => {
-            return <Link to={`/songs/${song._id}`} id={`a${i}`} key={i}><li className="song-item" key={i}>{song.title}</li></Link>
+            return <SongItem isRightSide={true} song={song} key={i} i={i} />
           })}</>}
         </ul>
       </div>

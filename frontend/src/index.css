@@ -1,5 +1,5 @@
 body, html{
-  background-color: #F1F1F1;
+  /* background-color: #F1F1F1; */
   height: 100%;
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
@@ -24,7 +24,7 @@ body, html{
   font-size: 18px;
 }
 .delete{
-  color: rgb(255, 158, 158) !important;
+  color: rgb(255, 100, 100) !important;
 }
 .pageContent{
   max-width: 1020px;
@@ -35,7 +35,7 @@ a, button, .link{
   text-decoration: none;
 }
 a:hover, button:hover, .link:hover{
-  opacity: 0.8;
+  opacity: 0.7;
 }
 input, button, select{
   border: none;
@@ -50,18 +50,19 @@ h1,h2,h3,h4,h5,h6{
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 15px;
-  background-color: #D9D9D9;
+  /* border-radius: 15px; */
+  background-color: white;
   font-size: 14px;
   margin-top: 18px;
   margin: 15px 13px;
-  margin-bottom: auto;
   width: calc(13vw - 26px);
   min-width: calc(155px - 26px);
   max-width: calc(190px - 26px);
   height: 10.5vw;
   min-height: 120px;
   max-height: 160px;
+  border: 1px solid gray;
+  border-radius: 0;
 }
 label{
     font-size: 13px;
@@ -105,9 +106,21 @@ label{
       height: 60px;
       margin: 0;
       min-height: unset;
+      width: 100%;
+      max-width: unset;
+      max-height: unset;
+      min-height: unset;
+      min-width: unset;
+      height: 38px;
+      margin: 0;
+      padding: 5px 0;
+      border-radius: 10px;
+      margin-bottom: 0px;
   }
   .addItemBtn img{
     width: 30px;
+    height: 100%;
+    width: auto;
   }
 }
 

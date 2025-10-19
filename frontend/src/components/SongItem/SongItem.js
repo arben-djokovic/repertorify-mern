@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./songItem.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import Dropdown from "../Dropdown/Dropdown";
 import { motion } from "framer-motion";
@@ -12,7 +12,8 @@ import Modal from "../Modal/Modal";
 import { get, set } from "mongoose";
 import AreYouSure from "../AreYouSure/AreYouSure";
 
-export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId }) {
+
+export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId, isRightSide }) {
   const { isAuthenticated, isAdmin, getDecodedToken } = useToken();
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
@@ -128,65 +129,72 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
         ref={songRef}
         className={`${i % 2 !== 0 ? "songitem" : "songitem2"} ${
           isEllipsisOpen ? "active " : "link"
-        }`}
+        } ${isRightSide ? "rightSide" : ""}
+        ${window.location.href.includes(song._id) ? "active" : ""}
+        `}
       >
-        <p className="title">
-          <span>{song.title}</span> <span className="line">-</span>{" "}
-          <span>{song.artist}</span>{" "}
-        </p>
-        <div className="right">
-          <p className="username">({song.user.username})</p>
-          {isAuthenticated() && (
-            <>
-              <FontAwesomeIcon
-                id="icon"
-                className={`${i}`}
-                onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
-                icon={faEllipsis}
-              />
-              {isEllipsisOpen && (
-                <Dropdown
-                  i={i}
-                  isEllipsisOpen={isEllipsisOpen}
-                  setIsEllipsisOpen={setIsEllipsisOpen}
-                >
-                  <p
-                    onClick={() => {
-                      setAddToPlaylistOpen(true);
-                    }}
-                    id="ellipsisItem"
-                    className="ellipsisItem link"
-                  >
-                    Add to playlist
-                  </p>
-                  { playlistUserId && inPlaylist && (isAdmin() || playlistUserId === getDecodedToken()?._id) && (
-                    <p id="ellipsisItem" className="ellipsisItem link delete" onClick={()=>{setRemoveFromPlaylistModal(true)}}>Remove from playlist</p>
-                  )}
-                  {(isAdmin() ||
-                    song.user.username ===
-                      localStorage.getItem("username")) && (
-                    <>
-                      <Link
-                        to={"/songs/" + song._id + "/edit"}
-                        id="ellipsisItem"
-                        className="ellipsisItem link"
-                      >
-                        Edit
-                      </Link>
-                      <p
-                        id="ellipsisItem"
-                        onClick={()=>{setDeleteModalOpen(true)}}
-                        className="ellipsisItem link delete"
-                      >
-                        Delete
-                      </p>
-                    </>
-                  )}
-                </Dropdown>
-              )}
-            </>
-          )}
+        <div className={`left`}>
+          <FontAwesomeIcon className="musicIcon" icon={faMusic} />
+          <p className="title">
+            <span>{song.title}</span>
+            <span className="artistTitle">{song.artist}</span>
+          </p>
         </div>
+        {!isRightSide && <>
+          <div className="right">
+            <p className="username">({song.user.username})</p>
+            {isAuthenticated() && (
+              <>
+                <FontAwesomeIcon
+                  id="icon"
+                  className={`${i}`}
+                  onClick={(e) => setIsEllipsisOpen(!isEllipsisOpen)}
+                  icon={faEllipsis}
+                />
+                {isEllipsisOpen && (
+                  <Dropdown
+                    i={i}
+                    isEllipsisOpen={isEllipsisOpen}
+                    setIsEllipsisOpen={setIsEllipsisOpen}
+                  >
+                    <p
+                      onClick={() => {
+                        setAddToPlaylistOpen(true);
+                      }}
+                      id="ellipsisItem"
+                      className="ellipsisItem link"
+                    >
+                      Add to playlist
+                    </p>
+                    { playlistUserId && inPlaylist && (isAdmin() || playlistUserId === getDecodedToken()?._id) && (
+                      <p id="ellipsisItem" className="ellipsisItem link delete" onClick={()=>{setRemoveFromPlaylistModal(true)}}>Remove from playlist</p>
+                    )}
+                    {(isAdmin() ||
+                      song.user.username ===
+                        localStorage.getItem("username")) && (
+                      <>
+                        <Link
+                          to={"/songs/" + song._id + "/edit"}
+                          id="ellipsisItem"
+                          className="ellipsisItem link"
+                        >
+                          Edit
+                        </Link>
+                        <p
+                          id="ellipsisItem"
+                          onClick={()=>{setDeleteModalOpen(true)}}
+                          className="ellipsisItem link delete"
+                        >
+                          Delete
+                        </p>
+                      </>
+                    )}
+                  </Dropdown>
+                )}
+              </>
+            )}
+          </div>
+        </>}
       </motion.div>
       {addToPlaylistOpen && (
         <Modal setModalOpen={setAddToPlaylistOpen}>
