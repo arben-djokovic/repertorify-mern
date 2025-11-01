@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 app.use(helmet());
 
 app.use(cors({
-    origin: ['https://repertoar-b0ck.onrender.com', 'https://repertorify.com'], 
+    origin: ['https://repertoar-b0ck.onrender.com', 'https://repertorify.com', 'https://radnik-app.vercel.app'], 
     // origin: ['http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
