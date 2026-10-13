@@ -8,10 +8,10 @@ import playlistRoutes from "./routes/playlist.routes.js";
 import path from 'path'
 import { NODE_ENV } from "./config/index.js";
 import helmet from 'helmet'
-import xssClean from 'xss-clean'
 import hpp from 'hpp'
 import rateLimit from 'express-rate-limit'
 import { generateSiteMapFile } from './controllers/sitemap.controller.js'
+import { seoRenderSong, seoRenderPlaylist, seoRenderDefault } from './controllers/seo.controller.js'
  
 const __dirname = path.resolve()
 
@@ -29,15 +29,15 @@ app.use((req, res, next) => {
 
 app.use(helmet());
 
+const allowedOrigins = ['https://repertorify.com', 'https://radnik-app.vercel.app'];
+if (NODE_ENV !== 'production') allowedOrigins.push('http://localhost:3000');
+
 app.use(cors({
-    origin: ['https://repertoar-b0ck.onrender.com', 'https://repertorify.com', 'https://radnik-app.vercel.app'], 
-    // origin: ['http://localhost:3000'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
-
-app.use(xssClean());
 
 app.use(hpp());
 
@@ -63,10 +63,11 @@ app.use("/api", playlistRoutes);
 app.get("/sitemap.xml", generateSiteMapFile)
 
 if(NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '/frontend/build')))
-    app.get('*',(req, res) => {
-        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
-    })
+    // index: false so "/" also goes through the SEO renderer instead of the raw index.html
+    app.use(express.static(path.join(__dirname, '/frontend/build'), { index: false }))
+    app.get(['/songs/:id', '/playlists/:playlistId/songs/:id'], seoRenderSong)
+    app.get('/playlists/:id', seoRenderPlaylist)
+    app.get('*', seoRenderDefault)
 }
 
 export default app;

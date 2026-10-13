@@ -226,7 +226,8 @@ const transposeSong = async(semitones) => {
   }
 
   const highlightChords = (text) => {
-    return text.replace(chordRegex, (match) => `<span class="akord">${match.replace("#", "&#35;")}</span>`);
+    // Text is rendered as HTML, so escape "<" first (same as xss-clean used to do on the backend)
+    return text.replace(/</g, "&lt;").replace(chordRegex, (match) => `<span class="akord">${match.replace("#", "&#35;")}</span>`);
 };
 
 
@@ -277,18 +278,20 @@ const transposeSong = async(semitones) => {
 
   return (<>
     <div className="song page pageContent">
+      {/* Until the song loads, keep the title/description the server rendered */}
       <Helmet>
-        <title>{song ? `${song.title} - ${song.artist} Akordi i Tekst | Repertorify` : "Učitavam pjesmu..."}</title>
-        <meta
+        {song && <title>{`${song.title} - ${song.artist} Akordi i Tekst | Repertorify`}</title>}
+        {song && <meta
           name="description"
-          content={song ? `"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.` : "Učitavam detalje pjesme na Repertorify."}
-        />
-        <meta property="og:title" content={song ? `${song.title} - ${song.artist} Akordi i Tekst | Repertorify` : "Učitavam pjesmu..."} />
-        <meta
+          content={`"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.`}
+        />}
+        {song && <meta property="og:title" content={`${song.title} - ${song.artist} Akordi i Tekst | Repertorify`} />}
+        {song && <meta
           property="og:description"
-          content={song ? `"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.` : "Učitavam detalje pjesme na Repertorify."}
-        />
-        <meta property="og:url" content={window.location.href} />
+          content={`"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.`}
+        />}
+        <meta property="og:url" content={`https://repertorify.com/songs/${id}`} />
+        <link rel="canonical" href={`https://repertorify.com/songs/${id}`} />
       </Helmet>
       <div className="top">
         {(playlist && playlistId) ? <p className="playlistName">In playlist: <span className="playlistNameSpan" onClick={() => navigate(`/playlists/${playlist._id}`)}>{playlist.name}</span></p> : <span></span>}

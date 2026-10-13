@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const baseURL = 'https://repertorify.com/api'; 
-// const baseURL = 'http://localhost:5000/api';
+// In production the frontend is served by the backend, so a relative URL works; set REACT_APP_API_URL for local dev
+const baseURL = process.env.REACT_APP_API_URL || '/api';
 
 const axiosInstance = axios.create({
     baseURL: baseURL,

@@ -99,6 +99,9 @@ export default function Songs() {
   useEffect(() => {  
     fetchGenres()
   }, [])
+  // "/" and "/songs" show the same list, so page 1 is canonical on the home page
+  const canonicalUrl = Number(page) > 1 ? `https://repertorify.com/songs?page=${page}` : "https://repertorify.com/";
+
   return (
     <section className="songs page pageContent">
     <Helmet>
@@ -112,7 +115,8 @@ export default function Songs() {
         property="og:description"
         content="Pronađi pjesme sa akordima i tekstom, lako transponuj i prilagodi ton svom glasu na Repertorify."
       />
-      <meta property="og:url" content={window.location.href} />
+      <meta property="og:url" content={canonicalUrl} />
+      <link rel="canonical" href={canonicalUrl} />
     </Helmet>
       <div className="songsHeader">
         <h1>Songs:</h1>

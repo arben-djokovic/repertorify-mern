@@ -24,8 +24,8 @@ export default function Signup() {
       isGood = false
     }
 
-    if(password.length < 5 || password.length > 20){
-      formRef.current.querySelector(`#passworderror`).innerText = "*Password must be between 5 and 20 characters";
+    if(password.length < 8 || password.length > 20){
+      formRef.current.querySelector(`#passworderror`).innerText = "*Password must be between 8 and 20 characters";
       isGood = false
     }
     if (password !== repeatpassword) {

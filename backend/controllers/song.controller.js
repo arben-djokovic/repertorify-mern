@@ -5,10 +5,10 @@ import { chordRegex, SONGS_PER_PAGE, transposeChord } from "../config/index.js";
 import PDFDocument from "pdfkit";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createDiacriticRegex } from "../config/index.js";
+import { createDiacriticRegex, escapeRegex, pdfContentDisposition } from "../config/index.js";
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
-import { validateToken } from "../middlewares/middlewares.js";
+import { getUserFromToken } from "../middlewares/middlewares.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,8 +65,8 @@ const getAllSongs = async (req, res) => {
 
 const addSong = async (req, res) => {
   try {
-    const { title, text, artist, genre, user } = req.body;
-    const song = await Song.create({ title, text, artist, genre, user });
+    const { title, text, artist, genre } = req.body;
+    const song = await Song.create({ title, text, artist, genre, user: req.user._id });
     res.json({ success: true, song });
   } catch (err) {
     mongooseErrors(err, res);
@@ -91,47 +91,46 @@ const getSong = async (req, res) => {
     if (playlistId) {
       if (!mongoose.isValidObjectId(playlistId))
         return res.status(404).json({ success: false, message: "Invalid id" });
-      playlist = await Playlist.findById(playlistId).populate("songs");
+      playlist = await Playlist.findById(playlistId).select("name songs");
       if (!playlist)
         return res
           .status(404)
           .json({ success: false, message: "Playlist not found" });
-      if (playlist.songs.length > 0) {
-        const songs = playlist.songs;
-        const index = songs.findIndex((s) => s._id.toString() === id);
+      const songs = playlist.songs.map((songId) => ({ _id: songId }));
+      const index = songs.findIndex((s) => s._id.toString() === id);
 
-        if (index !== -1 && songs.length > 1) {
-          nextSong = index < songs.length - 1 ? songs[index + 1] : songs[0];
-          prevSong = index > 0 ? songs[index - 1] : songs[songs.length - 1];
-          while (randomSong === null || randomSong._id.toString() === id) {
-            randomSong = songs[Math.floor(Math.random() * songs.length)];
-          }
-        }
+      if (index !== -1 && songs.length > 1) {
+        nextSong = index < songs.length - 1 ? songs[index + 1] : songs[0];
+        prevSong = index > 0 ? songs[index - 1] : songs[songs.length - 1];
+        const others = songs.filter((_, i) => i !== index);
+        randomSong = others[Math.floor(Math.random() * others.length)];
       }
     } else {
-      const allSongs = await Song.find().sort({ addedToPlaylist: -1, _id: 1 });
-      const index = allSongs.findIndex((s) => s._id.toString() === id);
-      if (index !== -1) {
-        nextSong =
-          index < allSongs.length - 1 ? allSongs[index + 1] : allSongs[0];
-        prevSong =
-          index > 0 ? allSongs[index - 1] : allSongs[allSongs.length - 1];
-        while (randomSong === null || randomSong._id.toString() === id) {
-          randomSong = allSongs[Math.floor(Math.random() * allSongs.length)];
-        }
+      // Neighbours in the same order as the song list: addedToPlaylist desc, _id asc
+      const { addedToPlaylist } = song;
+      const order = { addedToPlaylist: -1, _id: 1 };
+      const reverseOrder = { addedToPlaylist: 1, _id: -1 };
+      const after = { $or: [{ addedToPlaylist: { $lt: addedToPlaylist } }, { addedToPlaylist, _id: { $gt: song._id } }] };
+      const before = { $or: [{ addedToPlaylist: { $gt: addedToPlaylist } }, { addedToPlaylist, _id: { $lt: song._id } }] };
+
+      const [next, prev, random] = await Promise.all([
+        Song.findOne(after).sort(order).select("_id"),
+        Song.findOne(before).sort(reverseOrder).select("_id"),
+        Song.aggregate([{ $match: { _id: { $ne: song._id } } }, { $sample: { size: 1 } }, { $project: { _id: 1 } }]),
+      ]);
+      randomSong = random[0] || null;
+
+      // Wrap around at the ends; only when there is more than one song
+      if (randomSong) {
+        nextSong = next || (await Song.findOne().sort(order).select("_id"));
+        prevSong = prev || (await Song.findOne().sort(reverseOrder).select("_id"));
       }
     }
-    let tokenFailure = false;
-    if (req.headers.authorization) {
-      validateToken(req, res, (err) => {
-        if (err) tokenFailure = true;
-      });
-      if (req?.user?._id && !tokenFailure) {
-        const user = await User.findById(req.user._id);
-        if (!user) return;
-        if (user.songSteps.find((s) => s.songId.toString() === id))
-          step = user.songSteps.find((s) => s.songId.toString() === id).step;
-      }
+    const tokenUser = getUserFromToken(req);
+    if (tokenUser) {
+      const user = await User.findById(tokenUser._id).select("+songSteps");
+      const songStep = user?.songSteps.find((s) => s.songId.toString() === id);
+      if (songStep) step = songStep.step;
     }
     res.json({
       success: true,
@@ -244,19 +243,13 @@ const downloadSong = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Song not found" });
-    if (req.headers.authorization) {
-      validateToken(req, res, (err) => {});
-      if (req?.user?._id) {
-        user = await User.findById(req.user._id);
-        if (!user) return;
-      }
+    const tokenUser = getUserFromToken(req);
+    if (tokenUser) {
+      user = await User.findById(tokenUser._id).select("+songSteps");
     }
     const doc = new PDFDocument();
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${song.title}.pdf"`
-    );
+    res.setHeader("Content-Disposition", pdfContentDisposition(song.title));
     doc.pipe(res);
     const fontPath = path.join(
       __dirname,
@@ -278,7 +271,7 @@ const downloadSong = async (req, res) => {
     doc.text(song.text);
     doc.end();
   } catch (err) {
-    console.log(err);
+    mongooseErrors(err, res);
   }
 };
 
@@ -286,7 +279,7 @@ const getArtists = async (req, res) => {
   try {
     const { letter } = req.params;
     const artists = await Song.distinct("artist", {
-      artist: { $regex: `^${letter}`, $options: "i" },
+      artist: { $regex: `^${escapeRegex(letter)}`, $options: "i" },
     });
     res.json({ success: true, artists });
   } catch (err) {
@@ -319,7 +312,7 @@ const changeStepToSong = async (req, res) => {
     const { id } = req.params;
     const { step } = req.body;
     const user = req.user;
-    const userModel = await User.findById(user._id);
+    const userModel = await User.findById(user._id).select("+songSteps");
     if (!userModel)
       return res
         .status(404)

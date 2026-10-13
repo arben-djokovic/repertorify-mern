@@ -56,7 +56,7 @@ export default function ProfileHeader({ user, setUser }) {
       if(newPassword !== confirmNewPassword){
         return toast.error("Passwords don't match")
       }
-      if(newPassword.length < 5 || newPassword.length > 20) return toast.error("Password must be between 5 and 20 characters")
+      if(newPassword.length < 8 || newPassword.length > 20) return toast.error("Password must be between 8 and 20 characters")
       try{
         const response = await api.put("/users/change-password", { oldPassword: currentPassword, newPassword: newPassword })
         if(!response.data.success){

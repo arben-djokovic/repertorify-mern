@@ -1,8 +1,8 @@
 import { mongooseErrors } from "../config/errors.js";
 import Playlist from "../models/playlist.model.js";
 import User from "../models/user.model.js";
-import { createDiacriticRegex, PLAYLISTS_PER_PAGE } from "../config/index.js";
-import { getUserFromToken, validateToken } from "../middlewares/middlewares.js";
+import { createDiacriticRegex, pdfContentDisposition, PLAYLISTS_PER_PAGE } from "../config/index.js";
+import { getUserFromToken } from "../middlewares/middlewares.js";
 import Song from "../models/song.model.js";
 import PDFDocument from "pdfkit";
 import path from "path";
@@ -175,33 +175,30 @@ const unlikePlaylist = async (req, res) => {
 
 const deletePlaylist = async (req, res) => {
   try {
-    if (req.user.role === "admin") {
-      await Playlist.findByIdAndDelete(req.params.id);
-      return res.json({
-        success: true,
-        message: "Playlist deleted successfully",
-      });
-    } else {
-      const playlist = await Playlist.findById(req.params.id);
-      if (playlist.user.toString() === req.user._id.toString()) {
-        await Playlist.findByIdAndDelete(req.params.id);
-        await User.updateMany(
-          { favouritePlaylists: { $in: [req.params.id] } },
-          { $pull: { favouritePlaylists: req.params.id } }
-        );
-        return res.json({
-          success: true,
-          message: "Playlist deleted successfully",
+    const playlist = await Playlist.findById(req.params.id);
+    if (!playlist)
+      return res
+        .status(404)
+        .json({ success: false, message: "Playlist not found" });
+    if (
+      playlist.user.toString() !== req.user._id.toString() &&
+      req.user.role !== "admin"
+    )
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "Unauthorized to delete this playlist",
         });
-      } else {
-        return res
-          .status(403)
-          .json({
-            success: false,
-            message: "Unauthorized to delete this playlist",
-          });
-      }
-    }
+    await Playlist.findByIdAndDelete(req.params.id);
+    await User.updateMany(
+      { favouritePlaylists: { $in: [req.params.id] } },
+      { $pull: { favouritePlaylists: req.params.id } }
+    );
+    return res.json({
+      success: true,
+      message: "Playlist deleted successfully",
+    });
   } catch (err) {
     mongooseErrors(err, res);
   }
@@ -241,14 +238,15 @@ const addSongToPlaylists = async (req, res) => {
   const playlistIds = req.body.playlistIds;
   const userId = req.user._id;
   try {
-    await Playlist.updateMany(
+    const result = await Playlist.updateMany(
       { _id: { $in: playlistIds }, user: userId, songs: { $nin: [songId] } },
       { $push: { songs: songId } }
     );
-    await Song.updateOne(
-      { _id: songId },
-      { $inc: { addedToPlaylist: playlistIds.length } }
-    );
+    if (result.modifiedCount > 0)
+      await Song.updateOne(
+        { _id: songId },
+        { $inc: { addedToPlaylist: result.modifiedCount } }
+      );
     res.json({ success: true });
   } catch (err) {
     mongooseErrors(err, res);
@@ -273,11 +271,12 @@ const removeFromPlaylist = async (req, res) => {
           success: false,
           message: "Unauthorized to edit this playlist",
         });
-    await Playlist.updateOne(
+    const result = await Playlist.updateOne(
       { _id: playlistId, songs: { $in: [songId] } },
       { $pull: { songs: songId } }
     );
-    await Song.updateOne({ _id: songId }, { $inc: { addedToPlaylist: -1 } });
+    if (result.modifiedCount > 0)
+      await Song.updateOne({ _id: songId }, { $inc: { addedToPlaylist: -1 } });
     res.json({ success: true });
   } catch (err) {
     mongooseErrors(err, res);
@@ -297,12 +296,24 @@ const downloadPlaylist = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Playlist not found" });
+    const tokenUser = getUserFromToken(req);
+    if (!playlist.isPublic) {
+      if (!tokenUser)
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      if (
+        playlist.user._id.toString() !== tokenUser._id.toString() &&
+        tokenUser.role !== "admin"
+      )
+        return res
+          .status(403)
+          .json({ success: false, message: "Unauthorized to download this playlist" });
+    }
+    if (tokenUser) {
+      user = await User.findById(tokenUser._id).select("+songSteps");
+    }
     const doc = new PDFDocument();
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${playlist.name}.pdf"`
-    );
+    res.setHeader("Content-Disposition", pdfContentDisposition(playlist.name));
     doc.pipe(res);
     const fontPath = path.join(
       __dirname,
@@ -315,13 +326,6 @@ const downloadPlaylist = async (req, res) => {
     doc.fontSize(20).text(playlist.name, { align: "center" });
     doc.moveDown(4);
     doc.fontSize(12);
-    if (req.headers.authorization) {
-      validateToken(req, res, (err) => {});
-      if (req?.user?._id) {
-        user = await User.findById(req.user._id);
-        if (!user) return;
-      }
-    }
     playlist.songs.forEach((song, index) => {
       doc.fontSize(20).text(song.title, { align: "center" });
       doc.fontSize(16).text(`Artist: ${song.artist}`, { align: "center" });

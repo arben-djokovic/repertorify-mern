@@ -45,7 +45,8 @@ export default function Playlists() {
           property="og:description"
           content="Otkrijte najpopularnije plejliste koje su kreirali korisnici Repertorify. Istražite, slušajte i inspirišite se pažljivo odabranim kolekcijama omiljenih pjesama sa akordima i tekstovima."
         />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:url" content="https://repertorify.com/playlists" />
+        <link rel="canonical" href="https://repertorify.com/playlists" />
       </Helmet>
       <h1>Playlists:</h1>
       <div className="playlistsContent">

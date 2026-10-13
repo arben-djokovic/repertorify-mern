@@ -33,6 +33,7 @@ export default function Artist() {
                 content={`Pregledaj izvođače čija imena počinju slovom ${letter.toUpperCase()} i pronađi njihove pjesme sa akordima i tekstovima na Repertorify.`}
             />
             <meta property="og:url" content={`https://repertorify.com/artists/${letter}`} />
+            <link rel="canonical" href={`https://repertorify.com/artists/${letter}`} />
         </Helmet>
         <h1>{letter.toLocaleUpperCase()}</h1>
         <div className="artists">

@@ -15,7 +15,8 @@ export default function WhatIsRepertorify() {
                 property="og:description"
                 content="Repertorify ti donosi pjesme sa akordima i tekstovima, jednostavno transponovanje i pravljenje plejliste."
             />
-            <meta property="og:url" content={window.location.href} />
+            <meta property="og:url" content="https://repertorify.com/about-us" />
+            <link rel="canonical" href="https://repertorify.com/about-us" />
         </Helmet>
         <div className="about-container">
             <h1 className="about-title">🎸 Welcome to Repertorify</h1>

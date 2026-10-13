@@ -4,8 +4,8 @@ import Playlist from '../models/playlist.model.js';
 
 const generateSiteMapFile = async (req, res) => {
     try {
-        const songs = await Song.find({});
-        const playlists = await Playlist.find({isPublic: true});
+        const songs = await Song.find({}).select("_id updatedAt");
+        const playlists = await Playlist.find({isPublic: true}).select("_id updatedAt");
 
         const baseUrl = 'https://repertorify.com';
 
@@ -13,9 +13,8 @@ const generateSiteMapFile = async (req, res) => {
 
         // Dodaj statične stranice
         urls.push(
-            { url: '/', lastmod: new Date().toISOString(), changefreq: 'daily', priority: 1.0 },
-            { url: '/songs', lastmod: new Date().toISOString(), changefreq: 'daily', priority: 0.8 },
-            { url: '/playlists', lastmod: new Date().toISOString(), changefreq: 'daily', priority: 0.8 },
+            { url: '/', changefreq: 'daily', priority: 1.0 },
+            { url: '/playlists', changefreq: 'daily', priority: 0.8 },
             // dodaj ostale statične
         );
 
@@ -23,7 +22,7 @@ const generateSiteMapFile = async (req, res) => {
         songs.forEach(song => {
             urls.push({
                 url: `/songs/${song.slug || song._id}`,
-                lastmod: song.updatedAt ? song.updatedAt.toISOString() : new Date().toISOString(),
+                lastmod: song.updatedAt ? song.updatedAt.toISOString() : null,
                 changefreq: 'weekly',
                 priority: 0.7
             });
@@ -33,7 +32,7 @@ const generateSiteMapFile = async (req, res) => {
         playlists.forEach(pl => {
             urls.push({
                 url: `/playlists/${pl.slug || pl._id}`,
-                lastmod: pl.updatedAt ? pl.updatedAt.toISOString() : new Date().toISOString(),
+                lastmod: pl.updatedAt ? pl.updatedAt.toISOString() : null,
                 changefreq: 'weekly',
                 priority: 0.7
             });
@@ -44,7 +43,7 @@ const generateSiteMapFile = async (req, res) => {
                             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
                             ${urls.map((u) => `<url>
                                 <loc>${baseUrl}${u.url}</loc>
-                                <lastmod>${u.lastmod}</lastmod>
+                                ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}
                                 <changefreq>${u.changefreq}</changefreq>
                                 <priority>${u.priority}</priority>
                                 </url>`).join('')}

@@ -41,6 +41,7 @@ export default function Home() {
           content="Pronađi omiljene pjesme sa akordima, lako ih prilagodi i uživaj u sviranju uz Repertorify."
         />
         <meta property="og:url" content="https://repertorify.com/" />
+        <link rel="canonical" href="https://repertorify.com/" />
       </Helmet>
       <section className="swiperSection">
         <Swiper

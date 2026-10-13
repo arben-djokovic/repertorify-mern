@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     },
     hashedPassword: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     favouritePlaylists: [
         {
@@ -25,20 +26,23 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin"],
         default: "user"
     },
-    songSteps: [
-        {
-            songId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Song"
-            },
-            step: {
-                type: Number,
-                required: true,
-                min: -5,
-                max: 5
+    songSteps: {
+        type: [
+            {
+                songId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Song"
+                },
+                step: {
+                    type: Number,
+                    required: true,
+                    min: -5,
+                    max: 5
+                }
             }
-        }
-    ],
+        ],
+        select: false
+    },
     isBlocked: {
         type: Boolean,
         default: false

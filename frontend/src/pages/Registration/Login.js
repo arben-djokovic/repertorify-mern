@@ -35,7 +35,7 @@ export default function Login() {
       }
     }catch(err){
       console.log(err)
-      toast.error("Something went wrong", { toastId: "loginError" })
+      toast.error(err.response?.data?.message || "Something went wrong", { toastId: "loginError" })
     }
   };
   return (

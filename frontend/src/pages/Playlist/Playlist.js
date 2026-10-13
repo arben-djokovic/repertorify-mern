@@ -127,18 +127,21 @@ export default function Playlist() {
 
   return (<>
     <section className="playlist page pageContent">
+      {/* Until the playlist loads, keep the title/description the server rendered */}
       <Helmet>
-        <title>{playlist ? `${playlist.name} plejlista | Repertorify` : "Učitavanje plejliste..."}</title>
-        <meta
+        {playlist && <title>{`${playlist.name} plejlista | Repertorify`}</title>}
+        {playlist && <meta
           name="description"
-          content={playlist ? `Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.` : "Učitavanje detalja plejliste na Repertorify."}
-        />
-        <meta property="og:title" content={playlist ? `${playlist.name} plejlista | Repertorify` : "Učitavanje plejliste..."} />
-        <meta
+          content={`Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.`}
+        />}
+        {playlist && <meta property="og:title" content={`${playlist.name} plejlista | Repertorify`} />}
+        {playlist && <meta
           property="og:description"
-          content={playlist ? `Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.` : "Učitavanje detalja plejliste na Repertorify."}
-        />
-        <meta property="og:url" content={window.location.href} />
+          content={`Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.`}
+        />}
+        {playlist && !playlist.isPublic && <meta name="robots" content="noindex" />}
+        <meta property="og:url" content={`https://repertorify.com/playlists/${id}`} />
+        <link rel="canonical" href={`https://repertorify.com/playlists/${id}`} />
       </Helmet>
       <div className="icons">
         {!isMine && <div className="icon">
