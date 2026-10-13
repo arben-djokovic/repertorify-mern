@@ -18,10 +18,14 @@ const __dirname = path.resolve()
 
 const app = express();
 
-app.set('trust proxy', true);
+// Requests pass through Cloudflare and then Render's load balancer. Trusting exactly
+// these 2 hops makes req.ip the real client IP; `true` would let anyone spoof
+// X-Forwarded-For and bypass the rate limits.
+app.set('trust proxy', 2);
 
 app.use((req, res, next) => {
-  if (req.hostname === "repertoar-b0ck.onrender.com") {
+  // Raw Host header, not req.hostname, which could be spoofed via X-Forwarded-Host
+  if (req.headers.host === "repertoar-b0ck.onrender.com") {
     return res.redirect(301, "https://repertorify.com" + req.originalUrl);
   }
   next();
