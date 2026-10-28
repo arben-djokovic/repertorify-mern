@@ -46,6 +46,10 @@ const renderPage = ({ title = DEFAULT_TITLE, description = DEFAULT_DESCRIPTION, 
         .replace('<div id="root"></div>', `<div id="root">${body}</div>`);
 };
 
+// Crawlers read this markup, but users would see it unstyled for a moment before React
+// replaces it, so it is visually hidden (still in the DOM, unlike display:none)
+const SEO_MAIN_OPEN = '<main style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">';
+
 const songDescription = (song) => `"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.`;
 
 // /songs/:id and /playlists/:playlistId/songs/:id both point to the canonical /songs/:id
@@ -55,7 +59,7 @@ const renderSong = async (req, res) => {
     if (!song) return res.status(404).send(renderPage({ title: "Stranica nije pronađena | Repertorify", noindex: true }));
 
     const title = `${song.title} - ${song.artist} Akordi i Tekst | Repertorify`;
-    const body = `<main><h1>${escapeHtml(song.title)}</h1><h2>${escapeHtml(song.artist)}</h2><pre>${escapeHtml(song.text)}</pre></main>`;
+    const body = `${SEO_MAIN_OPEN}<h1>${escapeHtml(song.title)}</h1><h2>${escapeHtml(song.artist)}</h2><pre>${escapeHtml(song.text)}</pre></main>`;
     res.send(renderPage({ title, description: songDescription(song), canonical: `${BASE_URL}/songs/${song._id}`, body }));
 };
 
@@ -70,7 +74,7 @@ const renderPlaylist = async (req, res) => {
     const songLinks = playlist.songs
         .map(song => `<li><a href="/songs/${song._id}">${escapeHtml(song.title)} - ${escapeHtml(song.artist)}</a></li>`)
         .join("");
-    const body = `<main><h1>${escapeHtml(playlist.name)}</h1><ul>${songLinks}</ul></main>`;
+    const body = `${SEO_MAIN_OPEN}<h1>${escapeHtml(playlist.name)}</h1><ul>${songLinks}</ul></main>`;
     res.send(renderPage({ title, description, canonical: `${BASE_URL}/playlists/${playlist._id}`, body }));
 };
 
