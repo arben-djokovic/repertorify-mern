@@ -11,6 +11,7 @@ import useToken from "../../controllers/TokenController";
 import Modal from "../Modal/Modal";
 import { get, set } from "mongoose";
 import AreYouSure from "../AreYouSure/AreYouSure";
+import { listItemAnimation } from "../listAnimation";
 
 
 export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId, isRightSide, onRemovedFromPlaylist, noAnimation }) {
@@ -123,9 +124,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
   return (
     <>
       <motion.div
-        initial={noAnimation ? false : { opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: i * 0.05, duration: 0.3 }}
+        {...(noAnimation ? {} : listItemAnimation(i))}
         onClick={songClick}
         ref={songRef}
         className={`${i % 2 !== 0 ? "songitem" : "songitem2"} ${

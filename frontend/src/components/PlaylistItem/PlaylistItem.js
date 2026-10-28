@@ -1,6 +1,7 @@
 import "./playlistItem.scss"
 import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { listItemAnimation } from '../listAnimation'
 
 export default function PlaylistItem({playlist, i, isMobile}) {
     const navigate = useNavigate()
@@ -14,7 +15,7 @@ export default function PlaylistItem({playlist, i, isMobile}) {
 
     const songCount = playlist.songs.length
 
-  return (<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05, duration: 0.3 }} className={isMobile ? "playlistItem playlistItemMobile link" : "playlistItem link"} onClick={playlistClick}>
+  return (<motion.div {...listItemAnimation(i)} className={isMobile ? "playlistItem playlistItemMobile link" : "playlistItem link"} onClick={playlistClick}>
     <div className="pi-cover">
         <img src={`/assets/${playlist.imageLocation}`} alt="" />
     </div>

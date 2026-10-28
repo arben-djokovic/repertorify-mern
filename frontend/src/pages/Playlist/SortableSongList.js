@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripVertical } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import SongItem from "../../components/SongItem/SongItem";
+import { listItemAnimation } from "../../components/listAnimation";
 
 function SortableRow({ song, i, playlist, onRemovedFromPlaylist }) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: song._id });
@@ -20,9 +21,7 @@ function SortableRow({ song, i, playlist, onRemovedFromPlaylist }) {
       {/* Entry animation lives on an inner element so it does not fight the drag transform */}
       <motion.div
         className="sortableRowInner"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: i * 0.05, duration: 0.3 }}
+        {...listItemAnimation(i)}
       >
       <button
         type="button"
