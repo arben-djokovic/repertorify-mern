@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import SongItem from "../../components/SongItem/SongItem";
+import { SongSkeleton } from "../../components/Skeleton/Skeleton";
 import api from "../../api/api";
 import { Helmet } from "react-helmet-async";
 
@@ -13,6 +14,7 @@ export default function Home() {
   const navigate = useNavigate()
   const swiperRef = useRef(null);
   const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchSongs = async () => {
     try{
@@ -20,6 +22,8 @@ export default function Home() {
       setSongs(respone.data.songs)
     }catch(err){
       console.log(err)
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -138,7 +142,7 @@ export default function Home() {
       <section className="songsHome">
         <h1>Songs</h1>
         <div className="listSongs">
-          {songs.map((song, i) => <SongItem song={song} key={i} i={i+1} />)}
+          {loading ? <SongSkeleton count={7} /> : songs.map((song, i) => <SongItem song={song} key={i} i={i+1} />)}
         </div>
           <Link to="/songs" className="moreBtn">Show more...</Link>
       </section>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./songs.scss";
 import SongItem from "../../components/SongItem/SongItem";
+import { SongSkeleton } from "../../components/Skeleton/Skeleton";
 import api from "../../api/api";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -20,6 +21,7 @@ export default function Songs() {
   const [genre, setGenre] = useState((genreFromUrl) ? genreFromUrl : '')
   const [songsPerPage, setSongsPerPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
 
@@ -44,6 +46,7 @@ export default function Songs() {
       pageFromUrl = 1;
       setPage(1)
     }
+    setLoading(true)
     try {
       const respone = await api.get("/songs?page=" + pageFromUrl + '&search=' + (searchFromUrl ? searchFromUrl : '') + '&genre=' + (genreFromUrl ? genreFromUrl : '') + '&artist=' + (artistFromUrl ? artistFromUrl : ''));
       setSongs(respone.data.songs);
@@ -57,6 +60,8 @@ export default function Songs() {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -133,6 +138,7 @@ export default function Songs() {
         </div>
       </div>
       <div className="songsList">
+        {loading ? <SongSkeleton count={songsPerPage || 10} /> : <>
         {songs.length > 0 && <Link to={"/add-song"} className="addItemBtn addItemBtnSongs">
             <img src="/assets/plus.png" alt="" />
         </Link>}
@@ -146,6 +152,7 @@ export default function Songs() {
           return(
           <SongItem song={song} key={i} i={i2} />
         )}) : <p>No songs found - <Link to={"/add-song"} className="link linkcolor">Add a song</Link></p>}
+        </>}
       </div>
       <div className="icons">
         <button disabled={Number(page) <= 1} onClick={showLess}><FontAwesomeIcon className="icon" icon={faArrowCircleLeft} /></button>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SongItem from "../../components/SongItem/SongItem";
+import { SongSkeleton } from "../../components/Skeleton/Skeleton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faFilePdf, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
@@ -30,6 +31,7 @@ export default function Playlist() {
       },
     })
     const [isMine, setIsMine] = useState(false)
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isLiked = favourites.includes(id)
@@ -44,6 +46,8 @@ export default function Playlist() {
             }
         }catch(err){
             console.log(err)
+        }finally{
+            setLoading(false)
         }
     }
 
@@ -178,7 +182,7 @@ export default function Playlist() {
       </div>
       <h1 className="playlistTitle">{playlist.name}</h1>
       <div className="songsList">
-        {playlist.songs.length > 0 ? playlist.songs.map((song, i) => (
+        {loading ? <SongSkeleton count={8} /> : playlist.songs.length > 0 ? playlist.songs.map((song, i) => (
           <SongItem inPlaylist={true} song={song} key={i} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} />
         )) : <p>No songs in playlist</p>}
       </div>
