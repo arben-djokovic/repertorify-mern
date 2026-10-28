@@ -55,8 +55,9 @@ export default function Playlists() {
       <h1>Playlists:</h1>
       <div className="playlistsContent">
         {loading && playlists.length === 0 ? <PlaylistSkeleton count={6} /> : <>
-        {playlists.length > 0 && <Link to={"/create-playlist"} className="addItemBtn">
-          <img src="/assets/plus.png" alt="" />
+        {playlists.length > 0 && <Link to={"/create-playlist"} className="playlistItem addPlaylistTile link">
+          <span className="pi-cover pi-plus">+</span>
+          <span className="pi-name">New playlist</span>
         </Link>}
         {playlists.length > 0 ? playlists.map((playlist, i) => (<PlaylistItem playlist={playlist} key={i} i={i} />)) : <p className="noPlaylists">No playlists found - <Link to={"/create-playlist"} className="link linkcolor">Create a playlist</Link></p>}
         </>}

@@ -36,6 +36,20 @@
         align-self: flex-start;
         font-size: 2em;
     }
+    .playlistCreator{
+        align-self: flex-start;
+        margin-top: 6px;
+        font-size: 14px;
+        font-style: italic;
+        color: gray;
+        .playlistCreatorName{
+            cursor: pointer;
+            color: rgb(43, 109, 196);
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+    }
     .songsList{
         width: 100%;
         margin: 30px 0;

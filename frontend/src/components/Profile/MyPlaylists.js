@@ -40,8 +40,9 @@ export default function MyPlaylists({ userId}) {
   return (
     <section className="myPlaylists">
       <div className="list">
-        {playlists.length > 0 && userId == localStorage.getItem("userid") && <Link to={"/create-playlist"} className="addItemBtn">
-          <img src="/assets/plus.png" alt="" />
+        {playlists.length > 0 && userId == localStorage.getItem("userid") && <Link to={"/create-playlist"} className="playlistItem addPlaylistTile link">
+          <span className="pi-cover pi-plus">+</span>
+          <span className="pi-name">New playlist</span>
         </Link>}
         {playlists.length > 0 ? playlists.map((playlist, i) => (
           <PlaylistItem playlist={playlist} isMine={true} className={i} key={i} i={i} />

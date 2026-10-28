@@ -181,6 +181,7 @@ export default function Playlist() {
         </>}
       </div>
       <h1 className="playlistTitle">{playlist.name}</h1>
+      {playlist.user?._id && <p className="playlistCreator">Created by <span onClick={() => navigate(`/user/${playlist.user._id}`)} className="playlistCreatorName">{playlist.user.username}</span></p>}
       <div className="songsList">
         {loading ? <SongSkeleton count={8} /> : playlist.songs.length > 0 ? playlist.songs.map((song, i) => (
           <SongItem inPlaylist={true} song={song} key={i} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} />
