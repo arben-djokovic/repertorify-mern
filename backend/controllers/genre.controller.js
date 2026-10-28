@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { mongooseErrors } from "../config/errors.js";
 import Genre from "../models/genre.model.js";
+import Song from "../models/song.model.js";
 
 const getAllGenres = async (req, res) => {
     try {
@@ -63,8 +64,9 @@ const deleteGenre = async (req, res) => {
     try {
         const { id } = req.params;
         const genre = await Genre.findByIdAndDelete(id);
+        await Song.updateMany({ genres: id }, { $pull: { genres: id } });
         res.json({ success: true ,genre });
-    } catch (error) {
+    } catch (err) {
         mongooseErrors(err, res)
     }
 };

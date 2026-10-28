@@ -7,10 +7,12 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import useToken from "../../controllers/TokenController";
 import { Helmet } from "react-helmet-async";
+import GenreSelect from "../../components/GenreSelect/GenreSelect";
 
 export default function AddSong() {
   const { getDecodedToken } = useToken();
   const [genres, setGenres] = useState([])
+  const [selectedGenres, setSelectedGenres] = useState([])
   const formRef = useRef(null)
   const navigate = useNavigate()
 
@@ -31,7 +33,7 @@ export default function AddSong() {
         title: String(formData.get("title")),
         text: String(formData.get("text")),
         artist: String(formData.get("artist")),
-        genre: String(formData.get("genre")),
+        genres: selectedGenres,
         user: getDecodedToken()._id
       };
       console.log(getDecodedToken()._id)
@@ -64,7 +66,7 @@ export default function AddSong() {
   
   useEffect(() => {
     fetchGenres()
-  })
+  }, [])
 
   return (
     <div className="registrationAddSong page pageContent">
@@ -104,16 +106,8 @@ export default function AddSong() {
             <input type="text" id="artist" name="artist" />
           </div>
           <div className="input">
-              <span className="inputerror" id="genreerror"></span>
-            <div className="genres">
-              <label htmlFor="genre">Genre:  </label>
-              <select name="genre" id="genres">
-                <option value=""></option>
-                {genres.map((genre, i) => (
-                  <option value={genre._id} key={genre._id}>{genre.name}</option>
-                ))}
-              </select>
-            </div>
+            <label>Genres <span className="inputerror" id="genreserror"></span></label>
+            <GenreSelect genres={genres} selected={selectedGenres} setSelected={setSelectedGenres} />
           </div>
           <button onClick={addSong} className="formBtn">Add song</button>
         </form>

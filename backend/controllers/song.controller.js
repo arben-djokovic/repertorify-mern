@@ -15,6 +15,12 @@ const __dirname = path.dirname(__filename);
 
 const songsPerLoad = SONGS_PER_PAGE;
 
+// Accepts a single id or an array; keeps only unique valid ObjectIds
+const toGenreIds = (genres) => {
+  const list = Array.isArray(genres) ? genres : genres ? [genres] : [];
+  return [...new Set(list.filter((id) => mongoose.isValidObjectId(id)).map(String))];
+};
+
 const getAllSongs = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -31,7 +37,7 @@ const getAllSongs = async (req, res) => {
     const query = {};
 
     if (genre) {
-      query.genre = genre;
+      query.genres = genre;
     }
     if (artist) {
       const artistRegex = createDiacriticRegex(artist);
@@ -49,7 +55,7 @@ const getAllSongs = async (req, res) => {
 
     const songs = await Song.find(query)
       .populate("user")
-      .populate("genre")
+      .populate("genres")
       .sort({ addedToPlaylist: -1, _id: 1 })
       .skip(skip)
       .limit(limit);
@@ -65,8 +71,8 @@ const getAllSongs = async (req, res) => {
 
 const addSong = async (req, res) => {
   try {
-    const { title, text, artist, genre } = req.body;
-    const song = await Song.create({ title, text, artist, genre, user: req.user._id });
+    const { title, text, artist, genres } = req.body;
+    const song = await Song.create({ title, text, artist, genres: toGenreIds(genres), user: req.user._id });
     res.json({ success: true, song });
   } catch (err) {
     mongooseErrors(err, res);
@@ -80,7 +86,7 @@ const getSong = async (req, res) => {
     if (!mongoose.isValidObjectId(id))
       return res.status(404).json({ success: false, message: "Invalid id" });
     let playlist = null;
-    const song = await Song.findById(id).populate("user").populate("genre");
+    const song = await Song.findById(id).populate("user").populate("genres");
     if (!song)
       return res
         .status(404)
@@ -150,7 +156,7 @@ const getHomeSongs = async (req, res) => {
   try {
     const songs = await Song.find()
       .populate("user")
-      .populate("genre")
+      .populate("genres")
       .sort({ addedToPlaylist: -1, _id: 1 })
       .limit(7);
     res.json({ success: true, songs });
@@ -199,7 +205,7 @@ const getUserSongs = async (req, res) => {
     const userId = req.params.id;
     const songs = await Song.find({ user: userId })
       .populate("user")
-      .populate("genre")
+      .populate("genres")
       .sort({ addedToPlaylist: -1, _id: 1 });
     res.json({ success: true, songs });
   } catch (err) {
@@ -209,7 +215,7 @@ const getUserSongs = async (req, res) => {
 
 const editSong = async (req, res) => {
   const { id } = req.params;
-  const { title, text, artist, genre } = req.body;
+  const { title, text, artist, genres } = req.body;
   try {
     const song = await Song.findById(id).populate("user");
     if (!song)
@@ -223,7 +229,7 @@ const editSong = async (req, res) => {
     song.title = title;
     song.text = text;
     song.artist = artist;
-    song.genre = genre;
+    song.genres = toGenreIds(genres);
     await song.save();
     res.json({ success: true, song });
   } catch (err) {
@@ -298,7 +304,7 @@ const getTopByArtists = async (req, res) => {
       artist: { $regex: String(artistRegex), $options: "i" },
     })
       .populate("user")
-      .populate("genre")
+      .populate("genres")
       .sort({ addedToPlaylist: -1, _id: 1 })
       .limit(20);
     res.json({ success: true, songs });

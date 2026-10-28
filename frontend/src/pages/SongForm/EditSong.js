@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import useToken from "../../controllers/TokenController";
 import { Helmet } from "react-helmet-async";
+import GenreSelect from "../../components/GenreSelect/GenreSelect";
 
 export default function EditSong() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ export default function EditSong() {
   const navigate = useNavigate()
   const formRef = useRef(null)
   const [genres, setGenres] = useState([])
-  const [selectedGenre, setSelectedGenre] = useState("")
+  const [selectedGenres, setSelectedGenres] = useState([])
   const [songTitle, setSongTitle] = useState("")
   const [songText, setSongText] = useState("")
   const [songArtist, setSongArtist] = useState("")
@@ -34,9 +35,7 @@ export default function EditSong() {
       const respone = await api.get('/songs/'+id)
       if(respone.data.success){
         console.log(respone.data.song)
-        if(respone.data.song.genre && respone.data.song.genre._id){
-          setSelectedGenre(respone.data.song.genre._id)
-        }
+        setSelectedGenres((respone.data.song.genres || []).filter(Boolean).map(genre => genre._id))
 
         setSongTitle(respone.data.song.title)
         setSongText(respone.data.song.text)
@@ -51,8 +50,7 @@ export default function EditSong() {
       error.innerText = "";
     })
     try{
-      console.log(songTitle, songText, songArtist, selectedGenre)
-      const response = await api.put('/songs/'+id+"/edit", {title: songTitle, text: songText, artist: songArtist, genre: selectedGenre})
+      const response = await api.put('/songs/'+id+"/edit", {title: songTitle, text: songText, artist: songArtist, genres: selectedGenres})
       if(response.data.success){
         toast.success(response.data.message)
         navigate(`/songs/${id}`)
@@ -117,20 +115,8 @@ export default function EditSong() {
             <input defaultValue={songArtist} onChange={(e)=>{setSongArtist(e.target.value)}} type="text" id="artist" name="artist" />
           </div>
           <div className="input">
-              <span className="inputerror" id="genreerror"></span>
-            <div className="genres">
-              <label htmlFor="genre">Genre:  </label>
-              <select onChange={(e)=>{setSelectedGenre(e.target.value)}} name="genre" id="genres">
-                <option value=""></option>
-                {genres.map((genre, i) => {
-                  if(genre._id === selectedGenre){
-                    return <option selected value={genre._id} key={genre._id}>{genre.name}</option>
-                  }else{
-                    return <option value={genre._id} key={genre._id}>{genre.name}</option>
-                  }
-                })}
-              </select>
-            </div>
+            <label>Genres <span className="inputerror" id="genreserror"></span></label>
+            <GenreSelect genres={genres} selected={selectedGenres} setSelected={setSelectedGenres} />
           </div>
           <button onClick={addSong} className="formBtn">Edit song</button>
         </form>

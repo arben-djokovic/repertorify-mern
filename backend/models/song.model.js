@@ -22,10 +22,12 @@ const songSchema = new mongoose.Schema({
         maxLength: 40,
         trim: true,
     },
-    genre: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Genre",
-        required: true
+    genres: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Genre" }],
+        validate: {
+            validator: (genres) => genres.length > 0,
+            message: "Select at least one genre."
+        }
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
