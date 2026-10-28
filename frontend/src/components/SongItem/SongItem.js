@@ -13,7 +13,7 @@ import { get, set } from "mongoose";
 import AreYouSure from "../AreYouSure/AreYouSure";
 
 
-export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId, isRightSide, onRemovedFromPlaylist }) {
+export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId, isRightSide, onRemovedFromPlaylist, noAnimation }) {
   const { isAuthenticated, isAdmin, getDecodedToken } = useToken();
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
@@ -123,7 +123,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
+        initial={noAnimation ? false : { opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: i * 0.05, duration: 0.3 }}
         onClick={songClick}

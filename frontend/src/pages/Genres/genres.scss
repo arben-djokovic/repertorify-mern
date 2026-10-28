@@ -33,9 +33,11 @@
                 grid-gap: 10px;
                 cursor: pointer;
                 svg{
-                    &:hover{
-                        opacity: .8;
-                        color: gray;
+                    @media (hover: hover) {
+                        &:hover{
+                            opacity: .8;
+                            color: gray;
+                        }
                     }
                 }
             }

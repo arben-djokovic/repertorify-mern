@@ -60,8 +60,10 @@
         color: white;
         border-radius: 10px;
         border: 2px solid rgb(255, 162, 0);
-        &:hover{
-            opacity: .8;
+        @media (hover: hover) {
+            &:hover{
+                opacity: .8;
+            }
         }
     }
     .unblock{
@@ -74,8 +76,10 @@
         padding: 6px 10px;
         color: white;
         border-radius: 10px;
-        &:hover{
-            opacity: .8;
+        @media (hover: hover) {
+            &:hover{
+                opacity: .8;
+            }
         }
     }
 }

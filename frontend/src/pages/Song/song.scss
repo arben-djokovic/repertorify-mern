@@ -20,8 +20,10 @@
             margin-right: auto;
             color: #0390FC;
             cursor: pointer;
-            &:hover{
-                opacity: .8;
+            @media (hover: hover) {
+                &:hover{
+                    opacity: .8;
+                }
             }
         }
     }
@@ -33,9 +35,11 @@
         font-size: 25px;
         cursor: pointer;
         .icon{
-            &:hover{
-                cursor: pointer;
-                opacity: .8;
+            @media (hover: hover) {
+                &:hover{
+                    cursor: pointer;
+                    opacity: .8;
+                }
             }
         }
     }
@@ -54,8 +58,10 @@
                 padding: 7px 10px;
                 color: white;
                 border-radius: 5px;
-                &:hover{
-                    opacity: .8;
+                @media (hover: hover) {
+                    &:hover{
+                        opacity: .8;
+                    }
                 }
                 &:disabled{
                     opacity: .5;

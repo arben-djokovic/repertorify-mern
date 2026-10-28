@@ -14,15 +14,17 @@
     // height: 38px;
     width: 100%;
     border-bottom: 1px solid gray;
-    &:hover{
-      scale: 1.01;
-      .title{
-        color: #006FEA;
-        .artistTitle{
-          color: #006FEA;
-          font-weight: normal;
+    @media (hover: hover) {
+        &:hover{
+          scale: 1.01;
+          .title{
+            color: #006FEA;
+            .artistTitle{
+              color: #006FEA;
+              font-weight: normal;
+            }
+          }
         }
-      }
     }
     &.active { 
       position: relative;
@@ -103,8 +105,10 @@
   .musicIcon{
     display: none;
   }
-  &:hover{
-    scale: 1;
+  @media (hover: hover) {
+      &:hover{
+        scale: 1;
+      }
   }
 }
 .active{

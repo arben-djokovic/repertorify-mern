@@ -26,9 +26,11 @@
                 font-size: 12px;
                 margin-bottom: -12px;
             }
-            &:hover{
-                cursor: pointer;
-                opacity: .8;
+            @media (hover: hover) {
+                &:hover{
+                    cursor: pointer;
+                    opacity: .8;
+                }
             }
         }
     }
@@ -45,8 +47,10 @@
         .playlistCreatorName{
             cursor: pointer;
             color: rgb(43, 109, 196);
-            &:hover{
-                text-decoration: underline;
+            @media (hover: hover) {
+                &:hover{
+                    text-decoration: underline;
+                }
             }
         }
     }
@@ -59,6 +63,11 @@
         align-items: center;
         background-color: white;
         position: relative;
+        .sortableRowInner{
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
         &.dragging{
             z-index: 10;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
@@ -80,8 +89,10 @@
             font-size: 16px;
             cursor: grab;
             touch-action: none;
-            &:hover{
-                color: #006FEA;
+            @media (hover: hover) {
+                &:hover{
+                    color: #006FEA;
+                }
             }
             &:active{
                 cursor: grabbing;

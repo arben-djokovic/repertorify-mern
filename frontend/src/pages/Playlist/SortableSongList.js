@@ -5,6 +5,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripVertical } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
 import SongItem from "../../components/SongItem/SongItem";
 
 function SortableRow({ song, i, playlist, onRemovedFromPlaylist }) {
@@ -16,6 +17,13 @@ function SortableRow({ song, i, playlist, onRemovedFromPlaylist }) {
       className={`sortableRow ${isDragging ? "dragging" : ""}`}
       style={{ transform: CSS.Transform.toString(transform), transition }}
     >
+      {/* Entry animation lives on an inner element so it does not fight the drag transform */}
+      <motion.div
+        className="sortableRowInner"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: i * 0.05, duration: 0.3 }}
+      >
       <button
         type="button"
         className="dragHandle"
@@ -26,7 +34,8 @@ function SortableRow({ song, i, playlist, onRemovedFromPlaylist }) {
       >
         <FontAwesomeIcon icon={faGripVertical} />
       </button>
-      <SongItem inPlaylist={true} song={song} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} onRemovedFromPlaylist={onRemovedFromPlaylist} />
+      <SongItem inPlaylist={true} song={song} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} onRemovedFromPlaylist={onRemovedFromPlaylist} noAnimation />
+      </motion.div>
     </div>
   );
 }

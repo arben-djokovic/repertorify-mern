@@ -11,11 +11,13 @@
     border: 1px solid #E6EDF5;
     border-radius: 10px;
     transition: background-color 0.15s ease, border-color 0.15s ease;
-    &:hover{
-        background-color: #EAF2FC;
-        border-color: #D3E3F5;
-        .pi-name{
-            color: #006FEA;
+    @media (hover: hover) {
+        &:hover{
+            background-color: #EAF2FC;
+            border-color: #D3E3F5;
+            .pi-name{
+                color: #006FEA;
+            }
         }
     }
     .pi-cover{
@@ -104,8 +106,10 @@
         color: #5b7a99;
         font-weight: 500;
     }
-    &:hover{
-        background-color: #F5F8FC;
-        border-color: #006FEA;
+    @media (hover: hover) {
+        &:hover{
+            background-color: #F5F8FC;
+            border-color: #006FEA;
+        }
     }
 }

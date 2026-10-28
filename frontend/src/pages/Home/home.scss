@@ -56,8 +56,10 @@
         z-index: 2;
         img{
           cursor: pointer;
-          &:hover{
-            opacity: 0.8;
+          @media (hover: hover) {
+              &:hover{
+                opacity: 0.8;
+              }
           }
         }
       }

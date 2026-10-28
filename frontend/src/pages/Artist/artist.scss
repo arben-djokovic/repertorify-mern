@@ -20,8 +20,10 @@
             color: #5B8EA8;
             text-decoration: underline;
             cursor: pointer;
-            &:hover{
-                opacity: .8;
+            @media (hover: hover) {
+                &:hover{
+                    opacity: .8;
+                }
             }
         }
     }

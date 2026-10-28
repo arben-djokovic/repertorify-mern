@@ -32,8 +32,10 @@
     font-family: Arial, sans-serif; 
     background-color: white;
     font-weight: bold;
-    &:hover{
-      cursor: pointer;
+    @media (hover: hover) {
+        &:hover{
+          cursor: pointer;
+        }
     }
   }
   .custom-list [id^="a"]:nth-child(odd) .song-item{
