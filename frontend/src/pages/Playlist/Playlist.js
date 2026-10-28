@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SongItem from "../../components/SongItem/SongItem";
 import { SongSkeleton } from "../../components/Skeleton/Skeleton";
+import SortableSongList from "./SortableSongList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faFilePdf, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons'
@@ -51,6 +52,25 @@ export default function Playlist() {
         }
     }
 
+
+    // Same rule as the Edit menu: the owner or an admin can reorder songs
+    const canReorder = isAuthenticated() && (isAdmin() || playlist.user.username === localStorage.getItem("username"))
+
+    const reorderSongs = async (newSongs) => {
+      const previousSongs = playlist.songs
+      setPlaylist(prev => ({ ...prev, songs: newSongs }))
+      try{
+        await api.put(`/playlists/${playlist._id}/order`, { songIds: newSongs.map(s => s._id) })
+      }catch(err){
+        console.log(err)
+        setPlaylist(prev => ({ ...prev, songs: previousSongs }))
+        toast.error(err.response?.data?.message || "Couldn't save the new order")
+      }
+    }
+
+    const removeSongFromState = (songId) => {
+      setPlaylist(prev => ({ ...prev, songs: prev.songs.filter(s => s._id !== songId) }))
+    }
 
     const likePlaylist = async () => {
       if(isMine) return toast.error("You can't like your own playlist")
@@ -183,9 +203,11 @@ export default function Playlist() {
       <h1 className="playlistTitle">{playlist.name}</h1>
       {playlist.user?._id && <p className="playlistCreator">Created by <span onClick={() => navigate(`/user/${playlist.user._id}`)} className="playlistCreatorName">{playlist.user.username}</span></p>}
       <div className="songsList">
-        {loading ? <SongSkeleton count={8} /> : playlist.songs.length > 0 ? playlist.songs.map((song, i) => (
-          <SongItem inPlaylist={true} song={song} key={i} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} />
-        )) : <p>No songs in playlist</p>}
+        {loading ? <SongSkeleton count={8} /> : playlist.songs.length === 0 ? <p>No songs in playlist</p> :
+          canReorder ? <SortableSongList playlist={playlist} onReorder={reorderSongs} onRemovedFromPlaylist={removeSongFromState} /> :
+          playlist.songs.map((song, i) => (
+            <SongItem inPlaylist={true} song={song} key={song._id} i={i} playlistUserId={playlist.user._id} playlistId={playlist._id} />
+          ))}
       </div>
     </section>
     {deleteModalOpen && <AreYouSure onYes={deletePlaylist} setModalOpen={setDeleteModalOpen} />}

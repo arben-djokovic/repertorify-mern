@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllPlaylists, createPlaylist, getPlaylist, getUserPublicPlaylists, getTopFive, addSongToPlaylists, getMyPlaylists, deletePlaylist, getFavouritePlaylists, likePlaylist, unlikePlaylist, editPlaylist, removeFromPlaylist, downloadPlaylist } from "../controllers/playlist.controller.js";
+import { getAllPlaylists, createPlaylist, getPlaylist, getUserPublicPlaylists, getTopFive, addSongToPlaylists, getMyPlaylists, deletePlaylist, getFavouritePlaylists, likePlaylist, unlikePlaylist, editPlaylist, reorderPlaylist, removeFromPlaylist, downloadPlaylist } from "../controllers/playlist.controller.js";
 import { userRoute } from "../middlewares/middlewares.js";
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.get("/playlists/top-five", getTopFive);
 router.put("/playlists/:id/like", userRoute, likePlaylist);
 router.put("/playlists/:id/unlike", userRoute, unlikePlaylist);
 router.put("/playlists/:id/edit", userRoute, editPlaylist);
+router.put("/playlists/:id/order", userRoute, reorderPlaylist);
 router.get('/playlists/:id', getPlaylist);
 router.delete('/playlists/:id', userRoute , deletePlaylist);
 router.post("/add-to-playlist", userRoute, addSongToPlaylists);

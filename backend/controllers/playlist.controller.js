@@ -233,6 +233,47 @@ const editPlaylist = async (req, res) => {
   }
 };
 
+// Saves a new song order; the body must contain exactly the playlist's current songs
+const reorderPlaylist = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id))
+      return res.status(404).json({ success: false, message: "Invalid id" });
+    const playlist = await Playlist.findById(id);
+    if (!playlist)
+      return res
+        .status(404)
+        .json({ success: false, message: "Playlist not found" });
+    if (playlist.user.toString() !== req.user._id && req.user.role !== "admin")
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized to edit this playlist" });
+
+    const { songIds } = req.body;
+    if (!Array.isArray(songIds))
+      return res
+        .status(400)
+        .json({ success: false, message: "songIds must be an array" });
+    const current = playlist.songs.map(String);
+    const next = songIds.map(String);
+    const sameSongs =
+      next.length === current.length &&
+      new Set(next).size === next.length &&
+      next.every((songId) => current.includes(songId));
+    if (!sameSongs)
+      return res.status(409).json({
+        success: false,
+        message: "Playlist has changed, reload the page and try again",
+      });
+
+    playlist.songs = next;
+    await playlist.save();
+    res.json({ success: true });
+  } catch (err) {
+    mongooseErrors(err, res);
+  }
+};
+
 const addSongToPlaylists = async (req, res) => {
   const songId = req.body.songId;
   const playlistIds = req.body.playlistIds;
@@ -377,4 +418,5 @@ export {
   unlikePlaylist,
   deletePlaylist,
   editPlaylist,
+  reorderPlaylist,
 };

@@ -13,7 +13,7 @@ import { get, set } from "mongoose";
 import AreYouSure from "../AreYouSure/AreYouSure";
 
 
-export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId, isRightSide }) {
+export default function SongItem({ song, i, inPlaylist, playlistUserId, playlistId, isRightSide, onRemovedFromPlaylist }) {
   const { isAuthenticated, isAdmin, getDecodedToken } = useToken();
   const navigate = useNavigate();
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
@@ -94,6 +94,7 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
       const response = await api.post("/remove-from-playlist", {songId: song._id, playlistId: playlistId});
       if(response.data.success){
         toast.success(response.data.message);
+        if (onRemovedFromPlaylist) return onRemovedFromPlaylist(song._id);
         songRef.current.style.display = "none";
       }
     }catch(err){
