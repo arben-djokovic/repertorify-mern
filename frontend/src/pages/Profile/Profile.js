@@ -12,11 +12,13 @@ export default function Profile() {
 
   const [user, setUser] = useState({ favouritePlaylists: []});
   const [selected, setSelected] = useState("mySongs");
+  const [userLoading, setUserLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate()
 
   useEffect(() => {
     const getUser = async () => {
+      setUserLoading(true)
       try {
         const response = await api.get(`/users/${id}`);
         console.log(response.data);
@@ -24,6 +26,8 @@ export default function Profile() {
       } catch (err) {
         console.log(err);
         navigate("/404")
+      } finally {
+        setUserLoading(false)
       }
     }
     getUser()
@@ -44,7 +48,7 @@ export default function Profile() {
         />
         <meta property="og:url" content={window.location.href} />
       </Helmet>
-      <ProfileHeader setUser={setUser} user={user} />
+      <ProfileHeader setUser={setUser} user={user} loading={userLoading} />
       <div className="profileMain">
         <nav className="profileNav">
           <ul>
@@ -56,9 +60,9 @@ export default function Profile() {
             </>}
           </ul>
         </nav>
-        {selected === "mySongs" && <MySongs userId={id} />}
-        {selected === "myPlaylists" && <MyPlaylists userId={id} />}
-        {id == localStorage.getItem("userid") && selected === "favPlaylists" && <FavPlaylists user={user} />}
+        {selected === "mySongs" && <MySongs key={id} userId={id} />}
+        {selected === "myPlaylists" && <MyPlaylists key={id} userId={id} />}
+        {id == localStorage.getItem("userid") && selected === "favPlaylists" && <FavPlaylists user={user} loading={userLoading} />}
         </div>
     </div>
   );

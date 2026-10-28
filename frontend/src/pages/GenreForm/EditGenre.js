@@ -5,9 +5,11 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from 'react';
 import { Helmet } from "react-helmet-async";
+import { FieldSkeleton } from "../../components/Skeleton/Skeleton";
 
 export default function EditGenre() {
   const [genre, setGenre] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const formRef = useRef();
   const { id } = useParams();
@@ -18,6 +20,8 @@ export default function EditGenre() {
       setGenre(respone.data.genre.name)
     }catch(err){
       console.log(err)
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -77,9 +81,9 @@ export default function EditGenre() {
           </div>
           <div className="input">
             <label htmlFor="title">Genre: <span className="inputerror" id="genreerror"></span></label>
-            <input onChange={(e) => setGenre(e.target.value)} value={genre} type="text" id="name" name="genre" />
+            {loading ? <FieldSkeleton /> : <input onChange={(e) => setGenre(e.target.value)} value={genre} type="text" id="name" name="genre" />}
           </div>
-          <button onClick={editGenre} className="formBtn">Edit genre</button>
+          <button onClick={editGenre} disabled={loading} className="formBtn">Edit genre</button>
         </form>
       </div>
     </div>

@@ -9,6 +9,7 @@ import api from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
 import useToken from "../../controllers/TokenController"
 import { Helmet } from "react-helmet-async";
+import { FieldSkeleton } from "../../components/Skeleton/Skeleton";
 
 export default function EditPlaylist() {
   const formRef = useRef(null)
@@ -17,6 +18,7 @@ export default function EditPlaylist() {
   const [selectedImage, setSelectedImage] = useState("image.png");
   const [initialSlide, setInitialSlide] = useState(0);
   const [playlistName, setPlaylistName] = useState("")
+  const [loading, setLoading] = useState(true)
   const { id } = useParams();
   const { getDecodedToken } = useToken();
 
@@ -64,6 +66,8 @@ export default function EditPlaylist() {
       if(getDecodedToken() === null || (getDecodedToken()._id !== response.data.playlist.user._id && getDecodedToken().role !== "admin")) navigate("/")
     }catch(err){
       console.log(err)
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -96,10 +100,10 @@ export default function EditPlaylist() {
         <meta property="og:url" content={window.location.href} />
       </Helmet>
       <div className="formDiv">
-        <button onClick={editPlaylist} className="formBtnMobile">Edit playlist</button>
+        <button onClick={editPlaylist} disabled={loading} className="formBtnMobile">Edit playlist</button>
         <div className="slider">
-          {initialSlide && <Swiper navigation={true} modules={[Navigation]} loop={true} centeredSlides={true}
-          initialSlide={initialSlide - 1}
+          {loading ? <FieldSkeleton height={200} radius={10} /> : <Swiper navigation={true} modules={[Navigation]} loop={true} centeredSlides={true}
+          initialSlide={Math.max(initialSlide - 1, 0)}
           onSlideChange={handleSlideChange} className="mySwiper">
             <SwiperSlide>
               <img src="/assets/image.png" alt="testimg" />
@@ -133,9 +137,9 @@ export default function EditPlaylist() {
           </div>
           <div className="input">
             <label htmlFor="name">Playlist name</label>
-            <input onChange={(e) => {setPlaylistName(e.target.value)}} value={playlistName} type="text" id="name" name="name" />
+            {loading ? <FieldSkeleton /> : <input onChange={(e) => {setPlaylistName(e.target.value)}} value={playlistName} type="text" id="name" name="name" />}
           </div>
-          <div className="input">
+          {loading ? <FieldSkeleton height={20} width="50%" radius={5} /> : <div className="input">
             <div className="radioDiv">
               <div className="radio">
                 {isPublic && <input onChange={(e) => {setIsPublic(!e.target.checked)}} type="radio" name="isPrivate" id="private"  />}
@@ -148,8 +152,8 @@ export default function EditPlaylist() {
                 <label htmlFor="public">Public</label>
               </div>
             </div>
-          </div>
-          <button onClick={editPlaylist} className="formBtn">Edit playlist</button>
+          </div>}
+          <button onClick={editPlaylist} disabled={loading} className="formBtn">Edit playlist</button>
         </form>
       </div>
     </div>

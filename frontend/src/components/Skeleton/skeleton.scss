@@ -103,3 +103,32 @@
         }
     }
 }
+
+.sk-lines{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sk-sidebar{
+    display: flex;
+    flex-direction: column;
+    grid-gap: 3px;
+    width: 100%;
+    .sk-sidebarRow{
+        display: flex;
+        align-items: center;
+        grid-gap: 8px;
+        padding: 5px;
+    }
+    .sk-sidebarIcon{
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        background: #E5F1FD;
+        animation: none;
+    }
+    .sk-sidebarLine{
+        height: 9px;
+    }
+}

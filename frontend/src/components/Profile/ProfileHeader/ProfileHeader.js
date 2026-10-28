@@ -10,8 +10,9 @@ import api from '../../../api/api'
 import { toast } from 'react-toastify'
 import AreYouSure from '../../AreYouSure/AreYouSure'
 import useToken from "../../../controllers/TokenController";
+import { LinesSkeleton } from "../../Skeleton/Skeleton";
 
-export default function ProfileHeader({ user, setUser }) {
+export default function ProfileHeader({ user, setUser, loading }) {
   const { isAdmin } = useToken();
   const navigate = useNavigate() 
   const formRef = useRef()
@@ -92,7 +93,7 @@ export default function ProfileHeader({ user, setUser }) {
     <FontAwesomeIcon className='userIcon link' icon={faUser} onClick={()=>{navigate("/profile")}} />
     <div className="userInfo">
       <div className="username">
-        <h1 onClick={()=>{navigate("/profile")}} className='link'>{user.username}</h1>
+        {loading ? <div style={{ width: 140 }}><LinesSkeleton count={1} height={24} widths={[100]} /></div> : <h1 onClick={()=>{navigate("/profile")}} className='link'>{user.username}</h1>}
       </div>
       {user._id === localStorage.getItem("userid") && 
       <div className="info">

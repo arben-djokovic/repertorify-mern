@@ -18,6 +18,7 @@ import useToken from "../../controllers/TokenController";
 import Modal from "../../components/Modal/Modal";
 import AreYouSure from "../../components/AreYouSure/AreYouSure";
 import { Helmet } from "react-helmet-async";
+import { LinesSkeleton } from "../../components/Skeleton/Skeleton";
 
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
@@ -36,6 +37,7 @@ export default function Song() {
     }
   });
   const [playlist, setPlaylist] = useState({});
+  const [songLoading, setSongLoading] = useState(true);
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
@@ -124,6 +126,7 @@ const transposeSong = async(semitones) => {
 
   const fetchSong = async() => {
     let songText = song.text
+    setSongLoading(true)
     try{
       let url = '/songs/'+id
       if(playlistId) url = `/playlists/${playlistId}/songs/${id}`
@@ -144,6 +147,8 @@ const transposeSong = async(semitones) => {
     }catch(err){
       toast.error('Something went wrong')
       console.log(err)
+    }finally{
+      setSongLoading(false)
     }
   }
 
@@ -331,8 +336,10 @@ const transposeSong = async(semitones) => {
         </div>
       </div>
       <div className="songInfo">
+        {songLoading ? <div className="songHeadSkeleton"><LinesSkeleton count={2} height={22} gap={10} widths={[45, 25]} /></div> : <>
         <h1 className="title">{song.title}</h1>
         <p className="artistName" onClick={() => navigate(`/songs?artist=${song.artist}`)}>{song.artist}</p>
+        </>}
         <div className="songsBtns">
           <button ref={downButtonRef} onClick={() => {handleTranspose("down");}}>
             <FontAwesomeIcon icon={faMinus} />
@@ -342,17 +349,17 @@ const transposeSong = async(semitones) => {
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
-        <pre
+        {songLoading ? <div className="text"><LinesSkeleton count={16} height={9} gap={12} widths={[35, 60, 30, 55, 40, 65, 35, 50]} /></div> : <pre
             className="text"
             dangerouslySetInnerHTML={{ __html: highlightChords(song.text) }}
-          ></pre> 
+          ></pre>}
           <div className="bottom">
             <div className="arrows">
               <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />
               <FontAwesomeIcon onClick={goToRandomSong} className="shuffle link" icon={faShuffle} />
               <FontAwesomeIcon onClick={goToNextSong} className="arrow moreBtn link" icon={faArrowRight} />
             </div>
-            <div className="creator">Created by <span onClick={() => navigate(`/user/${song.user._id}`)} className="username">{song.user.username}</span></div>
+            <div className="creator">Created by <span onClick={() => navigate(`/user/${song.user._id}`)} className="username">{songLoading ? "…" : song.user.username}</span></div>
           </div>
       </div>
     </div>

@@ -6,10 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 import { useMatch } from "react-router-dom";
 import PlaylistItem from '../PlaylistItem/PlaylistItem'
 import SongItem from "../SongItem/SongItem";
+import { SidebarSkeleton } from "../Skeleton/Skeleton";
 
 export default function RightSidebar() {
   const [topFivePlaylists, setTopFivePlaylists] = useState([])
   const [topSongs, setTopSongs] = useState([])
+  const [loading, setLoading] = useState(true)
   const location = useLocation();
   const matchSongId = useMatch("/songs/:id")
   const matchSonginPlaylistId = useMatch("/playlists/:id/songs/:id")
@@ -35,25 +37,25 @@ export default function RightSidebar() {
     }
   }
   useEffect(() => {
-    if(window.innerWidth <= 1000) return
+    if(window.innerWidth <= 1000) return setLoading(false)
     isSongView = matchSongId || matchSonginPlaylistId
-    if(isSongView){
-      getTopSongs()
-    }else{
-      getTopFive()
-    }
+    setLoading(true)
+    const load = isSongView ? getTopSongs : getTopFive
+    load().finally(() => setLoading(false))
   }, [location.pathname])
 
   return (
     <div className="rightSidebar">
       <div className="rightSidebarFilter">
         <ul className="custom-list">
+          {loading ? <SidebarSkeleton count={5} /> : <>
           {!isSongView && topFivePlaylists.map((playlist, i) => {
             return <PlaylistItem isMobile={true} playlist={playlist} key={i} i={i} />
           })}
           {isSongView && <><h6>Songs from same artist</h6>{topSongs.map((song, i) => {
             return <SongItem isRightSide={true} song={song} key={i} i={i} />
           })}</>}
+          </>}
         </ul>
       </div>
     </div>

@@ -21,6 +21,36 @@ export function SongSkeleton({ count = 7 }) {
   )
 }
 
+// Plain text bars, e.g. song text or a list of names; widths cycle so lines look natural
+export function LinesSkeleton({ count = 5, height = 10, gap = 8, widths = [70, 55, 80, 45, 65, 50] }) {
+  return (
+    <div className="sk-lines" style={{ gap }} aria-busy="true">
+      {Array.from({ length: count }).map((_, i) => (
+        <span className="skeleton" key={i} style={{ height, width: `${widths[i % widths.length]}%` }} />
+      ))}
+    </div>
+  )
+}
+
+// Placeholder for a form field (input, textarea, image picker) while its value loads
+export function FieldSkeleton({ height = 38, width = "100%", radius = 15 }) {
+  return <span className="skeleton" aria-busy="true" style={{ height, width, borderRadius: radius }} />
+}
+
+// Small rows for the right sidebar
+export function SidebarSkeleton({ count = 5 }) {
+  return (
+    <div className="sk-sidebar" aria-busy="true">
+      {Array.from({ length: count }).map((_, i) => (
+        <div className="sk-sidebarRow" key={i}>
+          <span className="skeleton sk-sidebarIcon" />
+          <span className="skeleton sk-sidebarLine" style={{ width: `${50 + (i * 17) % 35}%` }} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function PlaylistSkeleton({ count = 6 }) {
   return (
     <>

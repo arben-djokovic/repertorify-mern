@@ -3,18 +3,23 @@ import './artist.scss'
 import { Link, useParams } from 'react-router-dom';
 import api from '../../api/api'
 import { Helmet } from "react-helmet-async";
+import { LinesSkeleton } from "../../components/Skeleton/Skeleton";
 
 export default function Artist() {
     const { letter } = useParams()
     const [artists, setArtists] = useState([])
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         const getArtists = async () => {
+            setLoading(true)
             try{
                 const response = await api.get(`/artists/${letter}`);
                 setArtists(response.data.artists);
                 console.log(response.data.artists);
             }catch(err){
                 console.log(err)
+            }finally{
+                setLoading(false)
             }
         }
         getArtists()
@@ -37,7 +42,7 @@ export default function Artist() {
         </Helmet>
         <h1>{letter.toLocaleUpperCase()}</h1>
         <div className="artists">
-            {artists.length ? artists.map(artist => (<Link to={`/songs?artist=${artist}`} className="artistItem">{artist}</Link>)) : "No artists found"}
+            {loading ? <div style={{ width: 220 }}><LinesSkeleton count={10} height={12} gap={10} /></div> : artists.length ? artists.map(artist => (<Link to={`/songs?artist=${artist}`} className="artistItem">{artist}</Link>)) : "No artists found"}
         </div>
     </div>
   )

@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useToken from "../../controllers/TokenController";
 import { Helmet } from "react-helmet-async";
 import GenreSelect from "../../components/GenreSelect/GenreSelect";
+import { FieldSkeleton } from "../../components/Skeleton/Skeleton";
 
 export default function EditSong() {
   const { id } = useParams();
@@ -19,6 +20,8 @@ export default function EditSong() {
   const [songTitle, setSongTitle] = useState("")
   const [songText, setSongText] = useState("")
   const [songArtist, setSongArtist] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [genresLoading, setGenresLoading] = useState(true)
 
 
   const fetchGenres = async() => {
@@ -27,6 +30,8 @@ export default function EditSong() {
       setGenres(respone.data.genres)
     }catch(err){
       console.log(err)
+    }finally{
+      setGenresLoading(false)
     }
   }
   
@@ -43,6 +48,8 @@ export default function EditSong() {
       }
     }catch(err){
       console.log(err)
+    }finally{
+      setLoading(false)
     }
   }
   const addSong = async() => {
@@ -104,21 +111,21 @@ export default function EditSong() {
           </div>
           <div className="input">
             <label htmlFor="title">Title <span className="inputerror" id="titleerror"></span></label>
-            <input defaultValue={songTitle} onChange={(e)=>{setSongTitle(e.target.value)}} type="text" id="title" name="title" />
+            {loading ? <FieldSkeleton /> : <input defaultValue={songTitle} onChange={(e)=>{setSongTitle(e.target.value)}} type="text" id="title" name="title" />}
           </div>
           <div className="input">
             <label htmlFor="text">Text (with acords) <span className="inputerror" id="texterror"></span></label>
-            <textarea defaultValue={songText} height={5} onChange={(e) => {e.target.style.height = e.target.scrollHeight + "px" ; setSongText(e.target.value)}}  id="text" rows={5} name="text" />
+            {loading ? <FieldSkeleton height={240} /> : <textarea defaultValue={songText} height={5} onChange={(e) => {e.target.style.height = e.target.scrollHeight + "px" ; setSongText(e.target.value)}}  id="text" rows={5} name="text" />}
           </div>
           <div className="input">
             <label htmlFor="artist">Artist <span className="inputerror" id="artisterror"></span></label>
-            <input defaultValue={songArtist} onChange={(e)=>{setSongArtist(e.target.value)}} type="text" id="artist" name="artist" />
+            {loading ? <FieldSkeleton /> : <input defaultValue={songArtist} onChange={(e)=>{setSongArtist(e.target.value)}} type="text" id="artist" name="artist" />}
           </div>
           <div className="input">
             <label>Genres <span className="inputerror" id="genreserror"></span></label>
-            <GenreSelect genres={genres} selected={selectedGenres} setSelected={setSelectedGenres} />
+            {loading || genresLoading ? <FieldSkeleton height={30} width="70%" /> : <GenreSelect genres={genres} selected={selectedGenres} setSelected={setSelectedGenres} />}
           </div>
-          <button onClick={addSong} className="formBtn">Edit song</button>
+          <button onClick={addSong} disabled={loading} className="formBtn">Edit song</button>
         </form>
       </div>
     </div>

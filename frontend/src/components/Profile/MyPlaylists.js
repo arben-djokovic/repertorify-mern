@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import "../../pages/Profile/profile.scss";
 import { Link } from "react-router-dom";
 import PlaylistItem from "../PlaylistItem/PlaylistItem";
+import { PlaylistSkeleton } from "../Skeleton/Skeleton";
 import api from "../../api/api";
 
 export default function MyPlaylists({ userId}) {
   const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchPlaylists = async () => {
     try{
@@ -31,15 +33,13 @@ export default function MyPlaylists({ userId}) {
   }
   
   useEffect(() => {
-    if(userId == localStorage.getItem("userid")) {
-      fetchMyPlaylists()
-    }else{
-      fetchPlaylists()
-    }
+    const load = userId == localStorage.getItem("userid") ? fetchMyPlaylists : fetchPlaylists
+    load().finally(() => setLoading(false))
   }, [])
   return (
     <section className="myPlaylists">
       <div className="list">
+        {loading ? <PlaylistSkeleton count={4} /> : <>
         {playlists.length > 0 && userId == localStorage.getItem("userid") && <Link to={"/create-playlist"} className="playlistItem addPlaylistTile link">
           <span className="pi-cover pi-plus">+</span>
           <span className="pi-name">New playlist</span>
@@ -47,6 +47,7 @@ export default function MyPlaylists({ userId}) {
         {playlists.length > 0 ? playlists.map((playlist, i) => (
           <PlaylistItem playlist={playlist} isMine={true} className={i} key={i} i={i} />
         )) : <p className="noPlaylists">No playlists found</p>}
+        </>}
       </div>
     </section>
   );
