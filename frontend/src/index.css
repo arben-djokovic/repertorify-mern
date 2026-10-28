@@ -34,8 +34,14 @@ a, button, .link{
   cursor: pointer;
   text-decoration: none;
 }
-a:hover, button:hover, .link:hover{
-  opacity: 0.7;
+/* Only on devices with a real hover (mouse); on touch screens the hover state sticks after a tap */
+@media (hover: hover) {
+  a:hover, button:hover, .link:hover{
+    opacity: 0.7;
+  }
+}
+a, button, .link{
+  -webkit-tap-highlight-color: transparent;
 }
 input, button, select{
   border: none;
