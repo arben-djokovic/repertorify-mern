@@ -5,54 +5,57 @@
 
 .skeleton{
     display: block;
-    border-radius: 5px;
+    border-radius: 4px;
     background: linear-gradient(90deg, #ececec 25%, #f6f6f6 50%, #ececec 75%);
     background-size: 200% 100%;
     animation: skeletonPulse 1.4s ease-in-out infinite;
 }
 
-.songSkeletonList{
+.sk-songList{
     width: 100%;
 }
 
-.songSkeleton{
+// Same box as .songitem: 7px padding, 38px icon, bottom border
+.sk-song{
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 7px;
     width: 100%;
     border-bottom: 1px solid #e0e0e0;
-    .left{
+    .sk-songLeft{
         display: flex;
         align-items: center;
         grid-gap: 10px;
         flex-grow: 1;
     }
-    .icon{
+    .sk-songIcon{
         width: 38px;
         height: 38px;
         flex-shrink: 0;
+        background: #E5F1FD;
+        animation: none;
     }
-    .lines{
+    .sk-songLines{
         display: flex;
         flex-direction: column;
-        grid-gap: 6px;
+        grid-gap: 5px;
         flex-grow: 1;
     }
-    .title{
-        height: 14px;
+    .sk-songTitle{
+        height: 11px;
     }
-    .artist{
-        height: 10px;
+    .sk-songArtist{
+        height: 8px;
     }
-    .username{
-        width: 60px;
-        height: 10px;
+    .sk-songUser{
+        width: 50px;
+        height: 8px;
         flex-shrink: 0;
     }
 }
 
-.playlistSkeleton{
+.sk-playlist{
     display: flex;
     flex-direction: column;
     grid-gap: 15px;
@@ -65,23 +68,23 @@
     max-width: 190px;
     min-height: 200px;
     box-sizing: border-box;
-    .img{
+    .sk-playlistImg{
         width: 100%;
         height: 10.5vw;
         min-height: 100px;
         max-height: 130px;
     }
-    .line{
+    .sk-playlistLine{
         height: 12px;
         width: 80%;
-        &.short{
+        &.sk-short{
             width: 50%;
         }
     }
 }
 
 @media screen and (max-width: 700px) {
-    .songSkeleton .username{
-        width: 40px;
+    .sk-song .sk-songUser{
+        width: 35px;
     }
 }

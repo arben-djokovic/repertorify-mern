@@ -1,19 +1,20 @@
 import React from 'react'
 import './skeleton.scss'
 
+// Class names are prefixed with "sk-" so global page styles (e.g. .artist, .title) can't leak in
 export function SongSkeleton({ count = 7 }) {
   return (
-    <div className="songSkeletonList" aria-busy="true" aria-label="Loading songs">
+    <div className="sk-songList" aria-busy="true" aria-label="Loading songs">
       {Array.from({ length: count }).map((_, i) => (
-        <div className="songSkeleton" key={i}>
-          <div className="left">
-            <span className="skeleton icon" />
-            <div className="lines">
-              <span className="skeleton title" style={{ width: `${45 + (i * 37) % 35}%` }} />
-              <span className="skeleton artist" style={{ width: `${25 + (i * 23) % 20}%` }} />
+        <div className="sk-song" key={i}>
+          <div className="sk-songLeft">
+            <span className="skeleton sk-songIcon" />
+            <div className="sk-songLines">
+              <span className="skeleton sk-songTitle" style={{ width: `${30 + (i * 37) % 25}%` }} />
+              <span className="skeleton sk-songArtist" style={{ width: `${15 + (i * 23) % 12}%` }} />
             </div>
           </div>
-          <span className="skeleton username" />
+          <span className="skeleton sk-songUser" />
         </div>
       ))}
     </div>
@@ -24,10 +25,10 @@ export function PlaylistSkeleton({ count = 6 }) {
   return (
     <>
       {Array.from({ length: count }).map((_, i) => (
-        <div className="playlistSkeleton" key={i} aria-busy="true">
-          <span className="skeleton img" />
-          <span className="skeleton line" />
-          <span className="skeleton line short" />
+        <div className="sk-playlist" key={i} aria-busy="true">
+          <span className="skeleton sk-playlistImg" />
+          <span className="skeleton sk-playlistLine" />
+          <span className="skeleton sk-playlistLine sk-short" />
         </div>
       ))}
     </>
