@@ -101,6 +101,11 @@
     .arrows{
         margin-top: 20px;
         justify-content: flex-start !important;
+        a{
+            display: flex;
+            color: inherit;
+            text-decoration: none;
+        }
     }
     .shuffle{
         padding: 5px 10px;

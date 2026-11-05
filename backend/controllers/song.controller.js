@@ -86,7 +86,7 @@ const getSong = async (req, res) => {
     if (!mongoose.isValidObjectId(id))
       return res.status(404).json({ success: false, message: "Invalid id" });
     let playlist = null;
-    const song = await Song.findById(id).populate("user").populate("genres");
+    const song = await Song.findById(id).populate("user", "username").populate("genres");
     if (!song)
       return res
         .status(404)
@@ -122,9 +122,11 @@ const getSong = async (req, res) => {
       const [next, prev, random] = await Promise.all([
         Song.findOne(after).sort(order).select("_id"),
         Song.findOne(before).sort(reverseOrder).select("_id"),
-        Song.aggregate([{ $match: { _id: { $ne: song._id } } }, { $sample: { size: 1 } }, { $project: { _id: 1 } }]),
+        // $sample as the first stage picks random documents without scanning the whole
+        // collection ($match before it forced a full scan + in-memory shuffle on every view)
+        Song.aggregate([{ $sample: { size: 2 } }, { $project: { _id: 1 } }]),
       ]);
-      randomSong = random[0] || null;
+      randomSong = random.find((s) => !s._id.equals(song._id)) || null;
 
       // Wrap around at the ends; only when there is more than one song
       if (randomSong) {

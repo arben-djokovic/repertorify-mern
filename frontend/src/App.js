@@ -3,28 +3,30 @@ import Header from "./components/Header/Header";
 import "./App.scss";
 import Sidebar from "./components/Sidebar/Sidebar";
 import RightSidebar from "./components/RightSidebar/RightSidebar";
-import Home from "./pages/Home/Home";
 import Footer from "./components/Footer/Footer";
 import Songs from "./pages/Songs/Songs";
 import Playlists from "./pages/Playlists/Playlists";
-import { useEffect, useRef, useState } from "react";
-import Profile from "./pages/Profile/Profile";
-import Login from "./pages/Registration/Login";
-import Signup from "./pages/Registration/Signup";
-import CreatePlaylist from "./pages/PlaylistForm/CreatePlaylist";
-import AddSong from "./pages/SongForm/AddSong";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import Song from "./pages/Song/Song";
-import Playlist from "./pages/Playlist/Playlist";
 import 'react-toastify/dist/ReactToastify.css';
 import { AdminRoute, GuestRoute, UserRoute } from "./controllers/RoutesController";
-import EditPlaylist from "./pages/PlaylistForm/EditPlaylist";
-import EditSong from "./pages/SongForm/EditSong";
-import Artist from "./pages/Artist/Artist";
-import CreateGenre from "./pages/GenreForm/CreateGenre";
-import Genres from "./pages/Genres/Genres";
-import EditGenre from "./pages/GenreForm/EditGenre";
-import WhatIsRepertorify from "./pages/WhatIsRepertorify/WhatIsRepertorify";
-import PageNotFound from "./pages/PageNotFound/PageNotFound";
+
+// Pages most visitors never open (forms, admin, profile...) are split out of the main
+// bundle, so song pages download and start faster
+const Profile = lazy(() => import("./pages/Profile/Profile"));
+const Login = lazy(() => import("./pages/Registration/Login"));
+const Signup = lazy(() => import("./pages/Registration/Signup"));
+const CreatePlaylist = lazy(() => import("./pages/PlaylistForm/CreatePlaylist"));
+const AddSong = lazy(() => import("./pages/SongForm/AddSong"));
+const Playlist = lazy(() => import("./pages/Playlist/Playlist"));
+const EditPlaylist = lazy(() => import("./pages/PlaylistForm/EditPlaylist"));
+const EditSong = lazy(() => import("./pages/SongForm/EditSong"));
+const Artist = lazy(() => import("./pages/Artist/Artist"));
+const CreateGenre = lazy(() => import("./pages/GenreForm/CreateGenre"));
+const Genres = lazy(() => import("./pages/Genres/Genres"));
+const EditGenre = lazy(() => import("./pages/GenreForm/EditGenre"));
+const WhatIsRepertorify = lazy(() => import("./pages/WhatIsRepertorify/WhatIsRepertorify"));
+const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
 
 function App() {
   const location = useLocation();
@@ -62,6 +64,7 @@ function App() {
             <button onClick={searchSelected} className='searchBtn'>Search</button>
         </form>
         <div className="mainContent">
+          <Suspense fallback={null}>
           <Routes>
             {/* <Route path="/" element={<Home />} /> */}
             <Route path="/" element={<Songs />} />
@@ -85,6 +88,7 @@ function App() {
             <Route path="/404" element={<PageNotFound />} />
             <Route path="/*" element={<PageNotFound />} />
           </Routes>
+          </Suspense>
         </div>
         <RightSidebar />
       </main>

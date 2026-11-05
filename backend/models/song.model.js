@@ -41,6 +41,8 @@ const songSchema = new mongoose.Schema({
 
 // Default song order everywhere (also used for next/prev navigation)
 songSchema.index({ addedToPlaylist: -1, _id: 1 });
+// "More songs by this artist" on the server-rendered song page
+songSchema.index({ artist: 1 });
 
 const Song = mongoose.model("Song", songSchema);
 

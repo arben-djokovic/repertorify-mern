@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import api from "../../api/api";
 import useToken from "../../controllers/TokenController";
 import Modal from "../Modal/Modal";
-import { get, set } from "mongoose";
 import AreYouSure from "../AreYouSure/AreYouSure";
 import { listItemAnimation } from "../listAnimation";
 
@@ -25,15 +24,17 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const songRef = useRef(null)
 
+  const songUrl = inPlaylist ? "/playlists/" + playlistId + "/songs/" + song._id : "/songs/" + song._id;
+
   const songClick = (e) => {
     if (
+      e.target.closest("a") ||
       e.target.id === "icon" ||
       e.target.id === "ellipsisItem" ||
       e.target.id === "ellipsisOpen" ||
       e.target.tagName === "path"
     )return;
-    if(inPlaylist) return navigate("/playlists/" + playlistId + "/songs/" + song._id);
-    navigate("/songs/" + song._id);
+    navigate(songUrl);
   };
 
   const deleteSong = async () => {
@@ -135,10 +136,11 @@ export default function SongItem({ song, i, inPlaylist, playlistUserId, playlist
       >
         <div className={`left`}>
           <FontAwesomeIcon className="musicIcon" icon={faMusic} />
-          <p className="title">
+          {/* A real <a href> so Google can follow the list to each song page */}
+          <Link to={songUrl} className="title songItemLink">
             <span>{song.title}</span>
             <span className="artistTitle">{song.artist}</span>
-          </p>
+          </Link>
         </div>
         {!isRightSide && <>
           <div className="right">

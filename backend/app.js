@@ -68,7 +68,16 @@ app.get("/sitemap.xml", generateSiteMapFile)
 
 if(NODE_ENV === 'production') {
     // index: false so "/" also goes through the SEO renderer instead of the raw index.html
-    app.use(express.static(path.join(__dirname, '/frontend/build'), { index: false }))
+    app.use(express.static(path.join(__dirname, '/frontend/build'), {
+        index: false,
+        setHeaders: (res, filePath) => {
+            // CRA puts a content hash in every file name under /static, so browsers and
+            // Cloudflare can keep them forever; a new build gets new names
+            if (filePath.includes(`${path.sep}static${path.sep}`)) {
+                res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            }
+        },
+    }))
     app.get(['/songs/:id', '/playlists/:playlistId/songs/:id'], seoRenderSong)
     app.get('/playlists/:id', seoRenderPlaylist)
     app.get('*', seoRenderDefault)

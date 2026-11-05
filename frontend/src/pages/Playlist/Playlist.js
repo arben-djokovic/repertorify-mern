@@ -36,6 +36,7 @@ export default function Playlist() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isLiked = favourites.includes(id)
+    const playlistReady = !loading && Boolean(playlist?._id)
 
     const fetchPlaylist = async() => {
         try{
@@ -153,17 +154,19 @@ export default function Playlist() {
     <section className="playlist page pageContent">
       {/* Until the playlist loads, keep the title/description the server rendered */}
       <Helmet>
-        {playlist && <title>{`${playlist.name} plejlista | Repertorify`}</title>}
-        {playlist && <meta
+        {/* Only after the playlist loaded: before that the server-rendered tags stay. A
+            noindex while loading would drop public playlists if Google snapshots early */}
+        {playlistReady && <title>{`${playlist.name} plejlista | Repertorify`}</title>}
+        {playlistReady && <meta
           name="description"
           content={`Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.`}
         />}
-        {playlist && <meta property="og:title" content={`${playlist.name} plejlista | Repertorify`} />}
-        {playlist && <meta
+        {playlistReady && <meta property="og:title" content={`${playlist.name} plejlista | Repertorify`} />}
+        {playlistReady && <meta
           property="og:description"
           content={`Pregledaj plejlistu ${playlist.name} koja sadrži pjesme sa akordima na Repertorify.`}
         />}
-        {playlist && !playlist.isPublic && <meta name="robots" content="noindex" />}
+        {playlistReady && !playlist.isPublic && <meta name="robots" content="noindex" />}
         <meta property="og:url" content={`https://repertorify.com/playlists/${id}`} />
         <link rel="canonical" href={`https://repertorify.com/playlists/${id}`} />
       </Helmet>

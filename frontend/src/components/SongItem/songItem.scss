@@ -169,3 +169,8 @@
     }
   }
 }
+// Song title is a real link for crawlers but should look like the rest of the row
+a.songItemLink{
+  color: inherit;
+  text-decoration: none;
+}

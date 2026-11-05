@@ -20,6 +20,20 @@ import AreYouSure from "../../components/AreYouSure/AreYouSure";
 import { Helmet } from "react-helmet-async";
 import { LinesSkeleton } from "../../components/Skeleton/Skeleton";
 
+// The server embeds the requested song in the HTML (see seo.controller.js), so the first
+// render can show it right away. Only used once, and only for the song it was rendered for.
+const takeInitialSong = (id) => {
+  const el = document.getElementById("initial-data");
+  if (!el) return null;
+  el.remove();
+  try {
+    const { song } = JSON.parse(el.textContent);
+    return song && song._id === id ? song : null;
+  } catch {
+    return null;
+  }
+};
+
 export default function Song() {
   const { isAuthenticated, isAdmin } = useToken()
   const upButtonRef = useRef();
@@ -27,17 +41,21 @@ export default function Song() {
   const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const navigate = useNavigate()
   const {id, playlistId} = useParams()
-  let [song, setSong] = useState({
-    title: "Loading...",
-    text: "Loading...",
-    artist: "Loading...",
+  const [initialSong] = useState(() => takeInitialSong(id));
+  let [song, setSong] = useState(initialSong || {
+    title: "",
+    text: "",
+    artist: "",
     user: {
-      username: "Loading...",
-      _id: "Loading..."
+      username: "",
+      _id: ""
     }
   });
   const [playlist, setPlaylist] = useState({});
-  const [songLoading, setSongLoading] = useState(true);
+  const [songLoading, setSongLoading] = useState(!initialSong);
+  // Song-specific head tags only once a real song is in state, otherwise Google can
+  // snapshot every song page with the same placeholder title while the API is slow
+  const songReady = Boolean(song._id) && song._id === id;
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [addToPlaylistOpen, setAddToPlaylistOpen] = useState(false);
@@ -126,7 +144,8 @@ const transposeSong = async(semitones) => {
 
   const fetchSong = async() => {
     let songText = song.text
-    setSongLoading(true)
+    // Keep showing the server-provided song while the full data loads
+    if (song._id !== id) setSongLoading(true)
     try{
       let url = '/songs/'+id
       if(playlistId) url = `/playlists/${playlistId}/songs/${id}`
@@ -138,11 +157,12 @@ const transposeSong = async(semitones) => {
         setPrevSong(response.data.prevSong)
         setRandomSong(response.data.randomSong)
         setPlaylistName(response.data.playlistName)
-        if(response.data.step){
-          setTransposeSteps(response.data.step)
-          songText = response.data.song.text.replace(chordRegex, (match) => transposeChord(match, response.data.step));
+        const step = response.data.step || 0
+        setTransposeSteps(step)
+        checkStepenDisableButtons(step)
+        if(step){
+          songText = response.data.song.text.replace(chordRegex, (match) => transposeChord(match, step));
           setSong({...response.data.song, text: songText})
-          checkStepenDisableButtons(response.data.step)
         }
     }catch(err){
       toast.error('Something went wrong')
@@ -236,24 +256,8 @@ const transposeSong = async(semitones) => {
 };
 
 
-  const goToNextSong = () => {
-    if(!nextSong) return
-    let url = '/songs/'+nextSong._id
-    if(playlistId) url = `/playlists/${playlistId}/songs/${nextSong._id}`
-    navigate(url)
-  }
-  const goToPrevSong = () => {
-    if(!prevSong) return
-    let url = '/songs/'+prevSong._id
-    if(playlistId) url = `/playlists/${playlistId}/songs/${prevSong._id}`
-    navigate(url)
-  }
-  const goToRandomSong = () => {
-    if(!randomSong) return
-    let url = '/songs/'+randomSong._id
-    if(playlistId) url = `/playlists/${playlistId}/songs/${randomSong._id}`
-    navigate(url)
-  }
+  const songUrl = (target) => playlistId ? `/playlists/${playlistId}/songs/${target._id}` : `/songs/${target._id}`
+
   useEffect(() => {
     if (playlists.length == 0 && addToPlaylistOpen) {
       fetchPlaylists();
@@ -262,7 +266,6 @@ const transposeSong = async(semitones) => {
 
   useEffect(() => {
     fetchSong()
-    setTransposeSteps(0);
   }, [window.location.href])
 
   useEffect(() => {
@@ -285,13 +288,13 @@ const transposeSong = async(semitones) => {
     <div className="song page pageContent">
       {/* Until the song loads, keep the title/description the server rendered */}
       <Helmet>
-        {song && <title>{`${song.title} - ${song.artist} Akordi i Tekst | Repertorify`}</title>}
-        {song && <meta
+        {songReady && <title>{`${song.title} - ${song.artist} Akordi i Tekst | Repertorify`}</title>}
+        {songReady && <meta
           name="description"
           content={`"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.`}
         />}
-        {song && <meta property="og:title" content={`${song.title} - ${song.artist} Akordi i Tekst | Repertorify`} />}
-        {song && <meta
+        {songReady && <meta property="og:title" content={`${song.title} - ${song.artist} Akordi i Tekst | Repertorify`} />}
+        {songReady && <meta
           property="og:description"
           content={`"${song.title}" od ${song.artist} sa akordima i tekstom na Repertorify. Lako promijeni tonalitet i dodaj u svoj repertoar.`}
         />}
@@ -355,9 +358,10 @@ const transposeSong = async(semitones) => {
           ></pre>}
           <div className="bottom">
             <div className="arrows">
-              <FontAwesomeIcon onClick={goToPrevSong} className="arrow moreBtn link" icon={faArrowLeft} />
-              <FontAwesomeIcon onClick={goToRandomSong} className="shuffle link" icon={faShuffle} />
-              <FontAwesomeIcon onClick={goToNextSong} className="arrow moreBtn link" icon={faArrowRight} />
+              {/* Real links so crawlers can move from song to song */}
+              {prevSong ? <Link to={songUrl(prevSong)} aria-label="Prethodna pjesma"><FontAwesomeIcon className="arrow moreBtn link" icon={faArrowLeft} /></Link> : <FontAwesomeIcon className="arrow moreBtn link" icon={faArrowLeft} />}
+              {randomSong ? <Link to={songUrl(randomSong)} aria-label="Nasumična pjesma"><FontAwesomeIcon className="shuffle link" icon={faShuffle} /></Link> : <FontAwesomeIcon className="shuffle link" icon={faShuffle} />}
+              {nextSong ? <Link to={songUrl(nextSong)} aria-label="Sljedeća pjesma"><FontAwesomeIcon className="arrow moreBtn link" icon={faArrowRight} /></Link> : <FontAwesomeIcon className="arrow moreBtn link" icon={faArrowRight} />}
             </div>
             <div className="creator">Created by <span onClick={() => navigate(`/user/${song.user._id}`)} className="username">{songLoading ? "…" : song.user.username}</span></div>
           </div>

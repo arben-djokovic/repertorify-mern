@@ -30,7 +30,11 @@ const escapeHtml = (str) => String(str)
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-const renderPage = ({ title = DEFAULT_TITLE, description = DEFAULT_DESCRIPTION, canonical, noindex = false, body = "" }) => {
+// JSON inside <script type="application/json"> is not executed (so the CSP allows it), but
+// "<" must still be escaped so a song text can't close the tag
+const jsonForScript = (data) => JSON.stringify(data).replace(/</g, "\\u003c");
+
+const renderPage = ({ title = DEFAULT_TITLE, description = DEFAULT_DESCRIPTION, canonical, noindex = false, body = "", initialData = null }) => {
     const head = [
         `<title>${escapeHtml(title)}</title>`,
         `<meta data-rh="true" name="description" content="${escapeHtml(description)}"/>`,
@@ -39,6 +43,7 @@ const renderPage = ({ title = DEFAULT_TITLE, description = DEFAULT_DESCRIPTION, 
         canonical && `<meta data-rh="true" property="og:url" content="${escapeHtml(canonical)}"/>`,
         canonical && `<link data-rh="true" rel="canonical" href="${escapeHtml(canonical)}"/>`,
         noindex && `<meta data-rh="true" name="robots" content="noindex"/>`,
+        initialData && `<script type="application/json" id="initial-data">${jsonForScript(initialData)}</script>`,
     ].filter(Boolean).join("");
 
     return getIndexHtml()
@@ -55,12 +60,38 @@ const songDescription = (song) => `"${song.title}" od ${song.artist} sa akordima
 // /songs/:id and /playlists/:playlistId/songs/:id both point to the canonical /songs/:id
 const renderSong = async (req, res) => {
     const { id } = req.params;
-    const song = mongoose.isValidObjectId(id) ? await Song.findById(id).select("title artist text") : null;
+    const song = mongoose.isValidObjectId(id)
+        ? await Song.findById(id).select("title artist text user").populate("user", "username").lean()
+        : null;
     if (!song) return res.status(404).send(renderPage({ title: "Stranica nije pronađena | Repertorify", noindex: true }));
 
+    // Other songs by the same artist: gives crawlers real links between song pages
+    // (the app itself navigates with onClick, which Google does not follow)
+    const related = await Song.find({ artist: song.artist, _id: { $ne: song._id } })
+        .select("title artist")
+        .limit(10)
+        .lean();
+    const relatedLinks = related.length
+        ? `<h3>Još pjesama: ${escapeHtml(song.artist)}</h3><ul>${related
+            .map(s => `<li><a href="/songs/${s._id}">${escapeHtml(s.title)} - ${escapeHtml(s.artist)}</a></li>`)
+            .join("")}</ul>`
+        : "";
+
     const title = `${song.title} - ${song.artist} Akordi i Tekst | Repertorify`;
-    const body = `${SEO_MAIN_OPEN}<h1>${escapeHtml(song.title)}</h1><h2>${escapeHtml(song.artist)}</h2><pre>${escapeHtml(song.text)}</pre></main>`;
-    res.send(renderPage({ title, description: songDescription(song), canonical: `${BASE_URL}/songs/${song._id}`, body }));
+    const body = `${SEO_MAIN_OPEN}<h1>${escapeHtml(song.title)}</h1><h2>${escapeHtml(song.artist)}</h2><pre>${escapeHtml(song.text)}</pre>${relatedLinks}</main>`;
+
+    // The app shows this song immediately instead of "Loading..." while /api/songs/:id
+    // (next/prev/random, saved transpose step) is still on its way
+    const initialData = {
+        song: {
+            _id: song._id,
+            title: song.title,
+            artist: song.artist,
+            text: song.text,
+            user: song.user ? { _id: song.user._id, username: song.user.username } : { _id: "", username: "" },
+        },
+    };
+    res.send(renderPage({ title, description: songDescription(song), canonical: `${BASE_URL}/songs/${song._id}`, body, initialData }));
 };
 
 const renderPlaylist = async (req, res) => {
